@@ -1,4 +1,14 @@
 subroutine cpaDOS(dos,ham,w,tot)
+!--------------------------------------------------------------------------
+! Solves for the DOS of the system.
+!--------------------------------------------------------------------------
+! Variables:
+! w(jsz) - Weights at each k-point
+! tot - Total weight
+! dos(sec+1) - Total and decomposed DOS of the system
+! H(jsz,sec,sec) - Working Hamiltonian matrix
+! ham(jsz,sec,sec) - Hamiltonian matrix
+!--------------------------------------------------------------------------
 use global
 implicit none
 integer(4) :: i, l

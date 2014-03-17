@@ -1,11 +1,15 @@
 subroutine cmplxLin(A, n, b, verbose)
+!--------------------------------------------------------------------------
 ! Solves a set of n linear complex equations (A*x=b). This is
 ! done by using Crout's LU decomposition with partial pivoting.
+!--------------------------------------------------------------------------
+! Variables:
 ! n - Rank of matrix A
 ! A(n,n) - Complex matrix to be inversed
 ! b(n) - Right hand side of equation
 ! p(n) - Pivots for Crout's algorithm
 ! f**** - Formatting strings
+!--------------------------------------------------------------------------
 implicit none
 integer(4) :: p(n)
 integer(4), intent(in):: n

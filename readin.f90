@@ -1,4 +1,8 @@
 subroutine readin(nd, ne, cr, ci)
+!--------------------------------------------------------------------------
+! Reads inputs from cpaper.dat and writes some information to output file.
+!--------------------------------------------------------------------------
+! Variables:
 ! ci/cr = convergence criterion for real and imaginary parts of Green's 
 !     function, respectively
 ! del = energy shift for site ?
@@ -7,6 +11,7 @@ subroutine readin(nd, ne, cr, ci)
 ! ne = # of electrons
 ! ni = # of ? (probably should remove)
 ! ns = # of disordered sites (probably should remove)
+!--------------------------------------------------------------------------
 use global
 implicit none
 common /d1/ con

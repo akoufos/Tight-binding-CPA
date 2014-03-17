@@ -1,4 +1,10 @@
 subroutine herakl(ge,u,su,term)
+!--------------------------------------------------------------------------
+! Subroutine to calculate the inverted Green's matrix.
+!--------------------------------------------------------------------------
+! up(nse,nse) - Product matrix of Green's and self-energy matrices
+! ans(nse,nse) - Matrix to be inverted.
+!--------------------------------------------------------------------------
 use global
 implicit none
 complex(8) :: ans(nse,nse), up(nse,nse)

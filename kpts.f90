@@ -1,4 +1,14 @@
 subroutine kpts(kp,q,wt,swt)
+!--------------------------------------------------------------------------
+! Reads in the k-point information; Direction vector, weight at given 
+! k-point and total weight at all k-points
+!--------------------------------------------------------------------------
+! Variables:
+! kp - Number of k-points
+! q(kp,3) - k-point vector
+! wt(kp) - Weights for each k-point
+! swt - Total weight
+!--------------------------------------------------------------------------
 use global
 implicit none
 integer(4) :: i, j

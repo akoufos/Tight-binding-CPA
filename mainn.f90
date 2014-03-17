@@ -1,3 +1,6 @@
+!--------------------------------------------------------------------------
+! Function for doing interpolation of the Fermi level
+!--------------------------------------------------------------------------
 real(8) function interp(xx,x,f,j1,n)
 implicit none
 integer(4) :: i, istart, j ,j2
@@ -18,21 +21,29 @@ end do
 interp = fx
 return
 end function interp
+
 subroutine mainn()
-! con = concentration of Se (FeSe_[1-x]Te_x)
-! convr/convi = Real and imaginary convergence criterion for Green's function
+!--------------------------------------------------------------------------
+! Subroutine to run the main parts of the CPA program. Specifically this
+! subroutine does the Newton-Raphson procedure, applies concentrations 
+! and most of the initialization.
+!--------------------------------------------------------------------------
+! Variables:
+! con - Concentration of Se (FeSe_[1-x]Te_x)
+! convr/convi - Real and imaginary convergence criterion for Green's function
   ! self consistency, respectively
-! del = Temperature broadening ?
-! epiv = Pivot energy (helps with N-R iterations [usually around E_F])
-! eps = Imaginary part of energy shift ?
-! emax/emin = Maximum and minimum of energy window, respectively
-! grn = Green's function matrix
-! numit = Maximum interations of self-consistent cyle
-! sag**1 = Real and imaginary parts, respectively, of s & p initial onsite
+! del - Temperature broadening ?
+! epiv - Pivot energy (helps with N-R iterations [usually around E_F])
+! eps - Imaginary part of energy shift ?
+! emax/emin - Maximum and minimum of energy window, respectively
+! grn - Green's function matrix
+! numit - Maximum interations of self-consistent cyle
+! sag**1 - Real and imaginary parts, respectively, of s & p initial onsite
   ! parameters (should be average between two substitution atoms)
-! sig** = Real and imaginary parts, respectively, of s & p self-energies 
-! sig = Complex self-energies
-! sen = Also complex self-energies (redundant and should remove)
+! sig** - Real and imaginary parts, respectively, of s & p self-energies 
+! sig - Complex self-energies
+! sen - Also complex self-energies (redundant and should remove)
+!--------------------------------------------------------------------------
 use omp_lib
 use global
 implicit none

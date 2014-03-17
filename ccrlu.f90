@@ -1,9 +1,13 @@
 subroutine ccrlu(A,n,p)
+!--------------------------------------------------------------------------
 ! LU decompostion subroutine with pivots for square matrix using
 ! Crout's algorithm (from rosetta code)
+!--------------------------------------------------------------------------
+! Variables:
 ! n - Rank of matrix A
 ! A(n,n) - Complex matrix of size nxn to be decomposed
 ! p(n) - Pivot vector
+!--------------------------------------------------------------------------
 implicit none
 integer(4) :: i, j, k, piv
 integer(4), intent(in) :: n

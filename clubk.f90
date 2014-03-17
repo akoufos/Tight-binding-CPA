@@ -1,5 +1,8 @@
 subroutine clubk(A, n, piv, b, verbose)
+!--------------------------------------------------------------------------
 ! Solves A*x = b with partial pivoting from Crout's LU [(P*L)*U = P*A]
+!--------------------------------------------------------------------------
+! Variables:
 ! n - Rank of matrix A
 ! piv(n) - Pivot vector from subroutine ccrlu
 ! A(n,n) - Complex matrix that is decomposed by subroutine ccrlu
@@ -9,6 +12,7 @@ subroutine clubk(A, n, piv, b, verbose)
 ! y(n) - (U*x = y)
 ! x(n) - Working vector (b will equal x at the end)
 ! b(n) - Input and solution of A*x = b [(P*L)*y = b]
+!--------------------------------------------------------------------------
 implicit none
 integer(4) :: i, j, P(n,n)
 integer(4), intent(in) :: n, piv(n)

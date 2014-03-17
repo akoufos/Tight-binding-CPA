@@ -1,4 +1,12 @@
 subroutine readSec(h,g)
+!--------------------------------------------------------------------------
+! Reads in the secular equations of the system given by the output of the
+! Static code.
+!--------------------------------------------------------------------------
+! Variables:
+! h(jsz,sec,sec) - Real part of the Hamiltonian for each k-point
+! j(jsz,sec,sec) - Imaginary part of the Hamiltonian for each k-point
+!--------------------------------------------------------------------------
 use global
 implicit none
 integer(4) :: i, j, k

@@ -1,4 +1,7 @@
 subroutine simp(xx,fx,ax,nx)
+!--------------------------------------------------------------------------
+! Need to verify the purpose of this subroutine.
+!--------------------------------------------------------------------------
 implicit none
 integer(4) :: ix
 integer(4), intent(in) :: nx

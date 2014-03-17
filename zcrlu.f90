@@ -1,5 +1,7 @@
 subroutine zcrlu(n,m,a,p,d)
+!--------------------------------------------------------------------------
 ! LU decompostion subroutine using the Crout method with row pivots
+!--------------------------------------------------------------------------
 use global
 implicit none
 integer(4) :: i, j, k, piv

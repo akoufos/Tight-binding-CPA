@@ -1,11 +1,15 @@
 subroutine cmplxInv(A,n,verbose)
+!--------------------------------------------------------------------------
 ! Solves for the inverse of a complex square matrix of size nxn. This is
 ! done by using Crout's LU decomposition with partial pivoting.
+!--------------------------------------------------------------------------
+! Variables:
 ! n - rank of matrix A
 ! A(n,n) - complex matrix to be inversed
 ! B(n,n) - Identity matrix
 ! p(n) - pivots for Crout's algorithm
 ! f**** - formatting strings
+!--------------------------------------------------------------------------
 implicit none
 integer(4) :: i, p(n)
 integer(4), intent(in):: n

@@ -1,6 +1,8 @@
 module global
+!--------------------------------------------------------------------------
 ! Currently this global file is setup for calculations of P4/nmm Fe2Se/Te2
 !-------------------------------------------------------------------------
+! Variables:
 ! jsz - Number of kpoints
 ! ntype - Number of different atom types
 ! natom(ntype) - Number of different atoms (# of atoms in should 
