@@ -11,7 +11,7 @@ FFLAGS = $(OMP) $(MKL) $(F90_OPTS)
 
 SRC_modules = global.f90
 
-SRC_cpa = ccrlu.f90 clubk.f90 cmplxInv.f90 cmplxLin.f90 cpaDos.f90 \
+SRC_cpa = ccrlu.f90 clubk.f90 cmplxInv.f90 cmplxLin.f90 cpaDOS.f90 \
 	cpagen.f90 crete.f90 kpts.f90 readin.f90 readSec.f90 simp.f90 \
 	mainn.f90
 
@@ -37,6 +37,3 @@ all:	cpaTB
 
 clean:
 	rm -f *.o *.mod $(EXE)
-
-clean all:
-	$(MAKE) clean

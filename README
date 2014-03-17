@@ -1,0 +1,17 @@
+This file was written on 03/17/2014. Additions should be noted by updating
+this date or specifically stating a date where the information was added,
+modified, or removed.
+
+  This program was created to perform the coherent potential approximation
+to find various properties of material system. The inputs for the program
+are taken from the output of the Static code that uses the tight-binding 
+formulism.
+  Currently the system is setup to run for the FeSe/Te superconductivity
+system for the tetragonal P4/nmm symmetry. Some generalization was placed
+in the code to allow for future systems to be used.
+
+This version, 0.5, is setup with complex variables. Although this allows
+for easier readability of the code, it may make it a little slower in 
+the inversion of the matrices. For future releases, it might be benifical
+to make the code not use the built-in complex calculations, but rather 
+explicitly solve using these variables. 

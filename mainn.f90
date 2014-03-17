@@ -29,7 +29,7 @@ subroutine mainn()
 ! and most of the initialization.
 !--------------------------------------------------------------------------
 ! Variables:
-! con - Concentration of Se (FeSe_[1-x]Te_x)
+! con - Concentration, x, of Se (FeSe_[1-x]Te_x)
 ! convr/convi - Real and imaginary convergence criterion for Green's function
   ! self consistency, respectively
 ! del - Temperature broadening ?
@@ -55,18 +55,19 @@ integer(4) :: irep, iss, iss1, itop, ixyz, l9, m, &
   mchk, mc, mcm, mcount, msig, n, nchk, &
   ndim, nmode, ns, num99
 integer(4), parameter :: numit = 100
-real(8) :: con, convr, convi, del, delsi(2), delsi1, delsr(2), delsr1, &
-  delpi(6), delpi1, delpr(6), delpr1, dnorfl, e, efl, emax, emin, &
+real(8) :: con, convr, convi, del, delsi1, delsr1, &
+  delpi1, delpr1, dnorfl, e, efl, emax, emin, &
   epiv, eps, interp, nuelec, s, sagpi1, sagpr1, sagsi1, sagsr1, totvol, &
   dos(sec+1)
 real(8) :: res(2000,sec), anumel(2000), dumm(2000), edum(2000), &
   dums1(2000), dump1(2000), dums2(2000), dump2(2000), dumxz(2000), &
-  dumxy(2000), dum3r(2000), dumx2(2000), densfl(10), sagpi(6), &
-  sagpr(6), sagsi(2), sagsr(2), sigpr(6), sigpi(6), sigsr(2), sigsi(2), &
-  weight(jsz), qq(jsz,3), hmz(jsz,sec,sec), vst(jsz,sec,sec)
+  dumxy(2000), dum3r(2000), dumx2(2000), densfl(10), sigpr(6), sigpi(6), &
+  sigsr(2), sigsi(2), weight(jsz), qq(jsz,3), hmz(jsz,sec,sec), &
+  vst(jsz,sec,sec)
 real(8), parameter :: dsig = 1.0d-4
-complex(8) :: cpas, cpap, cpbs, cpbp, cpcs, cpcp, dsigs, dsigp, &
-  ham(jsz,sec,sec), grn(sec,sec), sen(nse), sig(nse), z(2)
+complex(8) :: cpas, cpap, cpbs, cpbp, cpcs, cpcp, dsigs, dsigp, dels(2), &
+  delp(6), ham(jsz,sec,sec), grn(sec,sec), sen(nse), sig(nse), z(2), &
+  sags(2), sagp(6)
 verbose = .false.
 open(6,file='cpaper.out',blank='zero')
 nchk = 0
@@ -77,10 +78,8 @@ call kpts(jsz,qq,weight,totvol)
 call readSec(hmz,vst)
 iss1 = 1
  1111 if(nchk.eq.2) goto 1234
-sagsr(:) = sagsr1
-sagsi(:) = sagsi1
-sagpr(:) = sagpr1
-sagpi(:) = sagpi1
+sags(:) = cmplx(sagsr1,sagsi1,8)
+sagp(:) = cmplx(sagpr1,sagpi1,8)
 if(nchk.eq.0) nmode = 1
 if(nchk.eq.1) nmode = 2
 if(nchk.eq.1) epiv = epiv - del
@@ -90,10 +89,10 @@ delsi1 = dsig
 delpr1 = dsig
 delpi1 = dsig
 do ixyz = iss1, 2000
-  sigsr = sagsr
-  sigsi = sagsi
-  sigpr = sagpr
-  sigpi = sagpi
+  sigsr(:) = dble(sags(:))
+  sigsi(:) = aimag(sags(:))
+  sigpr(:) = dble(sagp(:))
+  sigpi(:) = aimag(sagp(:))
   do i = 1, 4
     if(i.eq.1) then
       sig(1) = cmplx(sigsr(1),sigsi(1),8)
@@ -162,31 +161,33 @@ verbose = .false.
 !print 11111, grn
 !STOP
 !verbose = .true.
-      call crete(delsr,delsi,delpr,delpi)
-      if (verbose) print 22222,delsr,delsi,delpr,delpi
-22222 format(4(F10.6,1X))
+      call crete(dels,delp)
+      if (verbose) print 22222,dels,delp
+22222 format(4(2F10.6,1X))
 !verbose = .false.
 !STOP
       select case (msig)
         case (1)
-          z(1) = cmplx(-delsr(1),-delsi(1),8)
-          z(2) = cmplx(-delpr(1),-delpi(1),8)
-          cpas = cmplx(delsr(1),delsi(1),8)
-          cpap = cmplx(delpr(1),delpi(1),8)
+          z(1) = -dels(1)
+          z(2) = -delp(1)
+          cpas = dels(1)
+          cpap = delp(1)
           dsigs = cmplx(delsr1/2.0d0,delsi1/2.0d0,8)
           dsigp = cmplx(delpr1/2.0d0,delpi1/2.0d0,8)
         case (2)
-          cpbs = cmplx(delsr(1),delsi(1),8)
-          cpbp = cmplx(delpr(1),delpi(1),8)
+          cpbs = dels(1)
+          cpbp = delp(1)
         case (3)
-          cpcs = cmplx(delsr(1),delsi(1),8)
-          cpcp = cmplx(delpr(1),delpi(1),8)
+          cpcs = dels(1)
+          cpcp = delp(1)
       end select
+      print*,dsigs,dsigp
     end do ! end msig loop
     ham(1,1,1) = (cpbs-cpas)/dsigs
     ham(1,1,2) = (cpcs-cpas)/dsigs
     ham(1,2,1) = (cpbp-cpap)/dsigs
     ham(1,2,2) = (cpcp-cpap)/dsigs
+    print*,transpose(ham(1,:2,:2))
 !  for Se/Te sigsr,sigsi means s self-energy
 !  for Se/Te sigpr,sigpi means p self-energy
     do i = 1, 4
@@ -202,10 +203,10 @@ verbose = .false.
         sigpi(i+2) = aimag(sig(i+4))
       end if
     end do
-!verbose = .true.
+verbose = .true.
     call cmplxLin(ham(1,:2,:2),2,z,verbose)
-!verbose = .false.
-!STOP
+verbose = .false.
+STOP
     delsr1 = dble(z(1))
     delsi1 = aimag(z(1))
     delpr1 = dble(z(2))
@@ -222,15 +223,13 @@ verbose = .false.
         sigpi = -sigpi
       end if
     else
-      sigsr = delsr1 + sigsr
-      sigsi = delsi1 + sigsi
-      sigpr = delpr1 + sigpr
-      sigpi = delpi1 + sigpi
+      sigsr(:) = delsr1 + sigsr(:)
+      sigsi(:) = delsi1 + sigsi(:)
+      sigpr(:) = delpr1 + sigpr(:)
+      sigpi(:) = delpi1 + sigpi(:)
     end if 
-    sagsr = sigsr
-    sagsi = sigsi
-    sagpr = sigpr
-    sagpi = sigpi
+    sags(:) = cmplx(sigsr,sigsi,8)
+    sagp(:) = cmplx(sigpr,sigpi,8)
     do i = 1, 4
       if(i.eq.1) then
         sig(1) = cmplx(sigsr(1),sigsi(1),8)
