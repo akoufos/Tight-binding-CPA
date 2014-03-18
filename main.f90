@@ -129,7 +129,38 @@ verbose = .false.
         case default
           continue
       end select
-      call greens(ham,hmz,vst,weight,totvol,e,eps)
+      ham(:,:,:) = cmplx(-hmz(:,:,:),-vst(:,:,:),8)
+      if (verbose) print 11111, ham(1,:,:)
+11111 format(36(2(F10.6,1X)))
+      do l = 1, ndim
+        ham(:,l,l) = ham(:,l,l) + cmplx(e,eps)
+      end do
+      do i = 1, ns
+! this loop is only for Se/Te s & p disorder
+        do i4 = 19, 22
+          i3 = i4 + 9
+          ham(i,i4,i4) = ham(i,i4,i4) - sig(i4-18)
+          ham(i,i3,i3) = ham(i,i3,i3) - sig(i3-18)
+        end do
+        call cmplxInv(ham(i,:,:),sec,verbose)
+        if (verbose) then 
+          open(8,file='dummy1')
+          write(8,12345)dble(ham(1,:,:))
+12345 format(36F10.6)
+          close(8)
+          if(i.eq.1) STOP
+        end if
+! this loop is only for Se/Te s & p disorder
+        do i4 = 19, 22
+          i3 = i4 + 9
+          grn(i4,i4) = grn(i4,i4) + ham(i,i4,i4)*weight(i)
+          grn(i3,i3) = grn(i3,i3) + ham(i,i3,i3)*weight(i)
+        end do
+      end do
+      grn(:,:) = grn(:,:)/totvol
+!print 11111, grn
+!STOP
+!verbose = .true.
       call crete(dels,delp)
       if (verbose) print 22222,dels,delp
 22222 format(4(2F10.6,1X))
@@ -219,7 +250,6 @@ STOP
   write(6,1015)n,sigsr(1),sigsi(1),(sigpr(i),sigpi(i),i=1,3),e
   ham(:,:,:) = cmplx(-hmz(:,:,:),-vst(:,:,:),8)
   if (verbose) print 11111, ham(1,:,:)
-11111 format(36(2(F10.6,1X)))
   do l = 1, ndim
     ham(:,l,l) = ham(:,l,l) + cmplx(e,eps)
   end do

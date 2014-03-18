@@ -16,11 +16,11 @@ subroutine crete(dels,delp)
 use global
 implicit none
 common /d1/ con
-common /d3/ sen, grn
+common /d3/ sig, grn
 integer(4) :: l
 real(8) :: con
 complex(8) :: up(nse,nse), ge(nse,nse), su(nse,nse), term(nse,nse), &
-  usi(nse,nse), grn(sec,sec), sen(nse)
+  usi(nse,nse), grn(sec,sec), sig(nse)
 complex(8), intent(out) :: dels(2), delp(6)
 usi(:,:) = (0.0d0,0.0d0)
 ge(:,:) = (0.0d0,0.0d0)
@@ -38,18 +38,18 @@ ge(5,5) = grn(28,28)
 ge(6,6) = grn(29,29)
 ge(7,7) = grn(30,30)
 ge(8,8) = grn(31,31)
-usi(1,1) = sen(1)
-usi(2,2) = sen(2)
-usi(3,3) = sen(3)
-usi(4,4) = sen(4)
-usi(5,5) = sen(5)
-usi(6,6) = sen(6)
-usi(7,7) = sen(7)
-usi(8,8) = sen(8)
+usi(1,1) = sig(1)
+usi(2,2) = sig(2)
+usi(3,3) = sig(3)
+usi(4,4) = sig(4)
+usi(5,5) = sig(5)
+usi(6,6) = sig(6)
+usi(7,7) = sig(7)
+usi(8,8) = sig(8)
 !call herakl(ge,usi,su,ans)
 up = matmul(ge,usi)
 su(:,:) = su(:,:) - up(:,:)
-call cmplxINv(su,nse,verbose)
+call cmplxInv(su,nse,verbose)
 term(:,:) = con*matmul(usi,su)
 dels(1) = term(1,1)
 dels(2) = term(5,5)
