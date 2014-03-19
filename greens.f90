@@ -1,4 +1,4 @@
-subroutine greens(ham,hmz,vst,wt,tot,e,eps)
+subroutine greens(ham,wt,tot,e,eps)
 !--------------------------------------------------------------------------
 ! Calculates Green's function for the coherent potential approximation.
 !--------------------------------------------------------------------------
@@ -15,8 +15,9 @@ use omp_lib
 use global
 implicit none
 common /d3/ sig, grn
+common /d4/ hmz, vst
 integer(4) :: i, i1, i2, l
-real(8), intent(in) :: hmz(jsz,sec,sec), vst(jsz,sec,sec)
+real(8) :: hmz(jsz,sec,sec), vst(jsz,sec,sec)
 real(8), intent(in) :: wt(jsz), tot, e, eps
 complex(8) :: sig(nse), grn(sec,sec)
 complex(8), intent(out) :: ham(jsz,sec,sec)

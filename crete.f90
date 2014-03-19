@@ -12,24 +12,35 @@ subroutine crete(dels,delp)
 ! su(nse,nse) - Matrix to be inverted
 ! term(nse,nse) - Final matrix with concentrations. Results are the changes
   ! in states (del**)
+! ons(2,nse) - All onsite parameters
+! Se/Te(nse,nse) - Complex versions of onsite matices for calculations
 !--------------------------------------------------------------------------
 use global
 implicit none
 common /d1/ con
 common /d3/ sig, grn
+common /d6/ ons
 integer(4) :: l
-real(8) :: con
+real(8) :: con, ons(natom(2),nse)
 complex(8) :: up(nse,nse), ge(nse,nse), su(nse,nse), term(nse,nse), &
-  usi(nse,nse), grn(sec,sec), sig(nse)
+  usi(nse,nse), grn(sec,sec), sig(nse), Se(nse,nse), Te(nse,nse), &
+  eps(nse,nse)
 complex(8), intent(out) :: dels(2), delp(6)
+if (verbose) print 1000
+dels(:) = (0.0d0,0.0d0)
+delp(:) = (0.0d0,0.0d0)
 usi(:,:) = (0.0d0,0.0d0)
 ge(:,:) = (0.0d0,0.0d0)
 su(:,:) = (0.0d0,0.0d0)
-dels(:) = (0.0d0,0.0d0)
-delp(:) = (0.0d0,0.0d0)
+Se(:,:) = (0.0d0,0.0d0)
+Te(:,:) = (0.0d0,0.0d0)
+eps(:,:) = (0.0d0,0.0d0)
 do l = 1, nse
-  su(l,l) = cmplx(1.0d0,0.0d0,8)
+  Se(l,l) = cmplx(ons(1,l),0.0d0,8)
+  Te(l,l) = cmplx(ons(2,l),0.0d0,8)
 end do
+eps(:,:) = con*(Se(:,:)-Te(:,:)) + Te(:,:)
+if(verbose) print 1001, sig
 ge(1,1) = grn(19,19)
 ge(2,2) = grn(20,20)
 ge(3,3) = grn(21,21)
@@ -46,18 +57,28 @@ usi(5,5) = sig(5)
 usi(6,6) = sig(6)
 usi(7,7) = sig(7)
 usi(8,8) = sig(8)
-!call herakl(ge,usi,su,ans)
-up = matmul(ge,usi)
-su(:,:) = su(:,:) - up(:,:)
-call cmplxInv(su,nse,verbose)
-term(:,:) = con*matmul(usi,su)
-dels(1) = term(1,1)
-dels(2) = term(5,5)
-delp(1) = term(2,2)
-delp(2) = term(3,3)
-delp(3) = term(4,4)
-delp(4) = term(6,6)
-delp(5) = term(7,7)
-delp(6) = term(8,8)
+Se(:,:) = Se(:,:) - usi(:,:)
+Te(:,:) = Te(:,:) - usi(:,:)
+up = matmul(ge,Se)
+su = matmul(up,Te)
+term(:,:) = eps(:,:) - su(:,:)
+dels(1) = sig(1) - term(1,1)
+dels(2) = sig(5) - term(5,5)
+delp(1) = sig(2) - term(2,2)
+delp(2) = sig(3) - term(3,3)
+delp(3) = sig(4) - term(4,4)
+delp(4) = sig(6) - term(6,6)
+delp(5) = sig(7) - term(7,7)
+delp(6) = sig(8) - term(8,8)
+if(verbose) print 1002, dels, delp
+do l = 1, nse
+  sig(l) = term(l,l)
+end do
+if(verbose) print 1001, sig
+if(verbose) print 1003
 return
+1000 format('SUBROUTINE CRETE',/)
+1001 format('Sigma: ',4(2(F10.6,1X)))
+1002 format('Delta sig:',4(2(F10.6,1X)))
+1003 format('END SUBROUTINE CRETE',/)
 end subroutine crete

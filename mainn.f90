@@ -42,18 +42,19 @@ subroutine mainn()
   ! parameters (should be average between two substitution atoms)
 ! sig** - Real and imaginary parts, respectively, of s & p self-energies 
 ! sig - Complex self-energies
-! sen - Also complex self-energies (redundant and should remove)
 !--------------------------------------------------------------------------
 use omp_lib
 use global
 implicit none
 common /d1/ con
 common /d2/ emin, emax, eps, del, epiv, sagsr1, sagsi1, sagpr1, sagpi1
-common /d3/ sen, grn
+common /d3/ sig, grn
+common /d4/ hmz, vst
+common /d5/ dels, delp
+common /d7/ convr, convi
 integer(4) :: i, l, ll, i3, i4
-integer(4) :: irep, iss, iss1, itop, ixyz, l9, m, &
-  mchk, mc, mcm, mcount, msig, n, nchk, &
-  ndim, nmode, ns, num99
+integer(4) :: irep, iss, iss1, itop, ixyz, l9, m, mchk, mc, mcm, mcount, &
+  msig, n, nchk, ndim, nmode, ns, num99
 integer(4), parameter :: numit = 100
 real(8) :: con, convr, convi, del, delsi1, delsr1, &
   delpi1, delpr1, dnorfl, e, efl, emax, emin, &
@@ -66,14 +67,14 @@ real(8) :: res(2000,sec), anumel(2000), dumm(2000), edum(2000), &
   vst(jsz,sec,sec)
 real(8), parameter :: dsig = 1.0d-4
 complex(8) :: cpas, cpap, cpbs, cpbp, cpcs, cpcp, dsigs, dsigp, dels(2), &
-  delp(6), ham(jsz,sec,sec), grn(sec,sec), sen(nse), sig(nse), z(2), &
-  sags(2), sagp(6)
+  delp(6), ham(jsz,sec,sec), grn(sec,sec), sig(nse), z(2), &
+  sags(2), sagp(6), dels1(2), delp1(6)
 verbose = .false.
 open(6,file='cpaper.out',blank='zero')
 nchk = 0
 ns = jsz
 totvol = 0.0d0
-call readin(ndim, nuelec, convr, convi)
+call readin(ndim, nuelec)
 call kpts(jsz,qq,weight,totvol)
 call readSec(hmz,vst)
 iss1 = 1
@@ -84,133 +85,22 @@ if(nchk.eq.0) nmode = 1
 if(nchk.eq.1) nmode = 2
 if(nchk.eq.1) epiv = epiv - del
 e = epiv
-delsr1 = dsig
-delsi1 = dsig
-delpr1 = dsig
-delpi1 = dsig
+dels1(:) = cmplx(dsig,dsig,8)
+delp1(:) = cmplx(dsig,dsig,8)
 do ixyz = iss1, 2000
-  sigsr(:) = dble(sags(:))
-  sigsi(:) = aimag(sags(:))
-  sigpr(:) = dble(sagp(:))
-  sigpi(:) = aimag(sagp(:))
   do i = 1, 4
     if(i.eq.1) then
-      sig(1) = cmplx(sigsr(1),sigsi(1),8)
-      sig(5) = cmplx(sigsr(2),sigsi(2),8)
+      sig(1) = sags(1)
+      sig(5) = sags(2)
     else
-      sig(i) = cmplx(sigpr(i-1),sigpi(i-1),8)
-      sig(i+4) = cmplx(sigpr(i+2),sigpi(i+2),8)
+      sig(i) = sagp(i-1)
+      sig(i+4) = sagp(i+2)
     end if
   end do
-  do n = 1, numit
-    write(6,1210)n,sigsr(1),sigsi(1),(sigpr(i),sigpi(i),i=1,3)
-!   write(6,1210)n,sigsr(2),sigsi(2),sigpr(2),sigpi(2)
 verbose = .true.
-    if (verbose.and.n.gt.1) then
-      write(*,1211)n,sigsr(1),sigsi(1),(sigpr(i),sigpi(i),i=1,3),ixyz
-    end if
-verbose = .false.
-    mchk = 0
-    irep = 0
-    grn(:,:) = cmplx(0.0d0,0.0d0,8)
-    do msig = 1, 3
-      sen(:) = sig(:)
-      select case (msig)
-        case (2)
-          sen(1) = sig(1) + cmplx(delsr1,delsi1,8)
-          sen(5) = sig(5) + cmplx(delsr1,delsi1,8)
-        case (3)
-          sen(2) = sig(2) + cmplx(delpr1,delpi1,8)
-          sen(3) = sig(3) + cmplx(delpr1,delpi1,8)
-          sen(4) = sig(4) + cmplx(delpr1,delpi1,8)
-          sen(6) = sig(6) + cmplx(delpr1,delpi1,8)
-          sen(7) = sig(7) + cmplx(delpr1,delpi1,8)
-          sen(8) = sig(8) + cmplx(delpr1,delpi1,8)
-        case default
-          continue
-      end select
-      call greens(ham,hmz,vst,weight,totvol,e,eps)
-      call crete(dels,delp)
-      if (verbose) print 22222,dels,delp
-22222 format(4(2F10.6,1X))
-!verbose = .false.
-!STOP
-      select case (msig)
-        case (1)
-          z(1) = -dels(1)
-          z(2) = -delp(1)
-          cpas = dels(1)
-          cpap = delp(1)
-          dsigs = cmplx(delsr1/2.0d0,delsi1/2.0d0,8)
-          dsigp = cmplx(delpr1/2.0d0,delpi1/2.0d0,8)
-        case (2)
-          cpbs = dels(1)
-          cpbp = delp(1)
-        case (3)
-          cpcs = dels(1)
-          cpcp = delp(1)
-      end select
-      print*,dsigs,dsigp
-    end do ! end msig loop
-    ham(1,1,1) = (cpbs-cpas)/dsigs
-    ham(1,1,2) = (cpcs-cpas)/dsigs
-    ham(1,2,1) = (cpbp-cpap)/dsigs
-    ham(1,2,2) = (cpcp-cpap)/dsigs
-    print*,transpose(ham(1,:2,:2))
-!  for Se/Te sigsr,sigsi means s self-energy
-!  for Se/Te sigpr,sigpi means p self-energy
-    do i = 1, 4
-      if(i.eq.1) then
-        sigsr(1) = dble(sig(1))
-        sigsi(1) = aimag(sig(1))
-        sigsr(2) = dble(sig(5))
-        sigsi(2) = aimag(sig(5))
-      else
-        sigpr(i-1) = dble(sig(i))
-        sigpi(i-1) = aimag(sig(i))
-        sigpr(i+2) = dble(sig(i+4))
-        sigpi(i+2) = aimag(sig(i+4))
-      end if
-    end do
-verbose = .true.
-    call cmplxLin(ham(1,:2,:2),2,z,verbose)
-verbose = .false.
-STOP
-    delsr1 = dble(z(1))
-    delsi1 = aimag(z(1))
-    delpr1 = dble(z(2))
-    delpi1 = aimag(z(2))
-    if(abs(delsr1).lt.convr.and.abs(delsi1).lt.convi.and. &
-       abs(delpr1).lt.convr.and.abs(delpi1).lt.convi) mchk=1
-    if(mchk.eq.1) then
-      if(sigsi(1).gt.0.0d0)then
-        irep = 1
-        sigsi = -sigsi
-      end if
-      if(sigpi(1).gt.0.0d0)then
-        irep = 1
-        sigpi = -sigpi
-      end if
-    else
-      sigsr(:) = delsr1 + sigsr(:)
-      sigsi(:) = delsi1 + sigsi(:)
-      sigpr(:) = delpr1 + sigpr(:)
-      sigpi(:) = delpi1 + sigpi(:)
-    end if 
-    sags(:) = cmplx(sigsr,sigsi,8)
-    sagp(:) = cmplx(sigpr,sigpi,8)
-    do i = 1, 4
-      if(i.eq.1) then
-        sig(1) = cmplx(sigsr(1),sigsi(1),8)
-        sig(5) = cmplx(sigsr(2),sigsi(2),8)
-      else
-        sig(i) = cmplx(sigpr(i-1),sigpi(i-1),8)
-        sig(i+4) = cmplx(sigpr(i+2),sigpi(i+2),8)
-      end if
-    end do
-    if(irep.eq.1) cycle
-    if(mchk.eq.1) goto 9991
-  end do ! end numit loop
+  call cpaNR(ham,weight,totvol,e,eps,dels1,delp1,mchk,numit)
+  STOP
+  if (mchk.eq.1) goto 9991
   write(6,5004)e
   goto 870 
   nchk = nchk + 1
@@ -256,7 +146,7 @@ STOP
  51     e = e - del
   if(e.ge.emin) cycle ! next iteration of ixyz loop
   exit
-end do
+end do ! End of ixyz loop
  1234 continue
 itop = ixyz
 write(6,3000)
