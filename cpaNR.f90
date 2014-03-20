@@ -21,12 +21,12 @@ implicit none
 common /d3/ sig, grn
 common /d5/ dels, delp
 common /d7/ cr, ci
-integer(4) :: i, j, n, irep
+integer(4) :: i, n, irep
 integer(4), intent(in) :: numit
 integer(4), intent(out) :: mchk
 real(8) :: cr, ci
 real(8), intent(in) :: wt(jsz), tot, e, eps
-complex(8) :: z(nse), dels(2), delp(6), sig(nse), grn(sec,sec)
+complex(8) :: dels(2), delp(6), sig(nse), grn(sec,sec)
 complex(8), intent(in) :: dels1(2), delp1(6)
 complex(8), intent(out) :: ham(jsz,sec,sec)
 do n = 1, numit
@@ -39,12 +39,9 @@ do n = 1, numit
   end if
   mchk = 0; irep = 0
   grn(:,:) = cmplx(0.0d0,0.0d0,8)
-verbose = .false.
   call greens(ham,wt,tot,e,eps)
-verbose = .true.
   call crete(dels,delp)
   if(verbose) print 1002, dels, delp
-  !If any dels or delp parts are <= to convergence criterion set mchk=1
   if (abs(dble(dels(1))).le.cr.or.abs(aimag(dels(1))).le.ci.or. &
       abs(dble(dels(2))).le.cr.or.abs(aimag(dels(2))).le.ci.or. &
       abs(dble(delp(1))).le.cr.or.abs(aimag(delp(1))).le.ci.or. &
@@ -65,14 +62,6 @@ verbose = .true.
     end do
   else
      sig(:) = sig(:) + dels1(1)
-!    sig(1) = sig(1) + dels1(1)
-!    sig(5) = sig(5) + dels1(2)
-!    sig(2) = sig(2) + delp1(1)
-!    sig(3) = sig(3) + delp1(2)
-!    sig(4) = sig(4) + delp1(3)
-!    sig(6) = sig(6) + delp1(4)
-!    sig(7) = sig(7) + delp1(5)
-!    sig(8) = sig(8) + delp1(6)
   end if
   if (irep.eq.1) cycle
   if (mchk.eq.1) exit

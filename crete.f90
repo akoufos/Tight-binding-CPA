@@ -12,7 +12,7 @@ subroutine crete(dels,delp)
 ! su(nse,nse) - Matrix to be inverted
 ! term(nse,nse) - Final matrix with concentrations. Results are the changes
   ! in states (del**)
-! ons(2,nse) - All onsite parameters
+! ons(2,sec) - All onsite parameters for Se and Te
 ! Se/Te(nse,nse) - Complex versions of onsite matices for calculations
 !--------------------------------------------------------------------------
 use global
@@ -20,8 +20,8 @@ implicit none
 common /d1/ con
 common /d3/ sig, grn
 common /d6/ ons
-integer(4) :: l
-real(8) :: con, ons(natom(2),nse)
+integer(4) :: l, l1, l2, l3
+real(8) :: con, ons(natom(2),sec)
 complex(8) :: up(nse,nse), ge(nse,nse), su(nse,nse), term(nse,nse), &
   usi(nse,nse), grn(sec,sec), sig(nse), Se(nse,nse), Te(nse,nse), &
   eps(nse,nse)
@@ -35,10 +35,17 @@ su(:,:) = (0.0d0,0.0d0)
 Se(:,:) = (0.0d0,0.0d0)
 Te(:,:) = (0.0d0,0.0d0)
 eps(:,:) = (0.0d0,0.0d0)
-do l = 1, nse
-  Se(l,l) = cmplx(ons(1,l),0.0d0,8)
-  Te(l,l) = cmplx(ons(2,l),0.0d0,8)
+do l = 19, 22
+  l1 = l + 9; l2 = l - 18; l3 = l - 14
+  Se(l2,l2) = cmplx(ons(1,l),0.0d0,8)
+  Te(l2,l2) = cmplx(ons(2,l),0.0d0,8)
+  Se(l3,l3) = cmplx(ons(1,l1),0.0d0,8)
+  Te(l3,l3) = cmplx(ons(2,l1),0.0d0,8)
 end do
+!do l = 1, nse
+!  Se(l,l) = cmplx(ons(1,l),0.0d0,8)
+!  Te(l,l) = cmplx(ons(2,l),0.0d0,8)
+!end do
 eps(:,:) = con*(Se(:,:)-Te(:,:)) + Te(:,:)
 if(verbose) print 1001, sig
 ge(1,1) = grn(19,19)

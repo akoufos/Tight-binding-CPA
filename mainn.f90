@@ -92,9 +92,7 @@ do ixyz = iss1, 2000
       sig(i+4) = sagp(i+2)
     end if
   end do
-verbose = .true.
   call cpaNR(ham,weight,totvol,e,eps,dels1,delp1,mchk,numit)
-verbose = .false.
   do i = 1, 4
     if(i.eq.1) then
       sags(1) = sig(1)
@@ -112,19 +110,23 @@ verbose = .false.
   goto 1111
   9991 continue
   write(6,1015)n,(sig(i),i=1,4),e
-  ham(:,:,:) = cmplx(-hmz(:,:,:),-vst(:,:,:),8)
-  if (verbose) print 11111, ham(1,:,:)
-11111 format(36(2(F10.6,1X)))
-  do l = 1, ndim
-    ham(:,l,l) = ham(:,l,l) + cmplx(e,eps)
-  end do
-! this loop is only for Se/Te s & p disorder
-  do i4 = 19, 22
-    i3 = i4 + 9
-    ham(:,i4,i4) = ham(:,i4,i4) - sig(i4-18)
-    ham(:,i3,i3) = ham(:,i3,i3) - sig(i3-18)
-  end do
-  call cpaDOS(dos,ham,weight,totvol)
+  write(6,1016)  (sig(i),i=5,8),e
+!  ham(:,:,:) = cmplx(-hmz(:,:,:),-vst(:,:,:),8)
+!  if (verbose) print 11111, ham(1,:,:)
+!11111 format(36(2(F10.6,1X)))
+!  do l = 1, ndim
+!    ham(:,l,l) = ham(:,l,l) + cmplx(e,eps)
+!  end do
+!! this loop is only for Se/Te s & p disorder
+!  do i4 = 19, 22
+!    i3 = i4 + 9
+!    ham(:,i4,i4) = ham(:,i4,i4) - sig(i4-18)
+!    ham(:,i3,i3) = ham(:,i3,i3) - sig(i3-23)
+!  end do
+verbose = .true.
+  call cpaDOS(dos,weight,totvol,e,eps)
+STOP
+verbose = .false.
 870 continue
   res(ixyz,1) = e
   res(ixyz,2) = dble(sig(1))
@@ -162,29 +164,29 @@ do ll = iss1, itop
   l = l - 1
   l9 = l9 + 1
   edum(l9) = res(l,1)
-  dums1(l9) = res(l,6)*2.0d0
-  dump1(l9) = res(l,7)*2.0d0
-  dumxz(l9) = res(l,8)*2.0d0
-  dumxy(l9) = res(l,9)*2.0d0
-  dum3r(l9) = res(l,10)*2.0d0
-  dumx2(l9) = res(l,11)*2.0d0
-  dums2(l9) = res(l,12)*2.0d0
-  dump2(l9) = res(l,13)*2.0d0
-  dumm(l9) = res(l,14)*2.0d0
+  dums1(l9) = res(l,6)
+  dump1(l9) = res(l,7)
+  dumxz(l9) = res(l,8)
+  dumxy(l9) = res(l,9)
+  dum3r(l9) = res(l,10)
+  dumx2(l9) = res(l,11)
+  dums2(l9) = res(l,12)
+  dump2(l9) = res(l,13)!*2.0d0
+  dumm(l9) = res(l,14)!*2.0d0
   write(6,3030)(res(l,m),m=1,5)
 end do
 do l = 1, iss
   l9 = l9 + 1
   edum(l9) = res(l,1)
-  dums1(l9) = res(l,6)*2.0d0
-  dump1(l9) = res(l,7)*2.0d0
-  dumxz(l9) = res(l,8)*2.0d0
-  dumxy(l9) = res(l,9)*2.0d0
-  dum3r(l9) = res(l,10)*2.0d0
-  dumx2(l9) = res(l,11)*2.0d0
-  dums2(l9) = res(l,12)*2.0d0
-  dump2(l9) = res(l,13)*2.0d0
-  dumm(l9) = res(l,14)*2.0d0
+  dums1(l9) = res(l,6)
+  dump1(l9) = res(l,7)
+  dumxz(l9) = res(l,8)
+  dumxy(l9) = res(l,9)
+  dum3r(l9) = res(l,10)
+  dumx2(l9) = res(l,11)
+  dums2(l9) = res(l,12)
+  dump2(l9) = res(l,13)!*2.0d0
+  dumm(l9) = res(l,14)!*2.0d0
   write(6,3030)(res(l,m),m=1,5)
 end do
 num99 = itop - 1
@@ -199,12 +201,12 @@ do ll = iss1, itop
   l = l - 1
   l9 = l9 + 1
   res(l,17) = anumel(l9)
-  write(6,3070)res(l,1),(res(l,m),m=6,17),ll
+  write(6,3070)res(l,1),(res(l,m),m=6,14),ll
 end do
 do l = 1, iss
   l9 = l9 + 1
   res(l,17) = anumel(l9)
-  write(6,3070)res(l,1),(res(l,m),m=6,17),l
+  write(6,3070)res(l,1),(res(l,m),m=6,14),l
 end do
 l = itop + 1
 l9 = 0
@@ -238,12 +240,12 @@ densfl(6) = interp(s,anumel,dumx2(1),mcm,2)/2.0d0
 densfl(7) = interp(s,anumel,dums2(1),mcm,2)/2.0d0
 densfl(8) = interp(s,anumel,dump2(1),mcm,2)/2.0d0
 write(6,193)
-write(6,839)efl,nuelec,dnorfl,(densfl(i),i=1,10)
+write(6,839)efl,nuelec,dnorfl,(densfl(i),i=1,8)
 close(6)
-stop
+return
 145  format(3f6.3,i5)
-193  format(9x,6henergy,7x,9helectrons,6x,9htotal dos,11x,1hs,14x, &
-  1hp,14x,4hdt2g,14x,3hdeg  //)
+193  format(/,'Fermi energy   Electrons   Total DOS   Fe-s   Fe-p   Fe- &
+  xy   Fe-xz   Fe-3r^2-z^2   Fe-x^2-y^2   Se-s   Se-p',//)
 839  format(2f10.5   ,3x,7f10.5//)
 841  format(//65x,11h (per spin)  )
 1001 format(f13.10)
@@ -251,6 +253,7 @@ stop
 1003 format(6d15.5)
 1006 format(10x,f15.8,i10)
 1015 format(5x,i5,8f15.8,f10.6)
+1016 format(10X,8f15.8,f10.6)
 1030 format(//1x,f9.5,4f12.8,10x, f10.5//)
 1210 format(2x,i5,8f14.9)
 1211 format(2x,i5,8f14.9,I5)
@@ -261,8 +264,9 @@ stop
 3010 format(20x,' printing of --- energy --complex sigs  ---- complex &
  sigp'///)
 3030 format(24x,f10.4,4f15.8)
-3050 format(10x,'  s-si,psi,s-h,p-h,tot-dos,numel',///)
-3070 format(2x,13f10.4,1x,i5)
+3050 format(10x,'Energy, Fe-s, Fe-p(x,y,z), Fe-d(xz,yz), Fe-d(xz), Fe- &
+  d(3r^2-z^2), Fe-d(x^2-y^2), Se-s, Se-p(x,y,z), Total DOS, iteration',/)
+3070 format(2x,10f10.4,1x,i5)
 3077 format(5e15.8)
 3078 format(4x,5f10.4,1x,i5)
 4000 format(5e15.8)

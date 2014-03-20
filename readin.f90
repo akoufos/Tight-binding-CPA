@@ -20,7 +20,7 @@ common /d7/ cr, ci
 integer(4) :: i
 integer(4), intent(out) :: nd
 real(8) :: con, del, epiv, eps, es, ep, emin, emax, sagsr1, sagsi1, &
-  sagpr1, sagpi1, ons(natom(2),nse), cr, ci
+  sagpr1, sagpi1, ons(natom(2),sec), cr, ci
 real(8), intent(out) :: ne
 character(len=1) :: a(50)
 open(5,file='cpaper.dat',blank='zero')
@@ -28,7 +28,7 @@ read(5,1000) (a(i),i=1,50)
 write(6,1000) (a(i),i=1,50)
 read (5,*) nd,ne,cr,ci
 write(6,1001) nd,ne,cr,ci
-do i = 1, nse
+do i = 1, sec
   read(5,*)ons(1,i), ons(2,i)
 end do
 write(6,1007)
@@ -53,6 +53,6 @@ return
 1005 format(//'eps= ',F15.6,10X,'k-points: ',i5//)
 1006 format(//,'Convergence criterion (real and imaginary)'/,2F15.9,//)
 1007 format(//,'Onsite parameters of Selenium',/)
-1008 format(2((4F12.8,1X),/))
+1008 format(2(4(9F12.8,1X),/))
 1009 format(//,'Onsite parameters of Tellurium',/)
 end subroutine readin
