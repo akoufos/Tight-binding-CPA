@@ -29,7 +29,7 @@ subroutine mainn()
 ! and most of the initialization.
 !--------------------------------------------------------------------------
 ! Variables:
-! con - Concentration, x, of Se (FeSe_[1-x]Te_x)
+! con - Concentration, x, of Se (FeSe_xTe_[1-x])
 ! convr/convi - Real and imaginary convergence criterion for Green's function
   ! self consistency, respectively
 ! del - Temperature broadening ?
@@ -37,7 +37,6 @@ subroutine mainn()
 ! eps - Imaginary part of energy shift ?
 ! emax/emin - Maximum and minimum of energy window, respectively
 ! grn - Green's function matrix
-! numit - Maximum interations of self-consistent cyle
 ! sag**1 - Real and imaginary parts, respectively, of s & p initial onsite
   ! parameters (should be average between two substitution atoms)
 ! sig** - Real and imaginary parts, respectively, of s & p self-energies 
@@ -53,26 +52,22 @@ common /d4/ hmz, vst
 common /d5/ dels, delp
 common /d7/ convr, convi
 integer(4) :: i, l, ll, i3, i4
-integer(4) :: irep, iss, iss1, itop, ixyz, l9, m, mchk, mc, mcm, mcount, &
-  msig, n, nchk, ndim, nmode, ns, num99
+integer(4) :: iss, iss1, itop, ixyz, l9, m, mchk, mc, mcm, mcount, &
+  n, nchk, ndim, nmode, num99
 integer(4), parameter :: numit = 100
-real(8) :: con, convr, convi, del, delsi1, delsr1, &
-  delpi1, delpr1, dnorfl, e, efl, emax, emin, &
-  epiv, eps, interp, nuelec, s, sagpi1, sagpr1, sagsi1, sagsr1, totvol, &
+real(8) :: con, convr, convi, del, dnorfl, e, efl, emax, emin, epiv, &
+  eps, interp, nuelec, s, sagpi1, sagpr1, sagsi1, sagsr1, totvol, &
   dos(sec+1)
 real(8) :: res(2000,sec), anumel(2000), dumm(2000), edum(2000), &
   dums1(2000), dump1(2000), dums2(2000), dump2(2000), dumxz(2000), &
-  dumxy(2000), dum3r(2000), dumx2(2000), densfl(10), sigpr(6), sigpi(6), &
-  sigsr(2), sigsi(2), weight(jsz), qq(jsz,3), hmz(jsz,sec,sec), &
-  vst(jsz,sec,sec)
+  dumxy(2000), dum3r(2000), dumx2(2000), densfl(10), weight(jsz), &
+  qq(jsz,3), hmz(jsz,sec,sec), vst(jsz,sec,sec)
 real(8), parameter :: dsig = 1.0d-4
-complex(8) :: cpas, cpap, cpbs, cpbp, cpcs, cpcp, dsigs, dsigp, dels(2), &
-  delp(6), ham(jsz,sec,sec), grn(sec,sec), sig(nse), z(2), &
-  sags(2), sagp(6), dels1(2), delp1(6)
+complex(8) :: dels(2), delp(6), ham(jsz,sec,sec), grn(sec,sec), &
+  sig(nse), sags(2), sagp(6), dels1(2), delp1(6)
 verbose = .false.
 open(6,file='cpaper.out',blank='zero')
 nchk = 0
-ns = jsz
 totvol = 0.0d0
 call readin(ndim, nuelec)
 call kpts(jsz,qq,weight,totvol)
@@ -99,14 +94,24 @@ do ixyz = iss1, 2000
   end do
 verbose = .true.
   call cpaNR(ham,weight,totvol,e,eps,dels1,delp1,mchk,numit)
-  STOP
+verbose = .false.
+  do i = 1, 4
+    if(i.eq.1) then
+      sags(1) = sig(1)
+      sags(2) = sig(5)
+    else
+      sagp(i-1) = sig(i)
+      sagp(i+2) = sig(i+4)
+    end if
+  end do
+! STOP
   if (mchk.eq.1) goto 9991
   write(6,5004)e
   goto 870 
   nchk = nchk + 1
   goto 1111
   9991 continue
-  write(6,1015)n,sigsr(1),sigsi(1),(sigpr(i),sigpi(i),i=1,3),e
+  write(6,1015)n,(sig(i),i=1,4),e
   ham(:,:,:) = cmplx(-hmz(:,:,:),-vst(:,:,:),8)
   if (verbose) print 11111, ham(1,:,:)
 11111 format(36(2(F10.6,1X)))
@@ -122,10 +127,10 @@ verbose = .true.
   call cpaDOS(dos,ham,weight,totvol)
 870 continue
   res(ixyz,1) = e
-  res(ixyz,2) = sigsr(1)
-  res(ixyz,3) = sigsi(1)
-  res(ixyz,4) = sigpr(1)
-  res(ixyz,5) = sigpi(1)
+  res(ixyz,2) = dble(sig(1))
+  res(ixyz,3) = aimag(sig(1))
+  res(ixyz,4) = dble(sig(2))
+  res(ixyz,5) = aimag(sig(2))
   res(ixyz,6) = dos(1) + dos(10)
   res(ixyz,7) = sum(dos(2:4)) + sum(dos(11:13))
   res(ixyz,8) = sum(dos(5:6)) + sum(dos(14:15))
@@ -135,7 +140,7 @@ verbose = .true.
   res(ixyz,12) = dos(19) + dos(28)
   res(ixyz,13) = sum(dos(20:22)) + sum(dos(29:31))
   res(ixyz,14) = dos(sec+1)
-  write(6,1030)e,sigsr(1),sigsi(1),sigpr(1),sigpi(1),dos(sec+1)
+  write(6,1030)e,sig(1),sig(2),dos(sec+1)
   if(nmode.eq.2) goto 51
   e = e + del
   if(e.le.emax) cycle ! next iteration of ixyz loop

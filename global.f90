@@ -26,4 +26,5 @@ integer(4), parameter :: nse = 4*natom(2) ! s(1) + p(3) for each Se/Te
 integer(4), parameter :: sec = 9*2*2 !sum(natom) ! 9 (s(1) + p(3) + d(5))
 logical :: verbose
 real(8), parameter :: pi = 4.0d0*datan(1.0d0), pp = 1.0d0/pi
+real(8), parameter :: small = 1.0d-20
 end module global
