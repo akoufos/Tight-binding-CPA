@@ -8,6 +8,7 @@ integer(4), intent(in) :: nx
 real(8) :: delx
 real(8), intent(in) :: fx(2000), xx(2000)
 real(8), intent(out) :: ax(2000)
+if (verbose) print 1000
 delx = xx(2) - xx(1)
 ax(1) = 0.0d0
 do ix = 2, nx, 2
@@ -22,5 +23,8 @@ do ix = 2, nx, 2
       ax(ix+1) = delx*(fx(ix-1)+4.0d0*fx(ix)+fx(ix+1))/3.0d0 + ax(ix-1)
    end select
 end do
+if (verbose) print 1001
 return
+1000 format(/,'Begin subroutine simp')
+1001 format('End simp',/)
 end subroutine simp

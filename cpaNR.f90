@@ -33,7 +33,7 @@ do n = 1, numit
   if (verbose) print 1003
   write(6,1000)n,(sig(i),i=1,4)
   write(6,1001)(sig(i),i=5,8)
-  if (verbose) then
+  if (verbose.and.vlvl.ge.1) then
     write(*,1000)n,(sig(i),i=1,4)
     write(*,1001)(sig(i),i=5,8)
   end if
@@ -41,7 +41,7 @@ do n = 1, numit
   grn(:,:) = cmplx(0.0d0,0.0d0,8)
   call greens(ham,wt,tot,e,eps)
   call crete(dels,delp)
-  if(verbose) print 1002, dels, delp
+  if(verbose.and.vlvl.ge.1) print 1002, dels, delp
   if (abs(dble(dels(1))).le.cr.or.abs(aimag(dels(1))).le.ci.or. &
       abs(dble(dels(2))).le.cr.or.abs(aimag(dels(2))).le.ci.or. &
       abs(dble(delp(1))).le.cr.or.abs(aimag(delp(1))).le.ci.or. &
@@ -51,13 +51,13 @@ do n = 1, numit
       abs(dble(delp(5))).le.cr.or.abs(aimag(delp(5))).le.ci.or. &
       abs(dble(delp(6))).le.cr.or.abs(aimag(delp(6))).le.ci) then
     mchk = 1
-    if (verbose) print *,"Didn't you just converge???"
+    if (verbose.and.vlvl.ge.2) print *,"Didn't you just converge???"
     do i = 1, nse
       if(aimag(sig(i)).gt.1.0d-20) then 
         irep = 1
         sig(i) = cmplx(dble(sig(i)),-aimag(sig(i)),8)
-        if (verbose) print *,"Yeah, but ",aimag(sig(i))," of ",i," is &
-          greater than zero"
+        if (verbose.and.vlvl.ge.2) print *,"Yeah, but ",aimag(sig(i)), &
+          " of ",i," is greater than zero"
       end if
     end do
   else
@@ -71,6 +71,6 @@ return
 1000 format(2X,I5,8F14.9)
 1001 format(7X,8F14.9)
 1002 format(4(2(F12.8,1X)))
-1003 format('SUBROUTINE CPANR',/)
-1004 format('END SUBROUTINE CPANR',/)
+1003 format(/,'Begin subroutine cpaNR')
+1004 format('End cpaNR',/)
 end subroutine cpaNR

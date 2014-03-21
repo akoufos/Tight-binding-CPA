@@ -9,7 +9,8 @@ module global
   ! be given alphabetical order; i.e. UPd2Al3 should be (3,2,1))
 ! nse - Number of self energies
 ! sec - Number of secular equations
-! verbose - Used for debug information to screen
+! verbose - Logical for debugging flags (.true. = debug info on)
+! vlvl - Level of debugging verboseness
 !-------------------------------------------------------------------------
 ! Notes for future release:
 !
@@ -19,6 +20,7 @@ module global
 ! to modify the code for more than just the FeSe/Te system.
 !--------------------------------------------------------------------------
 implicit none
+integer(4) :: vlvl
 integer(4), parameter :: jsz = 904 ! From TB band calculation
 integer(4), parameter :: ntype = 2 ! Fe & Se
 integer(4), parameter :: natom(ntype) = (/ 2, 2 /) ! Fe = 2 , Se/Te = 2

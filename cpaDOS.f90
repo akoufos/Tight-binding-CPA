@@ -28,8 +28,11 @@ Se(:,:) = (0.0d0,0.0d0)
 Te(:,:) = (0.0d0,0.0d0)
 Sigma(:,:) = (0.0d0,0.0d0)
 ham(:,:,:) = cmplx(-hmz(:,:,:),-vst(:,:,:),8)
-if (verbose) print*, 'ham:'
-if (verbose) print 1003, transpose(ham(1,:,:))
+if (verbose.and.vlvl.ge.3) then
+  print*, 'ham:'
+  print 1003, transpose(ham(1,:,:))
+end if
+!H(:,:,:) = ham(:,:,:)
 do l = 1, sec
   ham(:,l,l) = ham(:,l,l) + cmplx(e,eps)
 end do
@@ -43,14 +46,16 @@ do l = 19, 22
 end do
 Sigma(:,:) = Sigma(:,:) - Te(:,:)
 H(:,:,:) = ham(:,:,:)
-if (verbose) print*, 'H:'
-if (verbose) print 1003, transpose(H(1,:,:))
+if (verbose.and.vlvl.ge.3) then
+  print*, 'H:'
+  print 1003, transpose(H(1,:,:))
+end if
 do l = 1, sec
   Se(l,l) = cmplx(ons(1,l),0.0d0,8)
   Te(l,l) = cmplx(ons(2,l),0.0d0,8)
 end do
 do i = 1, jsz
-  call cmplxInv(H(i,:,:),sec,verbose)
+  call cmplxInv(H(i,:,:),sec,verbose,vlvl)
   gr(:,:) = dble(H(i,:,:))
   gi(:,:) = aimag(H(i,:,:))
   gsig = matmul(gi,Sigma)
@@ -64,8 +69,10 @@ do i = 1, jsz
 end do
 !dos(sec+1) = sum(dos(1:sec))
 verbose = .true.
-if (verbose) print 1001, dos(:)
-if (verbose) print 1001, sum(dos(:sec))
+if (verbose.and.vlvl.ge.1) then
+  print 1001, dos(:)
+  print 1001, sum(dos(:sec))
+end if
 if (verbose) print 1002
 1000 format(/,'Start subroutine cpaDOS')
 1001 format('DOS:',/,37F10.6)

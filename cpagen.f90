@@ -6,6 +6,8 @@ program cpagen
 use omp_lib
 use global
 implicit none
+vlvl = 0
+verbose = .false.
 call mainn()
 write(*,1000)
 stop

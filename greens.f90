@@ -21,11 +21,12 @@ real(8) :: hmz(jsz,sec,sec), vst(jsz,sec,sec)
 real(8), intent(in) :: wt(jsz), tot, e, eps
 complex(8) :: sig(nse), grn(sec,sec)
 complex(8), intent(out) :: ham(jsz,sec,sec)
+if (verbose) print 1001
 ham(:,:,:) = cmplx(-hmz(:,:,:),-vst(:,:,:),8)
 do l = 1, sec
   ham(:,l,l) = ham(:,l,l) + cmplx(e,eps)
 end do
-if (verbose) print 1000, ham(1,:,:)
+if (verbose.and.vlvl.ge.2) print 1000, ham(1,:,:)
 do i = 1, jsz
 ! this loop is only for Se/Te s & p disorder (currently)
   do i1 = 19, 22
@@ -33,7 +34,7 @@ do i = 1, jsz
     ham(i,i1,i1) = ham(i,i1,i1) - sig(i1-18)
     ham(i,i2,i2) = ham(i,i2,i2) - sig(i2-23)
   end do
-  call cmplxInv(ham(i,:,:),sec,verbose)
+  call cmplxInv(ham(i,:,:),sec,verbose,vlvl)
 ! this loop is only for Se/Te s & p disorder (currently)
   do i1 = 19, 22
     i2 = i1 + 9
@@ -42,7 +43,10 @@ do i = 1, jsz
   end do
 end do
 grn(:,:) = grn(:,:)/tot
-if (verbose) print 1000, grn
+if (verbose.and.vlvl.ge.1) print 1000, grn
+if (verbose) print 1002
 return
 1000 format(36(2(F10.6,1X)))
+1001 format(/,'Begin subroutine greens')
+1002 format('End greens',/)
 end subroutine greens

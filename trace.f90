@@ -15,8 +15,8 @@ complex(8), intent(in) :: A(n,n)
 complex(8), intent(out) :: t
 logical :: verbose
 character(len=100) :: f1000
-if (verbose) then
-  print 1000
+if (verbose) print 1000
+if (verbose.and.vlvl.gt.3) then
   write(f1000,"(A,I1,A)") "(",n,"(2(F10.5,1X)))"
   print *, 'A: '
   print f1000, transpose(A)
@@ -26,6 +26,7 @@ do i = 1, n
   ti = ti + aimag(A(i,i))
 end do
 t = cmplx(tr,ti,8)
+if (verbose) print 1001
 return
 1000 format(/,'Begin subroutine trace')
 1001 format('End trace',/)

@@ -65,7 +65,7 @@ real(8) :: res(2000,sec), anumel(2000), dumm(2000), edum(2000), &
 real(8), parameter :: dsig = 1.0d-4
 complex(8) :: dels(2), delp(6), ham(jsz,sec,sec), grn(sec,sec), &
   sig(nse), sags(2), sagp(6), dels1(2), delp1(6)
-verbose = .false.
+if (verbose) print 1000
 open(6,file='cpaper.out',blank='zero')
 nchk = 0
 totvol = 0.0d0
@@ -102,7 +102,6 @@ do ixyz = iss1, 2000
       sagp(i+2) = sig(i+4)
     end if
   end do
-! STOP
   if (mchk.eq.1) goto 9991
   write(6,5004)e
   goto 870 
@@ -123,10 +122,7 @@ do ixyz = iss1, 2000
 !    ham(:,i4,i4) = ham(:,i4,i4) - sig(i4-18)
 !    ham(:,i3,i3) = ham(:,i3,i3) - sig(i3-23)
 !  end do
-verbose = .true.
   call cpaDOS(dos,weight,totvol,e,eps)
-STOP
-verbose = .false.
 870 continue
   res(ixyz,1) = e
   res(ixyz,2) = dble(sig(1))
@@ -242,15 +238,18 @@ densfl(8) = interp(s,anumel,dump2(1),mcm,2)/2.0d0
 write(6,193)
 write(6,839)efl,nuelec,dnorfl,(densfl(i),i=1,8)
 close(6)
+if (verbose) print 1004
 return
 145  format(3f6.3,i5)
 193  format(/,'Fermi energy   Electrons   Total DOS   Fe-s   Fe-p   Fe- &
   xy   Fe-xz   Fe-3r^2-z^2   Fe-x^2-y^2   Se-s   Se-p',//)
 839  format(2f10.5   ,3x,7f10.5//)
 841  format(//65x,11h (per spin)  )
+1000 format(/,'Begin subroutine mainn')
 1001 format(f13.10)
 1002 format(i5,3f10.5)
 1003 format(6d15.5)
+1004 format('End mainn',/)
 1006 format(10x,f15.8,i10)
 1015 format(5x,i5,8f15.8,f10.6)
 1016 format(10X,8f15.8,f10.6)

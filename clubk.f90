@@ -1,4 +1,4 @@
-subroutine clubk(A, n, piv, b, verbose)
+subroutine clubk(A, n, piv, b, verbose, vlvl)
 !--------------------------------------------------------------------------
 ! Solves A*x = b with partial pivoting from Crout's LU [(P*L)*U = P*A]
 !--------------------------------------------------------------------------
@@ -12,15 +12,18 @@ subroutine clubk(A, n, piv, b, verbose)
 ! y(n) - (U*x = y)
 ! x(n) - Working vector (b will equal x at the end)
 ! b(n) - Input and solution of A*x = b [(P*L)*y = b]
+! verbose - Logical for debugging flags (.true. = debug info on)
+! vlvl - Level of debugging verboseness
 !--------------------------------------------------------------------------
 implicit none
 integer(4) :: i, j, P(n,n)
-integer(4), intent(in) :: n, piv(n)
+integer(4), intent(in) :: n, piv(n), vlvl
 logical, intent(in) :: verbose
 complex(8) :: L(n,n), U(n,n), y(n), x(n)
 complex(8), intent(in) :: A(n,n)
 complex(8), intent(inout) :: b(n)
 character(len=100) :: f1000
+if (verbose) print 1000
 P = 0; L = 0.0d0; U = 0.0d0; x = 0.0d0; y = 0.0d0
 do i = 1, n
   P(i,i) = 1
@@ -34,7 +37,7 @@ do i = 1, n
 end do
 P(:,piv) = P
 b = matmul(dble(P),b)
-if (verbose) then
+if (verbose.and.vlvl.ge.3) then
   write(f1000,"(A,I1,A)") "(",n,"(2(F10.5,1X)))"
   print *, 'P'
   print f1000, transpose(dble(P))
@@ -52,7 +55,7 @@ do i = 2, n
     y(i) = y(i) - L(i,j)*y(j)/L(i,i)
   end do
 end do
-if (verbose) then
+if (verbose.and.vlvl.ge.2) then
   print *, 'y'
   print 1001, y 
 end if
@@ -63,10 +66,13 @@ do i = n-1, 1, -1
     x(i) = x(i) - U(i,j)*x(j)/U(i,i)
   end do
 end do
-if (verbose) then
+if (verbose.and.vlvl.ge.1) then
   print *, 'x'
   print 1001, x
 end if
 b = x
+if (verbose) print 1002
+1000 format(/,'Begin subroutine clubk')
 1001 format(2F10.5)
+1002 format('End clubk',/)
 end subroutine clubk

@@ -47,7 +47,7 @@ end do
 !  Te(l,l) = cmplx(ons(2,l),0.0d0,8)
 !end do
 eps(:,:) = con*(Se(:,:)-Te(:,:)) + Te(:,:)
-if(verbose) print 1001, sig
+if(verbose.and.vlvl.ge.1) print 1001, sig
 ge(1,1) = grn(19,19)
 ge(2,2) = grn(20,20)
 ge(3,3) = grn(21,21)
@@ -77,15 +77,15 @@ delp(3) = sig(4) - term(4,4)
 delp(4) = sig(6) - term(6,6)
 delp(5) = sig(7) - term(7,7)
 delp(6) = sig(8) - term(8,8)
-if(verbose) print 1002, dels, delp
+if(verbose.and.vlvl.ge.1) print 1002, dels, delp
 do l = 1, nse
   sig(l) = term(l,l)
 end do
-if(verbose) print 1001, sig
+if(verbose.and.vlvl.ge.1) print 1001, sig
 if(verbose) print 1003
 return
-1000 format('SUBROUTINE CRETE',/)
+1000 format(/,'Begin subroutine crete')
 1001 format('Sigma: ',4(2(F10.6,1X)))
 1002 format('Delta sig:',4(2(F10.6,1X)))
-1003 format('END SUBROUTINE CRETE',/)
+1003 format('End crete',/)
 end subroutine crete

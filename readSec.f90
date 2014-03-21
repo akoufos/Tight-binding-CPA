@@ -11,6 +11,7 @@ use global
 implicit none
 integer(4) :: i, j, k
 real(8), intent(out) :: h(jsz,sec,sec), g(jsz,sec,sec)
+if (verbose) print 1001
 g(:,:,:) = 0.0d0; h(:,:,:) = 0.0d0
 open(16,file='cpamat.dat',blank='zero')
 do i = 1, jsz
@@ -32,6 +33,9 @@ do i = 1, jsz
 end do
 !$OMP END PARALLEL DO
 close(16)
+if (verbose) print 1002
 return
 1000 format(18X,2F15.10)
+1001 format(/,'Begin subroutine readSec')
+1002 format('End readSec',/)
 end subroutine
