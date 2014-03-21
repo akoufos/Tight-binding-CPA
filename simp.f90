@@ -1,10 +1,15 @@
-subroutine simp(xx,fx,ax,nx)
+subroutine simp(xx, fx, ax, nx, verbose, vlvl)
 !--------------------------------------------------------------------------
 ! Need to verify the purpose of this subroutine.
 !--------------------------------------------------------------------------
+! Variables:
+! verbose - Logical for debugging flags (.true. = debug info on)
+! vlvl - Level of debugging verboseness
+!--------------------------------------------------------------------------
 implicit none
 integer(4) :: ix
-integer(4), intent(in) :: nx
+integer(4), intent(in) :: nx, vlvl
+logical :: verbose
 real(8) :: delx
 real(8), intent(in) :: fx(2000), xx(2000)
 real(8), intent(out) :: ax(2000)

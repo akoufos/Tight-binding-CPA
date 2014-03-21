@@ -18,11 +18,10 @@ integer(4) :: i, l, l1
 real(8) :: ons(natom(2),sec), gr(sec,sec), gi(sec,sec), &
   hmz(jsz,sec,sec), vst(jsz,sec,sec), gsig(sec,sec)
 real(8), intent(in) :: w(jsz), tot, e, eps
-real(8), intent(out) :: dos(sec+1) ! total & decomposed DOS
+real(8), intent(out) :: dos(sec+1)
 complex(8) :: H(jsz,sec,sec), Se(sec,sec), Te(sec,sec), grn(sec,sec), &
   sig(nse), Sigma(sec,sec), ham(jsz,sec,sec), tr
 if (verbose) print 1000
-verbose = .false.
 dos(:) = 0.0d0
 Se(:,:) = (0.0d0,0.0d0)
 Te(:,:) = (0.0d0,0.0d0)
@@ -68,7 +67,6 @@ do i = 1, jsz
 ! dos(sec+1) = dos(sec+1) - pp*w(i)/tot*aimag(tr)
 end do
 !dos(sec+1) = sum(dos(1:sec))
-verbose = .true.
 if (verbose.and.vlvl.ge.1) then
   print 1001, dos(:)
   print 1001, sum(dos(:sec))

@@ -35,7 +35,7 @@ if (verbose.and.vlvl.ge.2) then
   print f1000, transpose(AA)
 end if
 ! Now use the PLU decomposition to solve for the inverse of A by columns
-call clubk(AA,n,p,b,verbose)
+call clubk(AA,n,p,b,verbose,vlvl)
 if (verbose.and.vlvl.ge.1) then
   print *, 'Solution of A*x=b'
   print 1001, b

@@ -58,7 +58,7 @@ if (verbose.and.vlvl.ge.2) then
 end if
 if (verbose) print 1021
 return
-1000 format('Title',/,50A1)
+1000 format(50A1)
 1001 format(I5,5X,3F10.7)
 1002 format(2F9.5)
 1003 format(2F15.10)
@@ -66,8 +66,8 @@ return
 1005 format(//'eps= ',F15.6,10X,'k-points: ',i5//)
 1006 format(//,'Convergence criterion (real and imaginary)'/,2F15.9,//)
 1007 format(//,'Onsite parameters of Selenium',/)
-1008 format(2(4(9F12.8,1X),/))
+1008 format(4((9F12.8,1X),/))
 1009 format(//,'Onsite parameters of Tellurium',/)
 1020 format(/,'Begin subroutine readin')
-1021 format('End readin'./)
+1021 format('End readin',/)
 end subroutine readin

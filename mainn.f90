@@ -51,7 +51,7 @@ common /d3/ sig, grn
 common /d4/ hmz, vst
 common /d5/ dels, delp
 common /d7/ convr, convi
-integer(4) :: i, l, ll, i3, i4
+integer(4) :: i, l, ll
 integer(4) :: iss, iss1, itop, ixyz, l9, m, mchk, mc, mcm, mcount, &
   n, nchk, ndim, nmode, num99
 integer(4), parameter :: numit = 100
@@ -64,7 +64,7 @@ real(8) :: res(2000,sec), anumel(2000), dumm(2000), edum(2000), &
   qq(jsz,3), hmz(jsz,sec,sec), vst(jsz,sec,sec)
 real(8), parameter :: dsig = 1.0d-4
 complex(8) :: dels(2), delp(6), ham(jsz,sec,sec), grn(sec,sec), &
-  sig(nse), sags(2), sagp(6), dels1(2), delp1(6)
+  sig(nse), sags(2), sagp(6), del1
 if (verbose) print 1000
 open(6,file='cpaper.out',blank='zero')
 nchk = 0
@@ -80,8 +80,7 @@ if(nchk.eq.0) nmode = 1
 if(nchk.eq.1) nmode = 2
 if(nchk.eq.1) epiv = epiv - del
 e = epiv
-dels1(:) = cmplx(dsig,dsig,8)
-delp1(:) = cmplx(dsig,dsig,8)
+del1 = cmplx(dsig,dsig,8)
 do ixyz = iss1, 2000
   do i = 1, 4
     if(i.eq.1) then
@@ -92,7 +91,7 @@ do ixyz = iss1, 2000
       sig(i+4) = sagp(i+2)
     end if
   end do
-  call cpaNR(ham,weight,totvol,e,eps,dels1,delp1,mchk,numit)
+  call cpaNR(ham,weight,totvol,e,eps,del1,mchk,numit)
   do i = 1, 4
     if(i.eq.1) then
       sags(1) = sig(1)
@@ -110,18 +109,6 @@ do ixyz = iss1, 2000
   9991 continue
   write(6,1015)n,(sig(i),i=1,4),e
   write(6,1016)  (sig(i),i=5,8),e
-!  ham(:,:,:) = cmplx(-hmz(:,:,:),-vst(:,:,:),8)
-!  if (verbose) print 11111, ham(1,:,:)
-!11111 format(36(2(F10.6,1X)))
-!  do l = 1, ndim
-!    ham(:,l,l) = ham(:,l,l) + cmplx(e,eps)
-!  end do
-!! this loop is only for Se/Te s & p disorder
-!  do i4 = 19, 22
-!    i3 = i4 + 9
-!    ham(:,i4,i4) = ham(:,i4,i4) - sig(i4-18)
-!    ham(:,i3,i3) = ham(:,i3,i3) - sig(i3-23)
-!  end do
   call cpaDOS(dos,weight,totvol,e,eps)
 870 continue
   res(ixyz,1) = e
@@ -186,7 +173,7 @@ do l = 1, iss
   write(6,3030)(res(l,m),m=1,5)
 end do
 num99 = itop - 1
-call simp(edum,dumm,anumel,num99)
+call simp(edum,dumm,anumel,num99,verbose,vlvl)
 anumel(1) = 0.0d0
 anumel(itop) = anumel(num99) + res(iss,10)*del*2.0d0 ! was dums2
 write(6,3000)

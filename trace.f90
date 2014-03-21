@@ -1,4 +1,4 @@
-subroutine trace(A,n,t,verbose)
+subroutine trace(A, n, t, verbose, vlvl)
 !--------------------------------------------------------------------------
 ! Finds the trace of a square complex matrix.
 !--------------------------------------------------------------------------
@@ -9,7 +9,7 @@ subroutine trace(A,n,t,verbose)
 !--------------------------------------------------------------------------
 implicit none
 integer(4) :: i
-integer(4), intent(in) :: n
+integer(4), intent(in) :: n, vlvl
 real(8) :: tr, ti
 complex(8), intent(in) :: A(n,n)
 complex(8), intent(out) :: t
