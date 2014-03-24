@@ -42,10 +42,6 @@ do l = 19, 22
   Se(l3,l3) = cmplx(ons(1,l1),0.0d0,8)
   Te(l3,l3) = cmplx(ons(2,l1),0.0d0,8)
 end do
-!do l = 1, nse
-!  Se(l,l) = cmplx(ons(1,l),0.0d0,8)
-!  Te(l,l) = cmplx(ons(2,l),0.0d0,8)
-!end do
 eps(:,:) = con*(Se(:,:)-Te(:,:)) + Te(:,:)
 if(verbose.and.vlvl.ge.1) print 1001, sig
 ge(1,1) = grn(19,19)

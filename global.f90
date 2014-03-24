@@ -21,7 +21,7 @@ module global
 !--------------------------------------------------------------------------
 implicit none
 integer(4) :: vlvl
-integer(4), parameter :: jsz = 904 ! From TB band calculation
+integer(4), parameter :: jsz = 75 ! From TB band calculation
 integer(4), parameter :: ntype = 2 ! Fe & Se
 integer(4), parameter :: natom(ntype) = (/ 2, 2 /) ! Fe = 2 , Se/Te = 2
 integer(4), parameter :: nse = 4*natom(2) ! s(1) + p(3) for each Se/Te

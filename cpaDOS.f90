@@ -31,10 +31,10 @@ if (verbose.and.vlvl.ge.3) then
   print*, 'ham:'
   print 1003, transpose(ham(1,:,:))
 end if
-!H(:,:,:) = ham(:,:,:)
 do l = 1, sec
   ham(:,l,l) = ham(:,l,l) + cmplx(e,eps)
 end do
+H(:,:,:) = ham(:,:,:)
 ! this loop is only for Se/Te s & p disorder
 do l = 19, 22
   l1 = l + 9
@@ -44,7 +44,7 @@ do l = 19, 22
   Sigma(l1,l1) = sig(l1-23)
 end do
 Sigma(:,:) = Sigma(:,:) - Te(:,:)
-H(:,:,:) = ham(:,:,:)
+!H(:,:,:) = ham(:,:,:)
 if (verbose.and.vlvl.ge.3) then
   print*, 'H:'
   print 1003, transpose(H(1,:,:))

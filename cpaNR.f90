@@ -9,11 +9,11 @@ subroutine cpaNR(ham,wt,tot,e,eps,del1,mchk,numit)
 ! ham(jsz,sec,sec) - Hamiltonian of the system
 ! wt(jsz) - Weights at each k-point in the Brillouin zone
 ! tot - Total weight from all k-points
-! e - 
-! eps - 
+! e - Current energy level
+! eps - Imaginary energy temperature broadening value
 ! dels(2) - Change in the self-energies of the disordered s states
 ! delp(6) - Change in the self-energies of the disordered p states
-! mchk - 
+! mchk - Flag to specify whether routine converged or not
 ! numit - Maximum number of iterations for the procedure
 !--------------------------------------------------------------------------
 use global
@@ -40,29 +40,40 @@ do n = 1, numit
   mchk = 0; irep = 0
   grn(:,:) = cmplx(0.0d0,0.0d0,8)
   call greens(ham,wt,tot,e,eps)
+!  if (n.eq.1) sig(:) = sig(:) + del1
   call crete(dels,delp)
+verbose = .true.; vlvl = 2;
   if(verbose.and.vlvl.ge.1) print 1002, dels, delp
-  if (abs(dble(dels(1))).le.cr.or.abs(aimag(dels(1))).le.ci.or. &
-      abs(dble(dels(2))).le.cr.or.abs(aimag(dels(2))).le.ci.or. &
-      abs(dble(delp(1))).le.cr.or.abs(aimag(delp(1))).le.ci.or. &
-      abs(dble(delp(2))).le.cr.or.abs(aimag(delp(2))).le.ci.or. &
-      abs(dble(delp(3))).le.cr.or.abs(aimag(delp(3))).le.ci.or. &
-      abs(dble(delp(4))).le.cr.or.abs(aimag(delp(4))).le.ci.or. &
-      abs(dble(delp(5))).le.cr.or.abs(aimag(delp(5))).le.ci.or. &
-      abs(dble(delp(6))).le.cr.or.abs(aimag(delp(6))).le.ci) then
+  if (abs(dble(dels(1))).le.cr.and.abs(aimag(dels(1))).le.ci.and. &
+      abs(dble(dels(2))).le.cr.and.abs(aimag(dels(2))).le.ci.and. &
+      abs(dble(delp(1))).le.cr.and.abs(aimag(delp(1))).le.ci.and. &
+      abs(dble(delp(2))).le.cr.and.abs(aimag(delp(2))).le.ci.and. &
+      abs(dble(delp(3))).le.cr.and.abs(aimag(delp(3))).le.ci.and. &
+      abs(dble(delp(4))).le.cr.and.abs(aimag(delp(4))).le.ci.and. &
+      abs(dble(delp(5))).le.cr.and.abs(aimag(delp(5))).le.ci.and. &
+      abs(dble(delp(6))).le.cr.and.abs(aimag(delp(6))).le.ci) then
     mchk = 1
-    if (verbose.and.vlvl.ge.2) print *,"Didn't you just converge???"
+    if (verbose.and.vlvl.ge.2) print 1005
     do i = 1, nse
       if(aimag(sig(i)).gt.1.0d-20) then 
         irep = 1
         sig(i) = cmplx(dble(sig(i)),-aimag(sig(i)),8)
-        if (verbose.and.vlvl.ge.2) print *,"Yeah, but ",aimag(sig(i)), &
-          " of ",i," is greater than zero"
+        if (verbose.and.vlvl.ge.2) print 1006, i,abs(aimag(sig(i)))
+      else
+        if (verbose.and.vlvl.ge.2.and.i.eq.1) print 1007
       end if
     end do
   else
-     sig(:) = sig(:) + del1
+     sig(1) = sig(1) + del1*dels(1)
+     sig(5) = sig(5) + del1*dels(2)
+     sig(2) = sig(2) + del1*delp(1)
+     sig(3) = sig(3) + del1*delp(2)
+     sig(4) = sig(4) + del1*delp(3)
+     sig(6) = sig(6) + del1*delp(4)
+     sig(7) = sig(7) + del1*delp(5)
+     sig(8) = sig(8) + del1*delp(6)
   end if
+verbose = .false.; vlvl = 2;
   if (irep.eq.1) cycle
   if (mchk.eq.1) exit
 end do
@@ -73,4 +84,8 @@ return
 1002 format(4(2(F12.8,1X)))
 1003 format(/,'Begin subroutine cpaNR')
 1004 format('End cpaNR',/)
+1005 format("Didn't you just converge?")
+1006 format("Yes, but |imaginary[sig(",I2,")]| is greater than zero. ", &
+  E15.8)
+1007 format("Yes, you are correct")
 end subroutine cpaNR
