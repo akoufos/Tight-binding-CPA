@@ -58,7 +58,7 @@ integer(4), parameter :: numit = 100
 real(8) :: con, convr, convi, del, dnorfl, e, efl, emax, emin, epiv, &
   eps, interp, nuelec, s, sagpi1, sagpr1, sagsi1, sagsr1, totvol, &
   dos(sec+1)
-real(8) :: res(2000,sec), anumel(2000), dumm(2000), edum(2000), &
+real(8) :: res(2000,15), anumel(2000), dumm(2000), edum(2000), &
   dums1(2000), dump1(2000), dums2(2000), dump2(2000), dumxz(2000), &
   dumxy(2000), dum3r(2000), dumx2(2000), densfl(10), weight(jsz), &
   qq(jsz,3), hmz(jsz,sec,sec), vst(jsz,sec,sec)
@@ -175,7 +175,7 @@ end do
 num99 = itop - 1
 call simp(edum,dumm,anumel,num99,verbose,vlvl)
 anumel(1) = 0.0d0
-anumel(itop) = anumel(num99) + res(iss,10)*del*2.0d0 ! was dums2
+anumel(itop) = anumel(num99) + dums2(iss)*del*2.0d0 ! was dums2
 write(6,3000)
 write(6,3050)
 l = itop + 1
@@ -183,13 +183,13 @@ l9 = 0
 do ll = iss1, itop
   l = l - 1
   l9 = l9 + 1
-  res(l,17) = anumel(l9)
-  write(6,3070)res(l,1),(res(l,m),m=6,14),ll
+  res(l,15) = anumel(l9)
+  write(6,3070)res(l,1),(res(l,m),m=6,15),ll
 end do
 do l = 1, iss
   l9 = l9 + 1
-  res(l,17) = anumel(l9)
-  write(6,3070)res(l,1),(res(l,m),m=6,14),l
+  res(l,15) = anumel(l9)
+  write(6,3070)res(l,1),(res(l,m),m=6,15),l
 end do
 l = itop + 1
 l9 = 0
@@ -222,49 +222,27 @@ densfl(5) = interp(s,anumel,dum3r(1),mcm,2)/2.0d0
 densfl(6) = interp(s,anumel,dumx2(1),mcm,2)/2.0d0
 densfl(7) = interp(s,anumel,dums2(1),mcm,2)/2.0d0
 densfl(8) = interp(s,anumel,dump2(1),mcm,2)/2.0d0
-write(6,193)
-write(6,839)efl,nuelec,dnorfl,(densfl(i),i=1,8)
+write(6,839)
+write(6,840)efl,nuelec,dnorfl,(densfl(i),i=1,8)
 close(6)
-if (verbose) print 1004
+if (verbose) print 1001
 return
-145  format(3f6.3,i5)
-193  format(/,'Fermi energy   Electrons   Total DOS   Fe-s   Fe-p   Fe- &
+839  format(/,'Fermi energy   Electrons   Total DOS   Fe-s   Fe-p   Fe- &
   xy   Fe-xz   Fe-3r^2-z^2   Fe-x^2-y^2   Se-s   Se-p',//)
-839  format(2f10.5   ,3x,7f10.5//)
+840  format(2f10.5   ,3x,7f10.5//)
 841  format(//65x,11h (per spin)  )
 1000 format(/,'Begin subroutine mainn')
-1001 format(f13.10)
-1002 format(i5,3f10.5)
-1003 format(6d15.5)
-1004 format('End mainn',/)
-1006 format(10x,f15.8,i10)
+1001 format('End mainn',/)
 1015 format(5x,i5,8f15.8,f10.6)
 1016 format(10X,8f15.8,f10.6)
 1030 format(//1x,f9.5,4f12.8,10x, f10.5//)
-1210 format(2x,i5,8f14.9)
-1211 format(2x,i5,8f14.9,I5)
-1502 format(1x,'dels=',4e15.6)
-1946 format (1x,'converged from cpa condition')
-2468 format(5e14.6)
 3000 format(1h1,///)
 3010 format(20x,' printing of --- energy --complex sigs  ---- complex &
- sigp'///)
+  sigp'///)
 3030 format(24x,f10.4,4f15.8)
-3050 format(10x,'Energy, Fe-s, Fe-p(x,y,z), Fe-d(xz,yz), Fe-d(xz), Fe- &
-  d(3r^2-z^2), Fe-d(x^2-y^2), Se-s, Se-p(x,y,z), Total DOS, iteration',/)
-3070 format(2x,10f10.4,1x,i5)
-3077 format(5e15.8)
-3078 format(4x,5f10.4,1x,i5)
-4000 format(5e15.8)
-4002 format (5e15.8)
-4010 format(f6.3,8f9.5)
+3050 format(10x,'Energy, Fe-s, Fe-p(x,y,z), Fe-d(xz,yz), Fe-d(xz), Fe-&
+  d(3r^2-z^2), Fe-d(x^2-y^2), Se-s, Se-p(x,y,z), Total DOS, electrons, &
+  iteration',/)
+3070 format(2x,11f10.4,1x,i5)
 5004 format('   sigma didn t converge for e=',f10.4)
-7844 format (1x,'y-matrix')
-7845 format (1x,8e14.6)
-7846 format (1x,4f10.5)
-7847 format (8f10.6)
-8700 format(f15.6)
-9000 format(1h1)
-9361 format (1x,'cpa= ',6e15.6,/6e15.6)
-9362 format(1x,4e15.6,/4e15.6) 
 end subroutine mainn
