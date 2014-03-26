@@ -28,8 +28,10 @@ do ix = 2, nx, 2
       ax(ix+1) = delx*(fx(ix-1)+4.0d0*fx(ix)+fx(ix+1))/3.0d0 + ax(ix-1)
    end select
 end do
+if (verbose.and.vlvl.ge.2) print 1002, ax
 if (verbose) print 1001
 return
 1000 format(/,'Begin subroutine simp')
 1001 format('End simp',/)
+1002 format('Electrons',F10.7)
 end subroutine simp

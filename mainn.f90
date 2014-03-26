@@ -175,9 +175,11 @@ end do
 num99 = itop - 1
 call simp(edum,dumm,anumel,num99,verbose,vlvl)
 anumel(1) = 0.0d0
-anumel(itop) = anumel(num99) + dums2(iss)*del*2.0d0 ! was dums2
+anumel(itop) = anumel(num99) + dumm(iss)*del*2.0d0 ! was dums2
+open(8,file='dosdat.cpa.plot')
 write(6,3000)
 write(6,3050)
+write(8,3050)
 l = itop + 1
 l9 = 0
 do ll = iss1, itop
@@ -185,21 +187,15 @@ do ll = iss1, itop
   l9 = l9 + 1
   res(l,15) = anumel(l9)
   write(6,3070)res(l,1),(res(l,m),m=6,15),ll
+  write(8,3070)res(l,1),(res(l,m),m=6,15),ll
 end do
 do l = 1, iss
   l9 = l9 + 1
   res(l,15) = anumel(l9)
   write(6,3070)res(l,1),(res(l,m),m=6,15),l
+  write(8,3070)res(l,1),(res(l,m),m=6,15),l
 end do
-l = itop + 1
-l9 = 0
-do ll = iss1, itop
-  l = l - 1
-  l9 = l9 + 1
-end do
-do l = 1 , iss
-  l9 = l9 + 1
-end do
+close(8)
 mcount = 0
 do l = 1, itop
   if(anumel(l).gt.nuelec) then
