@@ -25,7 +25,7 @@ do i = 1, jsz
   end do
 !$OMP PARALLEL DO DEFAULT(SHARED)
   do j = 1, sec
-    do k = 1, j
+    do k = 1, sec
       g(i,j,k) = -g(i,k,j)
       h(i,j,k) = h(i,k,j)
     end do

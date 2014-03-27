@@ -16,8 +16,9 @@ use global
 implicit none
 common /d3/ sig, grn
 common /d4/ hmz, vst
-integer(4) :: i, i1, i2, l
-real(8) :: hmz(jsz,sec,sec), vst(jsz,sec,sec)
+common /d6/ ons
+integer(4) :: i, l, l1
+real(8) :: hmz(jsz,sec,sec), vst(jsz,sec,sec), ons(natom(2),sec)
 real(8), intent(in) :: wt(jsz), tot, e, eps
 complex(8) :: sig(nse), grn(sec,sec)
 complex(8), intent(out) :: ham(jsz,sec,sec)
@@ -29,17 +30,17 @@ end do
 if (verbose.and.vlvl.ge.2) print 1000, ham(1,:,:)
 do i = 1, jsz
 ! this loop is only for Se/Te s & p disorder (currently)
-  do i1 = 19, 22
-    i2 = i1 + 9
-    ham(i,i1,i1) = ham(i,i1,i1) - sig(i1-18)
-    ham(i,i2,i2) = ham(i,i2,i2) - sig(i2-23)
+  do l = 19, 22
+    l1 = l + 9
+    ham(i,l,l) = ham(i,l,l) - sig(l-18) + ons(1,l)
+    ham(i,l1,l1) = ham(i,l1,l1) - sig(l1-23) + ons(1,l1)
   end do
   call cmplxInv(ham(i,:,:),sec,verbose,vlvl)
 ! this loop is only for Se/Te s & p disorder (currently)
-  do i1 = 19, 22
-    i2 = i1 + 9
-    grn(i1,i1) = grn(i1,i1) + ham(i,i1,i1)*wt(i)
-    grn(i2,i2) = grn(i2,i2) + ham(i,i2,i2)*wt(i)
+  do l = 19, 22
+    l1 = l + 9
+    grn(l,l) = grn(l,l) + ham(i,l,l)*wt(i)
+    grn(l1,l1) = grn(l1,l1) + ham(i,l1,l1)*wt(i)
   end do
 end do
 grn(:,:) = grn(:,:)/tot

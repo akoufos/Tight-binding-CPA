@@ -42,7 +42,7 @@ do n = 1, numit
   call greens(ham,wt,tot,e,eps)
 !  if (n.eq.1) sig(:) = sig(:) + del1
   call crete(dels,delp)
-verbose = .true.; vlvl = 2;
+!verbose = .true.; vlvl = 2;
   if(verbose.and.vlvl.ge.1) print 1002, dels, delp
   if (abs(dble(dels(1))).le.cr.and.abs(aimag(dels(1))).le.ci.and. &
       abs(dble(dels(2))).le.cr.and.abs(aimag(dels(2))).le.ci.and. &
@@ -73,7 +73,7 @@ verbose = .true.; vlvl = 2;
      sig(7) = sig(7) + del1*delp(5)
      sig(8) = sig(8) + del1*delp(6)
   end if
-verbose = .false.; vlvl = 2;
+!verbose = .false.; vlvl = 2;
   if (irep.eq.1) cycle
   if (mchk.eq.1) exit
 end do

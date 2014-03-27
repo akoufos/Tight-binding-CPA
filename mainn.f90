@@ -147,35 +147,35 @@ do ll = iss1, itop
   l = l - 1
   l9 = l9 + 1
   edum(l9) = res(l,1)
-  dums1(l9) = res(l,6)
-  dump1(l9) = res(l,7)
-  dumxz(l9) = res(l,8)
-  dumxy(l9) = res(l,9)
-  dum3r(l9) = res(l,10)
-  dumx2(l9) = res(l,11)
-  dums2(l9) = res(l,12)
-  dump2(l9) = res(l,13)!*2.0d0
-  dumm(l9) = res(l,14)!*2.0d0
+  dums1(l9) = res(l,6)*2.0d0
+  dump1(l9) = res(l,7)*2.0d0
+  dumxz(l9) = res(l,8)*2.0d0
+  dumxy(l9) = res(l,9)*2.0d0
+  dum3r(l9) = res(l,10)*2.0d0
+  dumx2(l9) = res(l,11)*2.0d0
+  dums2(l9) = res(l,12)*2.0d0
+  dump2(l9) = res(l,13)*2.0d0
+  dumm(l9) = res(l,14)*2.0d0
   write(6,3030)(res(l,m),m=1,5)
 end do
 do l = 1, iss
   l9 = l9 + 1
   edum(l9) = res(l,1)
-  dums1(l9) = res(l,6)
-  dump1(l9) = res(l,7)
-  dumxz(l9) = res(l,8)
-  dumxy(l9) = res(l,9)
-  dum3r(l9) = res(l,10)
-  dumx2(l9) = res(l,11)
-  dums2(l9) = res(l,12)
-  dump2(l9) = res(l,13)!*2.0d0
-  dumm(l9) = res(l,14)!*2.0d0
+  dums1(l9) = res(l,6)*2.0d0
+  dump1(l9) = res(l,7)*2.0d0
+  dumxz(l9) = res(l,8)*2.0d0
+  dumxy(l9) = res(l,9)*2.0d0
+  dum3r(l9) = res(l,10)*2.0d0
+  dumx2(l9) = res(l,11)*2.0d0
+  dums2(l9) = res(l,12)*2.0d0
+  dump2(l9) = res(l,13)*2.0d0
+  dumm(l9) = res(l,14)*2.0d0
   write(6,3030)(res(l,m),m=1,5)
 end do
 num99 = itop - 1
 call simp(edum,dumm,anumel,num99,verbose,vlvl)
 anumel(1) = 0.0d0
-anumel(itop) = anumel(num99) + dumm(iss)*del*2.0d0 ! was dums2
+anumel(itop) = anumel(num99) + dumm(iss)*del
 open(8,file='dosdat.cpa.plot')
 write(6,3000)
 write(6,3050)

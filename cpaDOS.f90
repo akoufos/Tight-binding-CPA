@@ -38,8 +38,8 @@ H(:,:,:) = ham(:,:,:)
 ! this loop is only for Se/Te s & p disorder
 do l = 19, 22
   l1 = l + 9
-  ham(:,l,l) = ham(:,l,l) - sig(l-18)
-  ham(:,l1,l1) = ham(:,l1,l1) - sig(l1-23)
+  ham(:,l,l) = ham(:,l,l) - sig(l-18) + ons(1,l)
+  ham(:,l1,l1) = ham(:,l1,l1) - sig(l1-23) + ons(1,l1)
   Sigma(l,l) = sig(l-18)
   Sigma(l1,l1) = sig(l1-23)
 end do
