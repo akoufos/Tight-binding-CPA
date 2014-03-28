@@ -24,6 +24,7 @@ character(len=100) :: f1000
 if (verbose) print 1001
 ham(:,:,:) = (0.0d0,0.0d0)
 ons_bar(:) = 0.0d0
+grn(:,:) = (0.0d0,0.0d0)
 call setHam(ham,ons_bar,e,eps)
 write(f1000,'(A,I1,A)') "(",sec,"(2(F10.6,1x)))"
 if (verbose.and.vlvl.ge.2) print f1000, ham(1,:,:)

@@ -61,18 +61,22 @@ real(8) :: con, convr, convi, del, dnorfl, e, efl, emax, emin, epiv, &
 real(8) :: res(2000,15), anumel(2000), dumm(2000), edum(2000), &
   dums1(2000), dump1(2000), dums2(2000), dump2(2000), dumxz(2000), &
   dumxy(2000), dum3r(2000), dumx2(2000), densfl(10), weight(jsz), &
-  qq(jsz,3), hmz(jsz,sec,sec), vst(jsz,sec,sec)
+  qq(jsz,3), hma(jsz,sec,sec), vsa(jsz,sec,sec), hmb(jsz,sec,sec), &
+  vsb(jsz,sec,sec)
 real(8), parameter :: dsig = 1.0d-4
 complex(8) :: dels(2), delp(6), ham(jsz,sec,sec), grn(sec,sec), &
   sig(nse), sags(2), sagp(6), del1
+character(len=100) :: file1, file2
 if (verbose) print 1000
 open(6,file='cpaper.out',blank='zero')
 nchk = 0
 totvol = 0.0d0
+write(file1,'(A)') 'cpamat1.dat'
+write(file2,'(A)') 'cpamat2.dat'
 call readin(ndim, nuelec)
 call kpts(jsz,qq,weight,totvol)
-call readSec(hma,vsa,'cpamat1.dat')
-call readSec(hmb,vsb,'cpamat2.dat')
+call readSec(hma,vsa,file1)
+call readSec(hmb,vsb,file2)
 iss1 = 1
  1111 if(nchk.eq.2) goto 1234
 sags(:) = cmplx(sagsr1,sagsi1,8)
@@ -111,6 +115,7 @@ do ixyz = iss1, 2000
   write(6,1015)n,(sig(i),i=1,4),e
   write(6,1016)  (sig(i),i=5,8),e
   call cpaDOS(dos,weight,totvol,e,eps)
+verbose = .false.; vlvl = 1
 870 continue
   res(ixyz,1) = e
   res(ixyz,2) = dble(sig(1))

@@ -56,6 +56,10 @@ if (verbose.and.vlvl.ge.2) then
   print 1005, eps, jsz
   print 1006, cr, ci
 end if
+if (con.lt.0.0d0.or.con.gt.1.0d0) then
+  print 1010
+  stop
+end if
 if (verbose) print 1021
 return
 1000 format(50A1)
@@ -68,6 +72,8 @@ return
 1007 format(//,'Onsite parameters of Selenium',/)
 1008 format(4((9F12.8,1X),/))
 1009 format(//,'Onsite parameters of Tellurium',/)
+1010 format(//,'Concentration is not an element of [0:1]',/,'Check &
+  cpaper.dat and rerun',//)
 1020 format(/,'Begin subroutine readin')
 1021 format('End readin',/)
 end subroutine readin

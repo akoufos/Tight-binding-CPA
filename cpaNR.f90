@@ -38,9 +38,7 @@ do n = 1, numit
     write(*,1001)(sig(i),i=5,8)
   end if
   mchk = 0; irep = 0
-  grn(:,:) = cmplx(0.0d0,0.0d0,8)
   call greens(ham,wt,tot,e,eps)
-!  if (n.eq.1) sig(:) = sig(:) + del1
   call crete(dels,delp)
 !verbose = .true.; vlvl = 2;
   if(verbose.and.vlvl.ge.1) print 1002, dels, delp

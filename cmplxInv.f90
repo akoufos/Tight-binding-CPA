@@ -25,7 +25,7 @@ AA = A; B = 0.0d0
 do i = 1, n
   B(i,i) = cmplx(1.0d0,0.0d0,8)
 end do
-if (verbose.and.vlvl.ge.2) then
+if (verbose.and.vlvl.ge.3) then
   print *, 'A (real + imaginary)'
   print f1000, transpose(AA)
   print *, 'B'
@@ -33,21 +33,21 @@ if (verbose.and.vlvl.ge.2) then
 end if
 ! Do LU decomposition using Crout's algorithm with partial pivoting on A
 call ccrlu(AA,n,p)
-if (verbose.and.vlvl.ge.2) then
+if (verbose.and.vlvl.ge.3) then
   print *, 'LU (real + imaginary'
   print f1000, transpose(AA)
 end if
 ! Now use the PLU decomposition to solve for the inverse of A by columns
 do i = 1, n
   call clubk(AA,n,p,b(i,:),verbose,vlvl)
-  if (verbose.and.vlvl.ge.1) then
+  if (verbose.and.vlvl.ge.2) then
     print *, 'b'
     print 1001, b(i,:)
   end if
 end do
 ! Write matrix B (inverse of A) to matrix A
 A = B
-if (verbose.and.vlvl.ge.1) then
+if (verbose.and.vlvl.ge.2) then
   print *, 'Inverse of A'
   print f1000, A
 end if

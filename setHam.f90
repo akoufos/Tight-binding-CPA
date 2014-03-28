@@ -19,8 +19,8 @@ implicit none
 common /d1/ con
 common /d4/ hma, vsa, hmb, vsb
 common /d6/ ons
-integer(4) :: i
-real(8) :: hmz(jsz,sec,sec), vsa(jsz,sec,sec), hmb(jsz,sec,sec), &
+integer(4) :: i, l, kpts
+real(8) :: hma(jsz,sec,sec), vsa(jsz,sec,sec), hmb(jsz,sec,sec), &
   vsb(jsz,sec,sec), ons(natom(2),sec), con
 real(8), intent(in) :: e, eps
 real(8), intent(out) :: ons_bar(sec)
@@ -28,21 +28,27 @@ complex(8) :: H1(jsz,sec,sec), H2(jsz,sec,sec)
 complex(8), intent(out) :: ham(jsz,sec,sec)
 character(len=100) :: f1000
 if (verbose) print 1000
+kpts = 1
 H1(:,:,:) = cmplx(-hma(:,:,:),-vsa(:,:,:),8)
 H2(:,:,:) = cmplx(-hmb(:,:,:),-vsb(:,:,:),8)
-ham(:,:,:) = (con*H1 + (1.0d0-con)*H2)
+ham(:,:,:) = (con*H1(:,:,:) + (1.0d0-con)*H2(:,:,:))
 ons_bar(:) = (con*ons(1,:) + (1.0d0-con)*ons(2,:))
-ham(:,:,:) = ham(:,:,:) + cmplx(e,eps,8)
-if (verbose.and.vlvl.ge.3) then
-  write(f1000,'(A,I1,A)') "(",sec,"(2(F10.6,1x)))"
-  do i = 1, jsz
+do l = 1, sec
+  ham(:,l,l) = ham(:,l,l) + cmplx(e,eps,8)
+end do
+write(f1000,'(A,I1,A)') "(",sec,"(2(F10.6,1x)))"
+if (verbose.and.vlvl.ge.2) then
+  if (vlvl.ge.3) kpts = jsz
+  do i = 1, kpts
     print 1002
     print f1000, transpose(H1(i,:,:))
     print 1003
-    print f1000, transpose(H1(i,:,:))
+    print f1000, transpose(H2(i,:,:))
     print 1004
     print f1000, transpose(ham(i,:,:))
   end do
+  print 1005
+  print f1000, ons_bar(:)
 end if
 if (verbose) print 1001
 return
@@ -51,4 +57,5 @@ return
 1002 format(/,'Hamiltonian for system A')
 1003 format(/,'Hamiltonian for system B')
 1004 format(/,'Averaged Hamiltonian with complex energy added')
+1005 format(/,'Averaged onsite parameters')
 end subroutine setHam

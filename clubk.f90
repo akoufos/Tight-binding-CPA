@@ -37,7 +37,7 @@ do i = 1, n
 end do
 P(:,piv) = P
 b = matmul(dble(P),b)
-if (verbose.and.vlvl.ge.3) then
+if (verbose.and.vlvl.ge.4) then
   write(f1000,"(A,I1,A)") "(",n,"(2(F10.5,1X)))"
   print *, 'P'
   print f1000, transpose(dble(P))
@@ -55,7 +55,7 @@ do i = 2, n
     y(i) = y(i) - L(i,j)*y(j)/L(i,i)
   end do
 end do
-if (verbose.and.vlvl.ge.2) then
+if (verbose.and.vlvl.ge.3) then
   print *, 'y'
   print 1001, y 
 end if
@@ -66,7 +66,7 @@ do i = n-1, 1, -1
     x(i) = x(i) - U(i,j)*x(j)/U(i,i)
   end do
 end do
-if (verbose.and.vlvl.ge.1) then
+if (verbose.and.vlvl.ge.2) then
   print *, 'x'
   print 1001, x
 end if
