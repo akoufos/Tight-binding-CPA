@@ -48,7 +48,7 @@ implicit none
 common /d1/ con
 common /d2/ emin, emax, eps, del, epiv, sagsr1, sagsi1, sagpr1, sagpi1
 common /d3/ sig, grn
-common /d4/ hmz, vst
+common /d4/ hma, vsa, hmb, vsb
 common /d5/ dels, delp
 common /d7/ convr, convi
 integer(4) :: i, l, ll
@@ -71,7 +71,8 @@ nchk = 0
 totvol = 0.0d0
 call readin(ndim, nuelec)
 call kpts(jsz,qq,weight,totvol)
-call readSec(hmz,vst)
+call readSec(hma,vsa,'cpamat1.dat')
+call readSec(hmb,vsb,'cpamat2.dat')
 iss1 = 1
  1111 if(nchk.eq.2) goto 1234
 sags(:) = cmplx(sagsr1,sagsi1,8)

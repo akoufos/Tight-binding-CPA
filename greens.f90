@@ -4,36 +4,35 @@ subroutine greens(ham,wt,tot,e,eps)
 !--------------------------------------------------------------------------
 ! Variables:
 ! ham(jsz,sec,sec) - Hamiltonian of the system
-! hmz(jsz,sec,sec) - Real part of initial Hamiltonian of the system
-! vst(jsz,sec,sec) - Imaginary part of initial Hamiltonian of the system
+! ons_bar(sec) - Averaged onsite energies
 ! wt(jsz) - Weight at the k-points
 ! tot - Total weight of all k-points
 ! grn(sec,sec) - Green's function
 ! sig(nse) - Self-energies for disordered states
+! f1000 - Formatting string for printing matrices verbosely
 !--------------------------------------------------------------------------
 use omp_lib
 use global
 implicit none
 common /d3/ sig, grn
-common /d4/ hmz, vst
-common /d6/ ons
 integer(4) :: i, l, l1
-real(8) :: hmz(jsz,sec,sec), vst(jsz,sec,sec), ons(natom(2),sec)
+real(8) :: ons_bar(sec)
 real(8), intent(in) :: wt(jsz), tot, e, eps
 complex(8) :: sig(nse), grn(sec,sec)
 complex(8), intent(out) :: ham(jsz,sec,sec)
+character(len=100) :: f1000
 if (verbose) print 1001
-ham(:,:,:) = cmplx(-hmz(:,:,:),-vst(:,:,:),8)
-do l = 1, sec
-  ham(:,l,l) = ham(:,l,l) + cmplx(e,eps)
-end do
-if (verbose.and.vlvl.ge.2) print 1000, ham(1,:,:)
+ham(:,:,:) = (0.0d0,0.0d0)
+ons_bar(:) = 0.0d0
+call setHam(ham,ons_bar,e,eps)
+write(f1000,'(A,I1,A)') "(",sec,"(2(F10.6,1x)))"
+if (verbose.and.vlvl.ge.2) print f1000, ham(1,:,:)
 do i = 1, jsz
 ! this loop is only for Se/Te s & p disorder (currently)
   do l = 19, 22
     l1 = l + 9
-    ham(i,l,l) = ham(i,l,l) - sig(l-18) + ons(1,l)
-    ham(i,l1,l1) = ham(i,l1,l1) - sig(l1-23) + ons(1,l1)
+    ham(i,l,l) = ham(i,l,l) - sig(l-18) + ons_bar(l)
+    ham(i,l1,l1) = ham(i,l1,l1) - sig(l1-23) + ons_bar(l1)
   end do
   call cmplxInv(ham(i,:,:),sec,verbose,vlvl)
 ! this loop is only for Se/Te s & p disorder (currently)
@@ -44,10 +43,9 @@ do i = 1, jsz
   end do
 end do
 grn(:,:) = grn(:,:)/tot
-if (verbose.and.vlvl.ge.1) print 1000, grn
+if (verbose.and.vlvl.ge.2) print f1000, grn
 if (verbose) print 1002
 return
-1000 format(36(2(F10.6,1X)))
 1001 format(/,'Begin subroutine greens')
 1002 format('End greens',/)
 end subroutine greens

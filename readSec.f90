@@ -1,4 +1,4 @@
-subroutine readSec(h,g)
+subroutine readSec(h,g,fname)
 !--------------------------------------------------------------------------
 ! Reads in the secular equations of the system given by the output of the
 ! Static code.
@@ -6,21 +6,25 @@ subroutine readSec(h,g)
 ! Variables:
 ! h(jsz,sec,sec) - Real part of the Hamiltonian for each k-point
 ! j(jsz,sec,sec) - Imaginary part of the Hamiltonian for each k-point
+! fname - The name of file to be read
 !--------------------------------------------------------------------------
 use global
 implicit none
 integer(4) :: i, j, k
 real(8), intent(out) :: h(jsz,sec,sec), g(jsz,sec,sec)
+character(len=100), intent(in) :: fname
 if (verbose) print 1001
 g(:,:,:) = 0.0d0; h(:,:,:) = 0.0d0
-open(16,file='cpamat.dat',blank='zero')
+open(16,file=fname,blank='zero')
 do i = 1, jsz
   do j = 1, 4
-    read(16,*)
+    read(16,*) 
+    if(verbose.and.vlvl.ge.5) print *, ''
   end do
   do j = 1, sec
     do k = 1, j
       read(16,1000) h(i,j,k), g(i,j,k)
+      if(verbose.and.vlvl.ge.5) print 1000, h(i,j,k), g(i,j,k)
     end do
   end do
 !$OMP PARALLEL DO DEFAULT(SHARED)
