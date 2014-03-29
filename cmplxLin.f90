@@ -40,9 +40,9 @@ if (verbose.and.vlvl.ge.1) then
   print *, 'Solution of A*x=b'
   print 1001, b
 end if
-if (verbose) print 1002
+if (verbose) print 2000
 return
 1000 format(/,'Begin subroutine cmplxLin')
 1001 format(2F10.5)
-1002 format('End cmplxLin',/)
+2000 format('End cmplxLin',/)
 end subroutine cmplxLin

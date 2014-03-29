@@ -227,14 +227,14 @@ densfl(8) = interp(s,anumel,dump2(1),mcm,2)/2.0d0
 write(6,839)
 write(6,840)efl,nuelec,dnorfl,(densfl(i),i=1,8)
 close(6)
-if (verbose) print 1001
+if (verbose) print 2000
 return
 839  format(/,'Fermi energy   Electrons   Total DOS   Fe-s   Fe-p   Fe- &
   xy   Fe-xz   Fe-3r^2-z^2   Fe-x^2-y^2   Se-s   Se-p',//)
 840  format(2f10.5   ,3x,7f10.5//)
 841  format(//65x,11h (per spin)  )
 1000 format(/,'Begin subroutine mainn')
-1001 format('End mainn',/)
+2000 format('End mainn',/)
 1015 format(5x,i5,8f15.8,f10.6)
 1016 format(10X,8f15.8,f10.6)
 1030 format(//1x,f9.5,4f12.8,10x, f10.5//)

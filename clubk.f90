@@ -71,8 +71,8 @@ if (verbose.and.vlvl.ge.2) then
   print 1001, x
 end if
 b = x
-if (verbose) print 1002
+if (verbose) print 2000
 1000 format(/,'Begin subroutine clubk')
 1001 format(2F10.5)
-1002 format('End clubk',/)
+2000 format('End clubk',/)
 end subroutine clubk

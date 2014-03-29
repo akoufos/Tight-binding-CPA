@@ -29,9 +29,9 @@ do ix = 2, nx, 2
    end select
 end do
 if (verbose.and.vlvl.ge.2) print 1002, ax
-if (verbose) print 1001
+if (verbose) print 2000
 return
 1000 format(/,'Begin subroutine simp')
-1001 format('End simp',/)
 1002 format('Electrons',F10.7)
+2000 format('End simp',/)
 end subroutine simp

@@ -30,18 +30,18 @@ complex(8) :: dels(2), delp(6), sig(nse), grn(sec,sec)
 complex(8), intent(in) :: del1
 complex(8), intent(out) :: ham(jsz,sec,sec)
 do n = 1, numit
-  if (verbose) print 1003
-  write(6,1000)n,(sig(i),i=1,4)
-  write(6,1001)(sig(i),i=5,8)
+  if (verbose) print 1000
+  write(6,1001)n,(sig(i),i=1,4)
+  write(6,1002)(sig(i),i=5,8)
   if (verbose.and.vlvl.ge.1) then
-    write(*,1000)n,(sig(i),i=1,4)
-    write(*,1001)(sig(i),i=5,8)
+    write(*,1001)n,(sig(i),i=1,4)
+    write(*,1002)(sig(i),i=5,8)
   end if
   mchk = 0; irep = 0
   call greens(ham,wt,tot,e,eps)
   call crete(dels,delp)
 !verbose = .true.; vlvl = 2;
-  if(verbose.and.vlvl.ge.1) print 1002, dels, delp
+  if(verbose.and.vlvl.ge.1) print 1003, dels, delp
   if (abs(dble(dels(1))).le.cr.and.abs(aimag(dels(1))).le.ci.and. &
       abs(dble(dels(2))).le.cr.and.abs(aimag(dels(2))).le.ci.and. &
       abs(dble(delp(1))).le.cr.and.abs(aimag(delp(1))).le.ci.and. &
@@ -75,13 +75,13 @@ do n = 1, numit
   if (irep.eq.1) cycle
   if (mchk.eq.1) exit
 end do
-if (verbose) print 1004
+if (verbose) print 2000
 return
-1000 format(2X,I5,8F14.9)
-1001 format(7X,8F14.9)
-1002 format(4(2(F12.8,1X)))
-1003 format(/,'Begin subroutine cpaNR')
-1004 format('End cpaNR',/)
+1000 format(/,'Begin subroutine cpaNR')
+1001 format(2X,I5,8F14.9)
+1002 format(7X,8F14.9)
+1003 format(4(2(F12.8,1X)))
+2000 format('End cpaNR',/)
 1005 format("Didn't you just converge?")
 1006 format("Yes, but |imaginary[sig(",I2,")]| is greater than zero. ", &
   E15.8)

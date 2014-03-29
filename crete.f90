@@ -78,10 +78,10 @@ do l = 1, nse
   sig(l) = term(l,l)
 end do
 if(verbose.and.vlvl.ge.1) print 1001, sig
-if(verbose) print 1003
+if(verbose) print 2000
 return
 1000 format(/,'Begin subroutine crete')
 1001 format('Sigma: ',4(2(F10.6,1X)))
 1002 format('Delta sig:',4(2(F10.6,1X)))
-1003 format('End crete',/)
+2000 format('End crete',/)
 end subroutine crete

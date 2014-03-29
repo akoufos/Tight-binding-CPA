@@ -51,10 +51,10 @@ if (verbose.and.vlvl.ge.2) then
   print *, 'Inverse of A'
   print f1000, A
 end if
-if (verbose) print 1003
+if (verbose) print 2000
 return
 1000 format(/,'Begin subroutine cmplxInv')
 1001 format(2F10.5)
 1002 format(18X,1F15.10)
-1003 format('End cmplxInv',/)
+2000 format('End cmplxInv',/)
 end subroutine cmplxInv

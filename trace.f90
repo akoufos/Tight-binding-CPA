@@ -26,8 +26,8 @@ do i = 1, n
   ti = ti + aimag(A(i,i))
 end do
 t = cmplx(tr,ti,8)
-if (verbose) print 1001
+if (verbose) print 2000
 return
 1000 format(/,'Begin subroutine trace')
-1001 format('End trace',/)
+2000 format('End trace',/)
 end subroutine

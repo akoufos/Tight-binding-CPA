@@ -13,7 +13,7 @@ implicit none
 integer(4) :: i, j, k
 real(8), intent(out) :: h(jsz,sec,sec), g(jsz,sec,sec)
 character(len=100), intent(in) :: fname
-if (verbose) print 1001
+if (verbose) print 1000
 g(:,:,:) = 0.0d0; h(:,:,:) = 0.0d0
 open(16,file=fname,blank='zero')
 do i = 1, jsz
@@ -23,8 +23,8 @@ do i = 1, jsz
   end do
   do j = 1, sec
     do k = 1, j
-      read(16,1000) h(i,j,k), g(i,j,k)
-      if(verbose.and.vlvl.ge.5) print 1000, h(i,j,k), g(i,j,k)
+      read(16,1001) h(i,j,k), g(i,j,k)
+      if(verbose.and.vlvl.ge.5) print 1001, h(i,j,k), g(i,j,k)
     end do
   end do
 !$OMP PARALLEL DO DEFAULT(SHARED)
@@ -37,9 +37,9 @@ do i = 1, jsz
 end do
 !$OMP END PARALLEL DO
 close(16)
-if (verbose) print 1002
+if (verbose) print 2000
 return
-1000 format(18X,2F15.10)
-1001 format(/,'Begin subroutine readSec')
-1002 format('End readSec',/)
+1000 format(/,'Begin subroutine readSec')
+1001 format(18X,2F15.10)
+2000 format('End readSec',/)
 end subroutine
