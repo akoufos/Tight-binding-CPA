@@ -13,11 +13,11 @@ subroutine cmplxLin(A, n, b, verbose, vlvl)
 ! vlvl - Level of debugging verboseness
 !--------------------------------------------------------------------------
 implicit none
-integer(4) :: p(n)
-integer(4), intent(in):: n, vlvl
+integer(kind=4) :: p(n)
+integer(kind=4), intent(in):: n, vlvl
 logical, intent(in) :: verbose
-complex(8) :: AA(n,n) 
-complex(8), intent(inout) :: A(n,n), b(n)
+complex(kind=8) :: AA(n,n) 
+complex(kind=8), intent(inout) :: A(n,n), b(n)
 character(len=100) :: f1000
 if (verbose) print 1000
 write(f1000,"(A,I1,A)") "(",n,"((2F10.5,1X)))"

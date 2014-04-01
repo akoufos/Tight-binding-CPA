@@ -8,11 +8,11 @@ subroutine trace(A, n, t, verbose, vlvl)
 ! t - The trace of the matrix A
 !--------------------------------------------------------------------------
 implicit none
-integer(4) :: i
-integer(4), intent(in) :: n, vlvl
-real(8) :: tr, ti
-complex(8), intent(in) :: A(n,n)
-complex(8), intent(out) :: t
+integer(kind=4) :: i
+integer(kind=4), intent(in) :: n, vlvl
+real(kind=8) :: tr, ti
+complex(kind=8), intent(in) :: A(n,n)
+complex(kind=8), intent(out) :: t
 logical :: verbose
 character(len=100) :: f1000
 if (verbose) print 1000

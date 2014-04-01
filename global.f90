@@ -75,6 +75,9 @@ use global
 implicit none
 real(kind=8) :: ons(natom(2),sec)
 real(kind=8) :: ons_bar(sec)
+complex(kind=8) :: onsA(nse,nse)
+complex(kind=8) :: onsB(nse,nse)
+complex(kind=8) :: onsAvg(nse,nse)
 save
 end module onsites
 
@@ -90,6 +93,7 @@ module hamiltonians
 ! hmb(jsz,sec,sec) - Real part of initial Hamiltonian of system B (e.g.
   ! FeTe)
 ! vsb(jsz,sec,sec) - Imaginary part of initial Hamiltonian of system B
+! ham(jsz,sec,sec) - Average Hamiltonian between the two systems
 !--------------------------------------------------------------------------
 use global
 implicit none
@@ -97,5 +101,6 @@ real(kind=8) :: hma(jsz,sec,sec)
 real(kind=8) :: hmb(jsz,sec,sec)
 real(kind=8) :: vsa(jsz,sec,sec)
 real(kind=8) :: vsb(jsz,sec,sec)
+complex(kind=8) :: ham(jsz,sec,sec)
 save
 end module hamiltonians

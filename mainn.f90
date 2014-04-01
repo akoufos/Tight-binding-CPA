@@ -1,12 +1,12 @@
 !--------------------------------------------------------------------------
 ! Function for doing interpolation of the Fermi level
 !--------------------------------------------------------------------------
-real(8) function interp(xx,x,f,j1,n)
+real(kind=8) function interp(xx,x,f,j1,n)
 implicit none
-integer(4) :: i, istart, j ,j2
-integer(4), intent(in) :: j1, n
-real(8) :: fx, p
-real(8), intent(in) :: f(1), x(1), xx
+integer(kind=4) :: i, istart, j ,j2
+integer(kind=4), intent(in) :: j1, n
+real(kind=8) :: fx, p
+real(kind=8), intent(in) :: f(1), x(1), xx
 fx = 0.0d0
 istart = j1 - n + n/2 + 1
 j2 = istart + n - 1
@@ -45,20 +45,19 @@ use hamiltonians
 implicit none
 common /d2/ emin, emax, eps, del, epiv, sagsr1, sagsi1, sagpr1, sagpi1
 common /d3/ sig, grn
-integer(4) :: i, l, ll
-integer(4) :: iss, iss1, itop, ixyz, l9, m, mchk, mc, mcm, mcount, &
+integer(kind=4) :: i, l, ll
+integer(kind=4) :: iss, iss1, itop, ixyz, l9, m, mchk, mc, mcm, mcount, &
   n, nchk, ndim, nmode, num99
-integer(4), parameter :: numit = 100
-real(8) :: del, dnorfl, e, efl, emax, emin, epiv, &
+integer(kind=4), parameter :: numit = 100
+real(kind=8) :: del, dnorfl, e, efl, emax, emin, epiv, &
   eps, interp, nuelec, s, sagpi1, sagpr1, sagsi1, sagsr1, totvol, &
   dos(sec+1)
-real(8) :: res(2000,15), anumel(2000), dumm(2000), edum(2000), &
+real(kind=8) :: res(2000,15), anumel(2000), dumm(2000), edum(2000), &
   dums1(2000), dump1(2000), dums2(2000), dump2(2000), dumxz(2000), &
   dumxy(2000), dum3r(2000), dumx2(2000), densfl(10), weight(jsz), &
   qq(jsz,3)
-real(8), parameter :: dsig = 1.0d-4
-complex(8) :: ham(jsz,sec,sec), grn(sec,sec), &
-  sig(nse), sags(2), sagp(6), del1
+real(kind=8), parameter :: dsig = 1.0d-4
+complex(kind=8) :: grn(sec,sec), sig(nse), sags(2), sagp(6), del1
 character(len=100) :: file1, file2
 if (verbose) print 1000
 open(6,file='cpaper.out',blank='zero')
@@ -67,9 +66,11 @@ totvol = 0.0d0
 write(file1,'(A)') 'cpamat1.dat'
 write(file2,'(A)') 'cpamat2.dat'
 call readin(ndim, nuelec)
+call setOnsites
 call kpts(jsz,qq,weight,totvol)
 call readSec(hma,vsa,file1)
 call readSec(hmb,vsb,file2)
+call setInitHam
 iss1 = 1
  1111 if(nchk.eq.2) goto 1234
 sags(:) = cmplx(sagsr1,sagsi1,8)
@@ -89,7 +90,7 @@ do ixyz = iss1, 2000
       sig(i+4) = sagp(i+2)
     end if
   end do
-  call cpaNR(ham,weight,totvol,e,eps,del1,mchk,numit)
+  call cpaNR(weight,totvol,e,eps,del1,mchk,numit)
   do i = 1, 4
     if(i.eq.1) then
       sags(1) = sig(1)

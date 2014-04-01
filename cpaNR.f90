@@ -1,4 +1,4 @@
-subroutine cpaNR(ham,wt,tot,e,eps,del1,mchk,numit)
+subroutine cpaNR(wt,tot,e,eps,del1,mchk,numit)
 !--------------------------------------------------------------------------
 ! Solves for the self-energies, and thus the Green's function, using the
 ! Newton-Raphson method.
@@ -6,11 +6,9 @@ subroutine cpaNR(ham,wt,tot,e,eps,del1,mchk,numit)
 ! Variables:
 ! grn(sec,sec) - Green's function
 ! sig(nse) - Self-energies of the disordered states
-! ham(jsz,sec,sec) - Hamiltonian of the system
+! H(jsz,sec,sec) - Hamiltonian of the system
 ! wt(jsz) - Weights at each k-point in the Brillouin zone
 ! tot - Total weight from all k-points
-! e - Current energy level
-! eps - Imaginary energy temperature broadening value
 ! dels(2) - Change in the self-energies of the disordered s states
 ! delp(6) - Change in the self-energies of the disordered p states
 ! mchk - Flag to specify whether routine converged or not
@@ -18,15 +16,15 @@ subroutine cpaNR(ham,wt,tot,e,eps,del1,mchk,numit)
 !--------------------------------------------------------------------------
 use global
 use converge
+use hamiltonians, only : ham
 implicit none
 common /d3/ sig, grn
-integer(4) :: i, n, irep
-integer(4), intent(in) :: numit
-integer(4), intent(out) :: mchk
-real(8), intent(in) :: wt(jsz), tot, e, eps
-complex(8) :: dels(2), delp(6), sig(nse), grn(sec,sec)
-complex(8), intent(in) :: del1
-complex(8), intent(out) :: ham(jsz,sec,sec)
+integer(kind=4) :: i, n, irep
+integer(kind=4), intent(in) :: numit
+integer(kind=4), intent(out) :: mchk
+real(kind=8), intent(in) :: wt(jsz), tot, e, eps
+complex(kind=8) :: dels(2), delp(6), sig(nse), grn(sec,sec), H(jsz,sec,sec)
+complex(kind=8), intent(in) :: del1
 do n = 1, numit
   if (verbose) print 1000
   dels(:) = (0.0d0,0.0d0); delp(:) = (0.0d0,0.0d0)
@@ -37,7 +35,9 @@ do n = 1, numit
     write(*,1002)(sig(i),i=5,8)
   end if
   mchk = 0; irep = 0
-  call greens(ham,wt,tot,e,eps)
+  H(:,:,:) = ham(:,:,:)
+  call setHam(H,e,eps)
+  call greens(H,wt,tot)
   call crete(dels,delp)
 !verbose = .true.; vlvl = 2;
   if(verbose.and.vlvl.ge.1) print 1003, dels, delp

@@ -16,12 +16,12 @@ subroutine clubk(A, n, piv, b, verbose, vlvl)
 ! vlvl - Level of debugging verboseness
 !--------------------------------------------------------------------------
 implicit none
-integer(4) :: i, j, P(n,n)
-integer(4), intent(in) :: n, piv(n), vlvl
+integer(kind=4) :: i, j, P(n,n)
+integer(kind=4), intent(in) :: n, piv(n), vlvl
 logical, intent(in) :: verbose
-complex(8) :: L(n,n), U(n,n), y(n), x(n)
-complex(8), intent(in) :: A(n,n)
-complex(8), intent(inout) :: b(n)
+complex(kind=8) :: L(n,n), U(n,n), y(n), x(n)
+complex(kind=8), intent(in) :: A(n,n)
+complex(kind=8), intent(inout) :: b(n)
 character(len=100) :: f1000
 if (verbose) print 1000
 P = 0; L = 0.0d0; U = 0.0d0; x = 0.0d0; y = 0.0d0

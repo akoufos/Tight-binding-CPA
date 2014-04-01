@@ -11,9 +11,9 @@ subroutine kpts(kp,q,wt,swt)
 !--------------------------------------------------------------------------
 use global
 implicit none
-integer(4) :: i, j
-integer(4), intent(in) :: kp
-real(8), intent(out) :: q(kp,3), swt, wt(kp)
+integer(kind=4) :: i, j
+integer(kind=4), intent(in) :: kp
+real(kind=8), intent(out) :: q(kp,3), swt, wt(kp)
 if (verbose) print 1000
 swt = 0.0d0; q(:,:) = 0.0d0; wt(:) = 0.0d0
 open(7,file='cpaweights.dat')

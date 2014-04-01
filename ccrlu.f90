@@ -9,11 +9,11 @@ subroutine ccrlu(A,n,p)
 ! p(n) - Pivot vector
 !--------------------------------------------------------------------------
 implicit none
-integer(4) :: i, j, k, piv
-integer(4), intent(in) :: n
-integer(4), intent(out) :: p(n)
-real(8), parameter :: tiny = 1.0d-15
-complex(8),intent(inout) :: A(n,n)
+integer(kind=4) :: i, j, k, piv
+integer(kind=4), intent(in) :: n
+integer(kind=4), intent(out) :: p(n)
+real(kind=8), parameter :: tiny = 1.0d-15
+complex(kind=8),intent(inout) :: A(n,n)
 p = (/ (i, i=1, n) /)
 do k = 1, n-1
   piv = k - 1 + maxloc(abs(a(p(k:),k)),1)

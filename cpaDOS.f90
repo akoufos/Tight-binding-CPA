@@ -10,22 +10,19 @@ subroutine cpaDOS(dos,w,tot,e,eps)
 ! f1000 - Formatting string for printing matrices verbosely
 !--------------------------------------------------------------------------
 use global
+use hamiltonians
 implicit none
-integer(4) :: i, l
-real(8) :: gr(sec,sec), gi(sec,sec)
-real(8), intent(in) :: w(jsz), tot, e, eps
-real(8), intent(out) :: dos(sec+1)
-complex(8) :: H(jsz,sec,sec)
+integer(kind=4) :: i, l
+real(kind=8) :: gr(sec,sec), gi(sec,sec)
+real(kind=8), intent(in) :: w(jsz), tot, e, eps
+real(kind=8), intent(out) :: dos(sec+1)
+complex(kind=8) :: H(jsz,sec,sec)
 character(len=100) :: f1000
 if (verbose) print 1000
 dos(:) = 0.0d0
-H(:,:,:) = (0.0d0,0.0d0)
+H(:,:,:) = ham(:,:,:)
 call setHam(H,e,eps)
-if (verbose.and.vlvl.ge.3) then
-  write(f1000,'(A,I1,A)') "(",sec,"(2(F10.6,1x)))"
-  print*, 'H:'
-  print f1000, transpose(H(1,:,:))
-end if
+write(f1000,'(A,I1,A)') "(",sec,"(2(F10.6,1x)))"
 if (verbose.and.vlvl.ge.3) then
   print*, 'H:'
   print f1000, transpose(H(1,:,:))

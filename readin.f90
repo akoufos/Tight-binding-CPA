@@ -17,11 +17,11 @@ use concentration
 use onsites
 implicit none
 common /d2/ emin, emax, eps, del, epiv, sagsr1, sagsi1, sagpr1, sagpi1
-integer(4) :: i
-integer(4), intent(out) :: nd
-real(8) :: del, epiv, eps, es, ep, emin, emax, sagsr1, sagsi1, &
+integer(kind=4) :: i
+integer(kind=4), intent(out) :: nd
+real(kind=8) :: del, epiv, eps, es, ep, emin, emax, sagsr1, sagsi1, &
   sagpr1, sagpi1
-real(8), intent(out) :: ne
+real(kind=8), intent(out) :: ne
 character(len=1) :: a(50)
 if (verbose) print 1000
 open(5,file='cpaper.dat',blank='zero')

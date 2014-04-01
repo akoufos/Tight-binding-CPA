@@ -20,28 +20,16 @@ use concentration
 use onsites
 implicit none
 common /d3/ sig, grn
-integer(4) :: l, l1, l2, l3
-complex(8) :: up(nse,nse), ge(nse,nse), su(nse,nse), term(nse,nse), &
-  usi(nse,nse), grn(sec,sec), sig(nse), Se(nse,nse), Te(nse,nse), &
-  eps(nse,nse)
-complex(8), intent(out) :: dels(2), delp(6)
+integer(kind=4) :: l
+complex(kind=8) :: up(nse,nse), ge(nse,nse), su(nse,nse), term(nse,nse), &
+  usi(nse,nse), grn(sec,sec), sig(nse), Se(nse,nse), Te(nse,nse)
+complex(kind=8), intent(out) :: dels(2), delp(6)
 if (verbose) print 1000
 dels(:) = (0.0d0,0.0d0)
 delp(:) = (0.0d0,0.0d0)
 usi(:,:) = (0.0d0,0.0d0)
 ge(:,:) = (0.0d0,0.0d0)
 su(:,:) = (0.0d0,0.0d0)
-Se(:,:) = (0.0d0,0.0d0)
-Te(:,:) = (0.0d0,0.0d0)
-eps(:,:) = (0.0d0,0.0d0)
-do l = 19, 22
-  l1 = l + 9; l2 = l - 18; l3 = l - 14
-  Se(l2,l2) = cmplx(ons(1,l),0.0d0,8)
-  Te(l2,l2) = cmplx(ons(2,l),0.0d0,8)
-  Se(l3,l3) = cmplx(ons(1,l1),0.0d0,8)
-  Te(l3,l3) = cmplx(ons(2,l1),0.0d0,8)
-end do
-eps(:,:) = con*(Se(:,:)-Te(:,:)) + Te(:,:)
 if(verbose.and.vlvl.ge.1) print 1001, sig
 ge(1,1) = grn(19,19)
 ge(2,2) = grn(20,20)
@@ -59,11 +47,11 @@ usi(5,5) = sig(5)
 usi(6,6) = sig(6)
 usi(7,7) = sig(7)
 usi(8,8) = sig(8)
-Se(:,:) = Se(:,:) - usi(:,:)
-Te(:,:) = Te(:,:) - usi(:,:)
+Se(:,:) = onsA(:,:) - usi(:,:)
+Te(:,:) = onsB(:,:) - usi(:,:)
 up = matmul(ge,Se)
 su = matmul(up,Te)
-term(:,:) = eps(:,:) - su(:,:)
+term(:,:) = onsAvg(:,:) - su(:,:)
 dels(1) = sig(1) - term(1,1)
 dels(2) = sig(5) - term(5,5)
 delp(1) = sig(2) - term(2,2)

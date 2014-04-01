@@ -10,8 +10,8 @@ subroutine readSec(h,g,fname)
 !--------------------------------------------------------------------------
 use global
 implicit none
-integer(4) :: i, j, k
-real(8), intent(out) :: h(jsz,sec,sec), g(jsz,sec,sec)
+integer(kind=4) :: i, j, k
+real(kind=8), intent(out) :: h(jsz,sec,sec), g(jsz,sec,sec)
 character(len=100), intent(in) :: fname
 if (verbose) print 1000
 g(:,:,:) = 0.0d0; h(:,:,:) = 0.0d0
