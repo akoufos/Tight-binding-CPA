@@ -29,9 +29,6 @@ subroutine mainn()
 ! and most of the initialization.
 !--------------------------------------------------------------------------
 ! Variables:
-! con - Concentration, x, of Se (FeSe_xTe_[1-x])
-! convr/convi - Real and imaginary convergence criterion for Green's function
-  ! self consistency, respectively
 ! del - Temperature broadening ?
 ! epiv - Pivot energy (helps with N-R iterations [usually around E_F])
 ! eps - Imaginary part of energy shift ?
@@ -45,17 +42,15 @@ subroutine mainn()
 use omp_lib
 use global
 implicit none
-common /d1/ con
 common /d2/ emin, emax, eps, del, epiv, sagsr1, sagsi1, sagpr1, sagpi1
 common /d3/ sig, grn
 common /d4/ hma, vsa, hmb, vsb
 common /d5/ dels, delp
-common /d7/ convr, convi
 integer(4) :: i, l, ll
 integer(4) :: iss, iss1, itop, ixyz, l9, m, mchk, mc, mcm, mcount, &
   n, nchk, ndim, nmode, num99
 integer(4), parameter :: numit = 100
-real(8) :: con, convr, convi, del, dnorfl, e, efl, emax, emin, epiv, &
+real(8) :: del, dnorfl, e, efl, emax, emin, epiv, &
   eps, interp, nuelec, s, sagpi1, sagpr1, sagsi1, sagsr1, totvol, &
   dos(sec+1)
 real(8) :: res(2000,15), anumel(2000), dumm(2000), edum(2000), &

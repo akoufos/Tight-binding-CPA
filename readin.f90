@@ -12,15 +12,15 @@ subroutine readin(nd, ne)
 ! ons(natom(2),nse) - Onsite parameters of Se and Te respectively
 !--------------------------------------------------------------------------
 use global
+use converge
+use concentration
 implicit none
-common /d1/ con
 common /d2/ emin, emax, eps, del, epiv, sagsr1, sagsi1, sagpr1, sagpi1
 common /d6/ ons
-common /d7/ cr, ci
 integer(4) :: i
 integer(4), intent(out) :: nd
-real(8) :: con, del, epiv, eps, es, ep, emin, emax, sagsr1, sagsi1, &
-  sagpr1, sagpi1, ons(natom(2),sec), cr, ci
+real(8) :: del, epiv, eps, es, ep, emin, emax, sagsr1, sagsi1, &
+  sagpr1, sagpi1, ons(natom(2),sec)
 real(8), intent(out) :: ne
 character(len=1) :: a(50)
 if (verbose) print 1000

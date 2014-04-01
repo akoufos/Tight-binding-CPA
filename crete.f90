@@ -16,12 +16,12 @@ subroutine crete(dels,delp)
 ! Se/Te(nse,nse) - Complex versions of onsite matices for calculations
 !--------------------------------------------------------------------------
 use global
+use concentration
 implicit none
-common /d1/ con
 common /d3/ sig, grn
 common /d6/ ons
 integer(4) :: l, l1, l2, l3
-real(8) :: con, ons(natom(2),sec)
+real(8) :: ons(natom(2),sec)
 complex(8) :: up(nse,nse), ge(nse,nse), su(nse,nse), term(nse,nse), &
   usi(nse,nse), grn(sec,sec), sig(nse), Se(nse,nse), Te(nse,nse), &
   eps(nse,nse)

@@ -17,14 +17,13 @@ subroutine cpaNR(ham,wt,tot,e,eps,del1,mchk,numit)
 ! numit - Maximum number of iterations for the procedure
 !--------------------------------------------------------------------------
 use global
+use converge
 implicit none
 common /d3/ sig, grn
 common /d5/ dels, delp
-common /d7/ cr, ci
 integer(4) :: i, n, irep
 integer(4), intent(in) :: numit
 integer(4), intent(out) :: mchk
-real(8) :: cr, ci
 real(8), intent(in) :: wt(jsz), tot, e, eps
 complex(8) :: dels(2), delp(6), sig(nse), grn(sec,sec)
 complex(8), intent(in) :: del1
@@ -81,9 +80,9 @@ return
 1001 format(2X,I5,8F14.9)
 1002 format(7X,8F14.9)
 1003 format(4(2(F12.8,1X)))
-2000 format('End cpaNR',/)
 1005 format("Didn't you just converge?")
 1006 format("Yes, but |imaginary[sig(",I2,")]| is greater than zero. ", &
   E15.8)
 1007 format("Yes, you are correct")
+2000 format('End cpaNR',/)
 end subroutine cpaNR

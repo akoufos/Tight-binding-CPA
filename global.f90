@@ -1,7 +1,7 @@
 module global
 !--------------------------------------------------------------------------
 ! Currently this global file is setup for calculations of P4/nmm Fe2Se/Te2
-!-------------------------------------------------------------------------
+!--------------------------------------------------------------------------
 ! Variables:
 ! jsz - Number of kpoints
 ! ntype - Number of different atom types
@@ -11,7 +11,7 @@ module global
 ! sec - Number of secular equations
 ! verbose - Logical for debugging flags (.true. = debug info on)
 ! vlvl - Level of debugging verboseness
-!-------------------------------------------------------------------------
+!--------------------------------------------------------------------------
 ! Notes for future release:
 !
 ! Some of these parmeters should not be explicitly set in the global 
@@ -29,4 +29,18 @@ integer(4), parameter :: sec = 9*2*2 !sum(natom) ! 9 (s(1) + p(3) + d(5))
 logical :: verbose
 real(8), parameter :: pi = 4.0d0*datan(1.0d0), pp = 1.0d0/pi
 real(8), parameter :: small = 1.0d-20
+save
 end module global
+
+module converge
+implicit none
+real(8) :: cr 
+real(8) :: ci
+save
+end module converge
+
+module concentration
+implicit none
+real(8) :: con
+save
+end module
