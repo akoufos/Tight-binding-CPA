@@ -18,13 +18,11 @@ subroutine setHam(ham,e,eps)
 !--------------------------------------------------------------------------
 use global
 use concentration
+use onsites
+use hamiltonians
 implicit none
 common /d3/ sig, grn
-common /d4/ hma, vsa, hmb, vsb
-common /d6/ ons
 integer(4) :: i, l, kpts
-real(8) :: hma(jsz,sec,sec), vsa(jsz,sec,sec), hmb(jsz,sec,sec), &
-  vsb(jsz,sec,sec), ons(natom(2),sec), ons_bar(sec)
 real(8), intent(in) :: e, eps
 complex(8) :: H1(jsz,sec,sec), H2(jsz,sec,sec), sig(nse), grn(sec,sec)
 complex(8), intent(out) :: ham(jsz,sec,sec)

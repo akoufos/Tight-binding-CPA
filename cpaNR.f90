@@ -20,7 +20,6 @@ use global
 use converge
 implicit none
 common /d3/ sig, grn
-common /d5/ dels, delp
 integer(4) :: i, n, irep
 integer(4), intent(in) :: numit
 integer(4), intent(out) :: mchk
@@ -30,6 +29,7 @@ complex(8), intent(in) :: del1
 complex(8), intent(out) :: ham(jsz,sec,sec)
 do n = 1, numit
   if (verbose) print 1000
+  dels(:) = (0.0d0,0.0d0); delp(:) = (0.0d0,0.0d0)
   write(6,1001)n,(sig(i),i=1,4)
   write(6,1002)(sig(i),i=5,8)
   if (verbose.and.vlvl.ge.1) then
@@ -52,7 +52,7 @@ do n = 1, numit
     mchk = 1
     if (verbose.and.vlvl.ge.2) print 1005
     do i = 1, nse
-      if(aimag(sig(i)).gt.1.0d-20) then 
+      if (aimag(sig(i)).gt.1.0d-20) then 
         irep = 1
         sig(i) = cmplx(dble(sig(i)),-aimag(sig(i)),8)
         if (verbose.and.vlvl.ge.2) print 1006, i,abs(aimag(sig(i)))

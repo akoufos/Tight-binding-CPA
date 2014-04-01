@@ -17,11 +17,10 @@ subroutine crete(dels,delp)
 !--------------------------------------------------------------------------
 use global
 use concentration
+use onsites
 implicit none
 common /d3/ sig, grn
-common /d6/ ons
 integer(4) :: l, l1, l2, l3
-real(8) :: ons(natom(2),sec)
 complex(8) :: up(nse,nse), ge(nse,nse), su(nse,nse), term(nse,nse), &
   usi(nse,nse), grn(sec,sec), sig(nse), Se(nse,nse), Te(nse,nse), &
   eps(nse,nse)

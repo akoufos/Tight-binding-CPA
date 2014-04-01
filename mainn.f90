@@ -41,11 +41,10 @@ subroutine mainn()
 !--------------------------------------------------------------------------
 use omp_lib
 use global
+use hamiltonians
 implicit none
 common /d2/ emin, emax, eps, del, epiv, sagsr1, sagsi1, sagpr1, sagpi1
 common /d3/ sig, grn
-common /d4/ hma, vsa, hmb, vsb
-common /d5/ dels, delp
 integer(4) :: i, l, ll
 integer(4) :: iss, iss1, itop, ixyz, l9, m, mchk, mc, mcm, mcount, &
   n, nchk, ndim, nmode, num99
@@ -56,10 +55,9 @@ real(8) :: del, dnorfl, e, efl, emax, emin, epiv, &
 real(8) :: res(2000,15), anumel(2000), dumm(2000), edum(2000), &
   dums1(2000), dump1(2000), dums2(2000), dump2(2000), dumxz(2000), &
   dumxy(2000), dum3r(2000), dumx2(2000), densfl(10), weight(jsz), &
-  qq(jsz,3), hma(jsz,sec,sec), vsa(jsz,sec,sec), hmb(jsz,sec,sec), &
-  vsb(jsz,sec,sec)
+  qq(jsz,3)
 real(8), parameter :: dsig = 1.0d-4
-complex(8) :: dels(2), delp(6), ham(jsz,sec,sec), grn(sec,sec), &
+complex(8) :: ham(jsz,sec,sec), grn(sec,sec), &
   sig(nse), sags(2), sagp(6), del1
 character(len=100) :: file1, file2
 if (verbose) print 1000

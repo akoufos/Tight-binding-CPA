@@ -7,7 +7,6 @@ subroutine cpaDOS(dos,w,tot,e,eps)
 ! tot - Total weight
 ! dos(sec+1) - Total and decomposed DOS of the system
 ! H(jsz,sec,sec) - Working Hamiltonian matrix
-! ons_bar(sec) - Averaged onsite energies
 ! f1000 - Formatting string for printing matrices verbosely
 !--------------------------------------------------------------------------
 use global
