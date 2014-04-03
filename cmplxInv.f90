@@ -38,6 +38,10 @@ if (verbose.and.vlvl.ge.3) then
   print f1000, transpose(AA)
 end if
 ! Now use the PLU decomposition to solve for the inverse of A by columns
+!$OMP PARALLEL &
+!$OMP SHARED(AA, n, p, b) &
+!$OMP PRIVATE(i)
+!$OMP DO
 do i = 1, n
   call clubk(AA,n,p,b(i,:),verbose,vlvl)
   if (verbose.and.vlvl.ge.2) then
@@ -45,6 +49,8 @@ do i = 1, n
     print 1001, b(i,:)
   end if
 end do
+!$OMP END DO
+!$OMP END PARALLEL
 ! Write matrix B (inverse of A) to matrix A
 A = B
 if (verbose.and.vlvl.ge.2) then

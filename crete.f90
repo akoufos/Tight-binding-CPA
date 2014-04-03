@@ -1,4 +1,4 @@
-subroutine crete(dels,delp)
+subroutine crete(G,dels,delp)
 !--------------------------------------------------------------------------
 ! Sets up the matrices to be inverted for the elements that have a self-
 ! energy
@@ -6,6 +6,7 @@ subroutine crete(dels,delp)
 ! Variables:
 ! dels(2) - Change in the s states
 ! delp(6) - Change in the p states
+! G(sec,sec) - Green's function calculated from greens subroutine
 ! ge(nse,nse) - Diagonally reduced Green's matrix
 ! usi(nse,nse) - Diagonally reduced self-energy matrix
 ! up(nse,nse) - Matrix of ge*usi
@@ -18,11 +19,12 @@ subroutine crete(dels,delp)
 use global
 use concentration
 use onsites
+use sigma
 implicit none
-common /d3/ sig, grn
 integer(kind=4) :: l
 complex(kind=8) :: up(nse,nse), ge(nse,nse), su(nse,nse), term(nse,nse), &
-  usi(nse,nse), grn(sec,sec), sig(nse), Se(nse,nse), Te(nse,nse)
+  usi(nse,nse), Se(nse,nse), Te(nse,nse)
+complex(kind=8), intent(in) :: G(sec,sec)
 complex(kind=8), intent(out) :: dels(2), delp(6)
 if (verbose) print 1000
 dels(:) = (0.0d0,0.0d0)
@@ -31,14 +33,14 @@ usi(:,:) = (0.0d0,0.0d0)
 ge(:,:) = (0.0d0,0.0d0)
 su(:,:) = (0.0d0,0.0d0)
 if(verbose.and.vlvl.ge.1) print 1001, sig
-ge(1,1) = grn(19,19)
-ge(2,2) = grn(20,20)
-ge(3,3) = grn(21,21)
-ge(4,4) = grn(22,22)
-ge(5,5) = grn(28,28)
-ge(6,6) = grn(29,29)
-ge(7,7) = grn(30,30)
-ge(8,8) = grn(31,31)
+ge(1,1) = G(19,19)
+ge(2,2) = G(20,20)
+ge(3,3) = G(21,21)
+ge(4,4) = G(22,22)
+ge(5,5) = G(28,28)
+ge(6,6) = G(29,29)
+ge(7,7) = G(30,30)
+ge(8,8) = G(31,31)
 usi(1,1) = sig(1)
 usi(2,2) = sig(2)
 usi(3,3) = sig(3)

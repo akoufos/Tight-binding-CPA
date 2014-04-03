@@ -33,18 +33,16 @@ subroutine mainn()
 ! epiv - Pivot energy (helps with N-R iterations [usually around E_F])
 ! eps - Imaginary part of energy shift ?
 ! emax/emin - Maximum and minimum of energy window, respectively
-! grn - Green's function matrix
 ! sag**1 - Real and imaginary parts, respectively, of s & p initial onsite
   ! parameters (should be average between two substitution atoms)
 ! sig** - Real and imaginary parts, respectively, of s & p self-energies 
 ! sig - Complex self-energies
 !--------------------------------------------------------------------------
-use omp_lib
 use global
 use hamiltonians
+use sigma
 implicit none
 common /d2/ emin, emax, eps, del, epiv, sagsr1, sagsi1, sagpr1, sagpi1
-common /d3/ sig, grn
 integer(kind=4) :: i, l, ll
 integer(kind=4) :: iss, iss1, itop, ixyz, l9, m, mchk, mc, mcm, mcount, &
   n, nchk, ndim, nmode, num99
@@ -56,8 +54,8 @@ real(kind=8) :: res(2000,15), anumel(2000), dumm(2000), edum(2000), &
   dums1(2000), dump1(2000), dums2(2000), dump2(2000), dumxz(2000), &
   dumxy(2000), dum3r(2000), dumx2(2000), densfl(10), weight(jsz), &
   qq(jsz,3)
-real(kind=8), parameter :: dsig = 1.0d-4
-complex(kind=8) :: grn(sec,sec), sig(nse), sags(2), sagp(6), del1
+real(kind=8), parameter :: dsig = 1.0d-6
+complex(kind=8) :: sags(2), sagp(6), del1
 character(len=100) :: file1, file2
 if (verbose) print 1000
 open(6,file='cpaper.out',blank='zero')
@@ -65,7 +63,7 @@ nchk = 0
 totvol = 0.0d0
 write(file1,'(A)') 'cpamat1.dat'
 write(file2,'(A)') 'cpamat2.dat'
-call readin(ndim, nuelec)
+call readin(ndim,nuelec)
 call setOnsites
 call kpts(jsz,qq,weight,totvol)
 call readSec(hma,vsa,file1)

@@ -104,3 +104,31 @@ real(kind=8) :: vsb(jsz,sec,sec)
 complex(kind=8) :: ham(jsz,sec,sec)
 save
 end module hamiltonians
+
+!--------------------------------------------------------------------------
+module green
+!--------------------------------------------------------------------------
+! Module for greens function matrix and related variables
+!--------------------------------------------------------------------------
+! Variables:
+! grn(sec,sec) - Green's function
+!--------------------------------------------------------------------------
+use global
+implicit none
+complex(kind=8) :: grn(sec,sec)
+save
+end module green
+
+!--------------------------------------------------------------------------
+module sigma
+!--------------------------------------------------------------------------
+! Module for the self-energies and related variables
+!--------------------------------------------------------------------------
+! Variables:
+! sig(nse) - Self energies of the system
+!--------------------------------------------------------------------------
+use global
+implicit none
+complex(kind=8) :: sig(nse)
+save
+end module sigma

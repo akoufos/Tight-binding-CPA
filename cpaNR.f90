@@ -4,7 +4,7 @@ subroutine cpaNR(wt,tot,e,eps,del1,mchk,numit)
 ! Newton-Raphson method.
 !--------------------------------------------------------------------------
 ! Variables:
-! grn(sec,sec) - Green's function
+! G(sec,sec) - Green's function
 ! sig(nse) - Self-energies of the disordered states
 ! H(jsz,sec,sec) - Hamiltonian of the system
 ! wt(jsz) - Weights at each k-point in the Brillouin zone
@@ -17,13 +17,13 @@ subroutine cpaNR(wt,tot,e,eps,del1,mchk,numit)
 use global
 use converge
 use hamiltonians, only : ham
+use sigma
 implicit none
-common /d3/ sig, grn
 integer(kind=4) :: i, n, irep
 integer(kind=4), intent(in) :: numit
 integer(kind=4), intent(out) :: mchk
 real(kind=8), intent(in) :: wt(jsz), tot, e, eps
-complex(kind=8) :: dels(2), delp(6), sig(nse), grn(sec,sec), H(jsz,sec,sec)
+complex(kind=8) :: dels(2), delp(6), H(jsz,sec,sec), G(sec,sec)
 complex(kind=8), intent(in) :: del1
 do n = 1, numit
   if (verbose) print 1000
@@ -37,8 +37,8 @@ do n = 1, numit
   mchk = 0; irep = 0
   H(:,:,:) = ham(:,:,:)
   call setHam(H,e,eps)
-  call greens(H,wt,tot)
-  call crete(dels,delp)
+  call greens(H,G,wt,tot)
+  call crete(G,dels,delp)
 !verbose = .true.; vlvl = 2;
   if(verbose.and.vlvl.ge.1) print 1003, dels, delp
   if (abs(dble(dels(1))).le.cr.and.abs(aimag(dels(1))).le.ci.and. &
@@ -60,16 +60,17 @@ do n = 1, numit
         if (verbose.and.vlvl.ge.2.and.i.eq.1) print 1007
       end if
     end do
-  else
-     sig(1) = sig(1) + del1*dels(1)
-     sig(5) = sig(5) + del1*dels(2)
-     sig(2) = sig(2) + del1*delp(1)
-     sig(3) = sig(3) + del1*delp(2)
-     sig(4) = sig(4) + del1*delp(3)
-     sig(6) = sig(6) + del1*delp(4)
-     sig(7) = sig(7) + del1*delp(5)
-     sig(8) = sig(8) + del1*delp(6)
   end if
+!  else
+!     sig(1) = sig(1) + dels(1)
+!     sig(5) = sig(5) + dels(2)
+!     sig(2) = sig(2) + delp(1)
+!     sig(3) = sig(3) + delp(2)
+!     sig(4) = sig(4) + delp(3)
+!     sig(6) = sig(6) + delp(4)
+!     sig(7) = sig(7) + delp(5)
+!     sig(8) = sig(8) + delp(6)
+!  end if
 !verbose = .false.; vlvl = 2;
   if (irep.eq.1) cycle
   if (mchk.eq.1) exit
@@ -77,8 +78,8 @@ end do
 if (verbose) print 2000
 return
 1000 format(/,'Begin subroutine cpaNR')
-1001 format(2X,I5,8F14.9)
-1002 format(7X,8F14.9)
+1001 format(2X,I5,4(F14.9,E14.6))
+1002 format(7X,4(F14.9,E14.6))
 1003 format(4(2(F12.8,1X)))
 1005 format("Didn't you just converge?")
 1006 format("Yes, but |imaginary[sig(",I2,")]| is greater than zero. ", &

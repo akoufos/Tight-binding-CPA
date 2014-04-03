@@ -7,17 +7,15 @@ subroutine setHam(H,e,eps)
 ! H(jsz,sec,sec) - Hamiltonian of the system at specific energy level
 ! ons_bar(sec) - Averaged onsite energies
 ! sig(nse) - Self-energies for disordered states
-! grn(sec,sec) - Green's function
 ! f1000 - Formatting string for printing matrices verbosely
 !--------------------------------------------------------------------------
 use global
 use concentration
 use onsites, only : ons_bar
+use sigma
 implicit none
-common /d3/ sig, grn
 integer(kind=4) :: i, l, kpts
 real(kind=8), intent(in) :: e, eps
-complex(kind=8) :: sig(nse), grn(sec,sec)
 complex(kind=8), intent(inout) :: H(jsz,sec,sec)
 character(len=100) :: f1000
 if (verbose) print 1000

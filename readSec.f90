@@ -10,10 +10,11 @@ subroutine readSec(h,g,fname)
 !--------------------------------------------------------------------------
 use global
 implicit none
-integer(kind=4) :: i, j, k
+integer(kind=4) :: i, j, k, n
 real(kind=8), intent(out) :: h(jsz,sec,sec), g(jsz,sec,sec)
 character(len=100), intent(in) :: fname
 if (verbose) print 1000
+n = sec
 g(:,:,:) = 0.0d0; h(:,:,:) = 0.0d0
 open(16,file=fname,blank='zero')
 do i = 1, jsz
@@ -27,15 +28,19 @@ do i = 1, jsz
       if(verbose.and.vlvl.ge.5) print 1001, h(i,j,k), g(i,j,k)
     end do
   end do
-!$OMP PARALLEL DO DEFAULT(SHARED)
-  do j = 1, sec
-    do k = 1, sec
+!$OMP PARALLEL &
+!$OMP SHARED(i, n, g, h) &
+!$OMP PRIVATE(j, k)
+!$OMP DO
+  do j = 1, n
+    do k = 1, n
       g(i,j,k) = -g(i,k,j)
       h(i,j,k) = h(i,k,j)
     end do
   end do
+!$OMP END DO
+!$OMP END PARALLEL
 end do
-!$OMP END PARALLEL DO
 close(16)
 if (verbose) print 2000
 return

@@ -39,7 +39,7 @@ write(6,1009)ons(2,:)
 read(5,*) es,ep
 write(6,1004) es,ep
 read(5,*) con, emin, emax, del, epiv, sagsr1, sagsi1, sagpr1, sagpi1
-write(6,1003) con, emin, emax, del, epiv, sagsr1, sagsi1, sagpr1, sagpi1
+write(6,1005) con, emin, emax, del, epiv, sagsr1, sagsi1, sagpr1, sagpi1
 read(5,*) eps
 close(5)
 write(6,1006) eps, jsz
