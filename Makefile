@@ -15,9 +15,10 @@ SRC_modules = global.f90
 
 SRC_cpa = ccrlu.f90 clubk.f90 cpaDOS.f90 cpagen.f90 cpaNR.f90 crete.f90 \
 	kpts.f90 greens.f90 mainn.f90 readin.f90 readSec.f90 setHam.f90 \
-	setInitHam.f90 setOnsites.f90 simp.f90
+	setInitHam.f90 setOnsites.f90 simp.f90 #greens_omp.f90
+#	kpts.f90 mainn.f90 readin.f90 readSec.f90 setHam.f90 \
 
-SRC_omp = cmplxInv.f90
+SRC_omp = cmplxInv.f90 #greens_omp.f90
 
 SRC = $(SRC_modules) $(SRC_cpa) $(SRC_omp)
 

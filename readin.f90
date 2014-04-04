@@ -1,4 +1,4 @@
-subroutine readin(nd, ne)
+subroutine readin(nd, ne, sagr1, sagi1)
 !--------------------------------------------------------------------------
 ! Reads inputs from cpaper.dat and writes some information to output file.
 !--------------------------------------------------------------------------
@@ -16,12 +16,11 @@ use converge
 use concentration
 use onsites
 implicit none
-common /d2/ emin, emax, eps, del, epiv, sagsr1, sagsi1, sagpr1, sagpi1
+common /d2/ emin, emax, eps, del, epiv
 integer(kind=4) :: i
 integer(kind=4), intent(out) :: nd
-real(kind=8) :: del, epiv, eps, es, ep, emin, emax, sagsr1, sagsi1, &
-  sagpr1, sagpi1
-real(kind=8), intent(out) :: ne
+real(kind=8) :: del, epiv, eps, es, ep, emin, emax
+real(kind=8), intent(out) :: ne, sagi1(nse), sagr1(nse)
 character(len=1) :: a(50)
 if (verbose) print 1000
 open(5,file='cpaper.dat',blank='zero')
@@ -38,8 +37,9 @@ write(6,1010)
 write(6,1009)ons(2,:)
 read(5,*) es,ep
 write(6,1004) es,ep
-read(5,*) con, emin, emax, del, epiv, sagsr1, sagsi1, sagpr1, sagpi1
-write(6,1005) con, emin, emax, del, epiv, sagsr1, sagsi1, sagpr1, sagpi1
+read(5,*) con, emin, emax, del, epiv
+read(5,*) (sagr1(i), sagi1(i), i=1,nse)
+write(6,1005) con, emin, emax, del, epiv, (sagr1(i), sagi1(i), i=1,nse)
 read(5,*) eps
 close(5)
 write(6,1006) eps, jsz
@@ -52,7 +52,7 @@ if (verbose.and.vlvl.ge.2) then
   print 1007
   print 1009, ons(2,:)
   print 1004, es,ep
-  print 1005, con, emin, emax, del, epiv, sagsr1, sagsi1, sagpr1, sagpi1
+  print 1005, con, emin, emax, del, epiv, (sagr1(i), sagi1(i), i=1,nse)
   print 1006, eps, jsz
   print 1007, cr, ci
 end if
@@ -67,7 +67,7 @@ return
 1002 format(I5,5X,3F10.7)
 1003 format(2F9.5)
 1004 format(2F15.10)
-1005 format(5F10.4/4F10.4,/)
+1005 format(5F10.4/2(4(2F10.4),/))
 1006 format(//'eps= ',F15.6,10X,'k-points: ',i5//)
 1007 format(//,'Convergence criterion (real and imaginary)'/,2F15.9,//)
 1008 format(//,'Onsite parameters of Selenium',/)

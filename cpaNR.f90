@@ -1,4 +1,4 @@
-subroutine cpaNR(wt,tot,e,eps,del1,mchk,numit)
+subroutine cpaNR(wt,tot,e,eps,mchk,numit)
 !--------------------------------------------------------------------------
 ! Solves for the self-energies, and thus the Green's function, using the
 ! Newton-Raphson method.
@@ -24,7 +24,6 @@ integer(kind=4), intent(in) :: numit
 integer(kind=4), intent(out) :: mchk
 real(kind=8), intent(in) :: wt(jsz), tot, e, eps
 complex(kind=8) :: dels(2), delp(6), H(jsz,sec,sec), G(sec,sec)
-complex(kind=8), intent(in) :: del1
 do n = 1, numit
   if (verbose) print 1000
   dels(:) = (0.0d0,0.0d0); delp(:) = (0.0d0,0.0d0)
@@ -61,17 +60,6 @@ do n = 1, numit
       end if
     end do
   end if
-!  else
-!     sig(1) = sig(1) + dels(1)
-!     sig(5) = sig(5) + dels(2)
-!     sig(2) = sig(2) + delp(1)
-!     sig(3) = sig(3) + delp(2)
-!     sig(4) = sig(4) + delp(3)
-!     sig(6) = sig(6) + delp(4)
-!     sig(7) = sig(7) + delp(5)
-!     sig(8) = sig(8) + delp(6)
-!  end if
-!verbose = .false.; vlvl = 2;
   if (irep.eq.1) cycle
   if (mchk.eq.1) exit
 end do
