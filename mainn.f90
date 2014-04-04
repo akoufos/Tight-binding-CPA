@@ -53,8 +53,7 @@ real(kind=8) :: res(2000,15), anumel(2000), dumm(2000), edum(2000), &
   dums1(2000), dump1(2000), dums2(2000), dump2(2000), dumxz(2000), &
   dumxy(2000), dum3r(2000), dumx2(2000), densfl(10), weight(jsz), &
   qq(jsz,3)
-real(kind=8), parameter :: dsig = 1.0d-4
-complex(kind=8) :: sag(nse), del1
+complex(kind=8) :: sag(nse)
 character(len=100) :: file1, file2
 if (verbose) print 1000
 open(6,file='cpaper.out',blank='zero')
@@ -77,7 +76,6 @@ if(nchk.eq.0) nmode = 1
 if(nchk.eq.1) nmode = 2
 if(nchk.eq.1) epiv = epiv - del
 e = epiv
-del1 = cmplx(dsig,dsig,8)
 do ixyz = iss1, 2000
   sig(:) = sag(:)
   call cpaNR(weight,totvol,e,eps,mchk,numit)
