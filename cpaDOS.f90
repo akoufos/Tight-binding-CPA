@@ -36,13 +36,13 @@ do i = 1, jsz
   end do
 end do
 dos(sec+1) = sum(dos(1:sec))
-verbose = .true.; vlvl = 1
 if (verbose.and.vlvl.ge.1) then
   print 1001, e, dos(:)
-  print 1001, e, dos(sec+1)
 end if
+print 1002, e, dos(sec+1)
 if (verbose) print 2000
 1000 format(/,'Start subroutine cpaDOS')
 1001 format('DOS for energy ',F10.6,':',/,37F10.6)
+1002 format('DOS for energy ',F10.6,':',5X,F10.6)
 2000 format('End cpaDOS',/)
 end subroutine cpaDOS

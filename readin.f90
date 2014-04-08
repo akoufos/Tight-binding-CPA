@@ -49,7 +49,7 @@ if (verbose.and.vlvl.ge.2) then
   print 1002, nd,ne,cr,ci
   print 1008
   print 1009, ons(1,:)
-  print 1007
+  print 1010
   print 1009, ons(2,:)
   print 1004, es,ep
   print 1005, con, emin, emax, del, epiv, (sagr1(i), sagi1(i), i=1,nse)

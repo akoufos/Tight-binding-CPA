@@ -49,10 +49,10 @@ integer(kind=4) :: iss, iss1, itop, ixyz, l9, m, mchk, mc, mcm, mcount, &
 integer(kind=4), parameter :: numit = 100
 real(kind=8) :: del, dnorfl, e, efl, emax, emin, epiv, &
   eps, interp, nuelec, s, sagi1(nse), sagr1(nse), totvol, dos(sec+1)
-real(kind=8) :: res(2000,15), anumel(2000), dumm(2000), edum(2000), &
-  dums1(2000), dump1(2000), dums2(2000), dump2(2000), dumxz(2000), &
-  dumxy(2000), dum3r(2000), dumx2(2000), densfl(10), weight(jsz), &
-  qq(jsz,3)
+real(kind=8) :: res(2000,9*ntype+2*nse+2), anumel(2000), dumm(2000), &
+  edum(2000), dums1(2000), dump1(2000), dums2(2000), dump2(2000), & 
+  dumxz(2000), dumxy(2000), dum3r(2000), dumx2(2000), densfl(10), &
+  weight(jsz), qq(jsz,3)
 complex(kind=8) :: sag(nse)
 character(len=100) :: file1, file2
 if (verbose) print 1000
@@ -89,23 +89,34 @@ do ixyz = iss1, 2000
   write(6,1015)n,(sig(i),i=1,4),e
   write(6,1016)  (sig(i),i=5,8),e
   call cpaDOS(dos,weight,totvol,e,eps)
-verbose = .false.; vlvl = 1
 870 continue
   res(ixyz,1) = e
   res(ixyz,2) = dble(sig(1))
   res(ixyz,3) = aimag(sig(1))
   res(ixyz,4) = dble(sig(2))
   res(ixyz,5) = aimag(sig(2))
-  res(ixyz,6) = dos(1) + dos(10)
-  res(ixyz,7) = sum(dos(2:4)) + sum(dos(11:13))
-  res(ixyz,8) = sum(dos(5:6)) + sum(dos(14:15))
-  res(ixyz,9) = dos(7) + dos(16)
-  res(ixyz,10) = dos(8) + dos(17)
-  res(ixyz,11) = dos(9) + dos(18)
-  res(ixyz,12) = dos(19) + dos(28)
-  res(ixyz,13) = sum(dos(20:22)) + sum(dos(29:31))
-  res(ixyz,14) = dos(sec+1)
-  write(6,1030)e,sig(1),sig(2),dos(sec+1)
+  res(ixyz,6) = dble(sig(3))
+  res(ixyz,7) = aimag(sig(3))
+  res(ixyz,8) = dble(sig(4))
+  res(ixyz,9) = aimag(sig(4))
+  res(ixyz,10) = dble(sig(5))
+  res(ixyz,11) = aimag(sig(5))
+  res(ixyz,12) = dble(sig(6))
+  res(ixyz,13) = aimag(sig(6))
+  res(ixyz,14) = dble(sig(7))
+  res(ixyz,15) = aimag(sig(7))
+  res(ixyz,16) = dble(sig(8))
+  res(ixyz,17) = aimag(sig(8))
+  res(ixyz,18) = dos(1) + dos(10)
+  res(ixyz,19) = sum(dos(2:4)) + sum(dos(11:13))
+  res(ixyz,20) = sum(dos(5:6)) + sum(dos(14:15))
+  res(ixyz,21) = dos(7) + dos(16)
+  res(ixyz,22) = dos(8) + dos(17)
+  res(ixyz,23) = dos(9) + dos(18)
+  res(ixyz,24) = dos(19) + dos(28)
+  res(ixyz,25) = sum(dos(20:22)) + sum(dos(29:31))
+  res(ixyz,26) = dos(sec+1)
+  write(6,1030)e,(sig(i),i=1,4),dos(sec+1)
   if(nmode.eq.2) goto 51
   e = e + del
   if(e.le.emax) cycle ! next iteration of ixyz loop
@@ -127,30 +138,32 @@ do ll = iss1, itop
   l = l - 1
   l9 = l9 + 1
   edum(l9) = res(l,1)
-  dums1(l9) = res(l,6)*2.0d0
-  dump1(l9) = res(l,7)*2.0d0
-  dumxz(l9) = res(l,8)*2.0d0
-  dumxy(l9) = res(l,9)*2.0d0
-  dum3r(l9) = res(l,10)*2.0d0
-  dumx2(l9) = res(l,11)*2.0d0
-  dums2(l9) = res(l,12)*2.0d0
-  dump2(l9) = res(l,13)*2.0d0
-  dumm(l9) = res(l,14)*2.0d0
-  write(6,3030)(res(l,m),m=1,5)
+  dums1(l9) = res(l,18)*2.0d0
+  dump1(l9) = res(l,19)*2.0d0
+  dumxz(l9) = res(l,20)*2.0d0
+  dumxy(l9) = res(l,21)*2.0d0
+  dum3r(l9) = res(l,22)*2.0d0
+  dumx2(l9) = res(l,23)*2.0d0
+  dums2(l9) = res(l,24)*2.0d0
+  dump2(l9) = res(l,25)*2.0d0
+  dumm(l9) = res(l,26)*2.0d0
+  write(6,3030)(res(l,m),m=1,9)
+  write(6,3040)(res(l,m),m=10,17)
 end do
 do l = 1, iss
   l9 = l9 + 1
   edum(l9) = res(l,1)
-  dums1(l9) = res(l,6)*2.0d0
-  dump1(l9) = res(l,7)*2.0d0
-  dumxz(l9) = res(l,8)*2.0d0
-  dumxy(l9) = res(l,9)*2.0d0
-  dum3r(l9) = res(l,10)*2.0d0
-  dumx2(l9) = res(l,11)*2.0d0
-  dums2(l9) = res(l,12)*2.0d0
-  dump2(l9) = res(l,13)*2.0d0
-  dumm(l9) = res(l,14)*2.0d0
-  write(6,3030)(res(l,m),m=1,5)
+  dums1(l9) = res(l,18)*2.0d0
+  dump1(l9) = res(l,19)*2.0d0
+  dumxz(l9) = res(l,20)*2.0d0
+  dumxy(l9) = res(l,21)*2.0d0
+  dum3r(l9) = res(l,22)*2.0d0
+  dumx2(l9) = res(l,23)*2.0d0
+  dums2(l9) = res(l,24)*2.0d0
+  dump2(l9) = res(l,25)*2.0d0
+  dumm(l9) = res(l,26)*2.0d0
+  write(6,3030)(res(l,m),m=1,9)
+  write(6,3040)(res(l,m),m=10,17)
 end do
 num99 = itop - 1
 call simp(edum,dumm,anumel,num99,verbose,vlvl)
@@ -166,14 +179,14 @@ do ll = iss1, itop
   l = l - 1
   l9 = l9 + 1
   res(l,15) = anumel(l9)
-  write(6,3070)res(l,1),(res(l,m),m=6,15),ll
-  write(8,3070)res(l,1),(res(l,m),m=6,15),ll
+  write(6,3070)res(l,1),(res(l,m),m=18,26),ll
+  write(8,3070)res(l,1),(res(l,m),m=18,26),ll
 end do
 do l = 1, iss
   l9 = l9 + 1
   res(l,15) = anumel(l9)
-  write(6,3070)res(l,1),(res(l,m),m=6,15),l
-  write(8,3070)res(l,1),(res(l,m),m=6,15),l
+  write(6,3070)res(l,1),(res(l,m),m=18,26),l
+  write(8,3070)res(l,1),(res(l,m),m=18,26),l
 end do
 close(8)
 mcount = 0
@@ -203,7 +216,7 @@ write(6,840)efl,nuelec,dnorfl,(densfl(i),i=1,8)
 close(6)
 if (verbose) print 2000
 return
-839  format(/,'Fermi energy   Electrons   Total DOS   Fe-s   Fe-p   Fe- &
+839  format(/,'Fermi energy   Electrons   Total DOS   Fe-s   Fe-p   Fe-&
   xy   Fe-xz   Fe-3r^2-z^2   Fe-x^2-y^2   Se-s   Se-p',//)
 840  format(2f10.5   ,3x,7f10.5//)
 841  format(//65x,11h (per spin)  )
@@ -211,11 +224,11 @@ return
 2000 format('End mainn',/)
 1015 format(5x,i5,8f15.8,f10.6)
 1016 format(10X,8f15.8,f10.6)
-1030 format(//1x,f9.5,4f12.8,10x, f10.5//)
+1030 format(//1x,f9.5,8f12.8,10x, f10.5//)
 3000 format(1h1,///)
-3010 format(20x,' printing of --- energy --complex sigs  ---- complex &
-  sigp'///)
-3030 format(24x,f10.4,4f15.8)
+3010 format(20x,'Energy Complex self-energies (s, px, py, pz)'///)
+3030 format(F9.5,3X,4(2G12.5,2X))
+3040 format(12X,4(2G12.5,2X))
 3050 format(10x,'Energy, Fe-s, Fe-p(x,y,z), Fe-d(xz,yz), Fe-d(xz), Fe-&
   d(3r^2-z^2), Fe-d(x^2-y^2), Se-s, Se-p(x,y,z), Total DOS, electrons, &
   iteration',/)
