@@ -79,7 +79,11 @@ e = epiv
 do ixyz = iss1, 2000
   sig(:) = sag(:)
   call cpaNR(weight,totvol,e,eps,mchk,numit)
-  sag(:) = sig(:)
+  if (mchk.eq.1) then
+    sag(:) = sig(:)
+  else
+    sag(:) = cmplx(sagr1(:),sagi1(:),8)
+  end if
   if (mchk.eq.1) goto 9991
   write(6,5004)e
   goto 870 
