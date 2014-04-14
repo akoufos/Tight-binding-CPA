@@ -53,7 +53,7 @@ delp(3) = sig(4) - term(4)
 delp(4) = sig(6) - term(6)
 delp(5) = sig(7) - term(7)
 delp(6) = sig(8) - term(8)
-verbose=.true.; vlvl=0
+verbose = .true.; vlvl = 3
 if(verbose.and.vlvl.ge.1) then
   if(vlvl.ge.2) then
     print 1004
@@ -63,7 +63,7 @@ if(verbose.and.vlvl.ge.1) then
   end if
   print 1002, dels, delp
 end if
-verbose=.false.; vlvl=1
+verbose = .false.; vlvl = 3
 do l = 1, nse
   sig(l) = term(l)
 end do

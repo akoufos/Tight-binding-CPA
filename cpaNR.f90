@@ -50,7 +50,7 @@ do n = 1, numit
     mchk = 1
     if (verbose.and.vlvl.ge.2) print 1005
     do i = 1, nse
-      if (aimag(sig(i)).gt.1.0d-15) then 
+      if (aimag(sig(i)).gt.1.0d-20) then 
         irep = 1
         sig(i) = cmplx(dble(sig(i)),-aimag(sig(i)),8)
         if (verbose.and.vlvl.ge.2) print 1006, i,abs(aimag(sig(i)))

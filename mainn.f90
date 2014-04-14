@@ -63,7 +63,7 @@ write(file1,'(A)') 'cpamat1.dat'
 write(file2,'(A)') 'cpamat2.dat'
 verbose = .true.; vlvl = 3
 call readin(ndim,nuelec,sagr1,sagi1)
-verbose = .false.
+verbose = .false.; vlvl = 2
 call setOnsites
 call kpts(jsz,qq,weight,totvol)
 call readSec(hma,vsa,file1)
@@ -86,12 +86,19 @@ do ixyz = iss1, 2000
   end if
   if (mchk.eq.1) goto 9991
   write(6,5004)e
+  write(*,5004)e
   goto 870 
   nchk = nchk + 1
   goto 1111
   9991 continue
   write(6,1015)n,(sig(i),i=1,4),e
   write(6,1016)  (sig(i),i=5,8),e
+  verbose = .true.
+  if (verbose) then
+    write(*,1015)n,(sig(i),i=1,4),e
+    write(*,1016)  (sig(i),i=5,8),e
+  end if
+  verbose = .false.
   call cpaDOS(dos,weight,totvol,e,eps)
 870 continue
   res(ixyz,1) = e
@@ -182,15 +189,15 @@ l9 = 0
 do ll = iss1, itop
   l = l - 1
   l9 = l9 + 1
-  res(l,15) = anumel(l9)
-  write(6,3070)res(l,1),(res(l,m),m=18,26),ll
-  write(8,3070)res(l,1),(res(l,m),m=18,26),ll
+  res(l,27) = anumel(l9)
+  write(6,3070)res(l,1),(res(l,m),m=18,27),ll
+  write(8,3070)res(l,1),(res(l,m),m=18,27),ll
 end do
 do l = 1, iss
   l9 = l9 + 1
-  res(l,15) = anumel(l9)
-  write(6,3070)res(l,1),(res(l,m),m=18,26),l
-  write(8,3070)res(l,1),(res(l,m),m=18,26),l
+  res(l,27) = anumel(l9)
+  write(6,3070)res(l,1),(res(l,m),m=18,27),l
+  write(8,3070)res(l,1),(res(l,m),m=18,27),l
 end do
 close(8)
 mcount = 0
@@ -236,6 +243,6 @@ return
 3050 format(10x,'Energy, Fe-s, Fe-p(x,y,z), Fe-d(xz,yz), Fe-d(xz), Fe-&
   d(3r^2-z^2), Fe-d(x^2-y^2), Se-s, Se-p(x,y,z), Total DOS, electrons, &
   iteration',/)
-3070 format(2x,11f10.4,1x,i5)
+3070 format(2x,12f10.4,1x,i5)
 5004 format('   sigma didn t converge for e=',f10.4)
 end subroutine mainn
