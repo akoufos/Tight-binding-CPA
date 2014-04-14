@@ -63,8 +63,8 @@ write(file1,'(A)') 'cpamat1.dat'
 write(file2,'(A)') 'cpamat2.dat'
 verbose = .true.; vlvl = 3
 call readin(ndim,nuelec,sagr1,sagi1)
-verbose = .false.; vlvl = 2
 call setOnsites
+verbose = .false.; vlvl = 2
 call kpts(jsz,qq,weight,totvol)
 call readSec(hma,vsa,file1)
 call readSec(hmb,vsb,file2)

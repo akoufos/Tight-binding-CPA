@@ -33,11 +33,11 @@ end do
 write(f1000,'(A,I1,A)') "(",nse,"(2(F10.6,1x)))"
 if (verbose.and.vlvl.ge.2) then
   print 1001
-  print f1000, onsA(:,:)
+  print f1000, (onsA(l,l), l=1,nse)
   print 1002
-  print f1000, onsB(:,:)
+  print f1000, (onsB(l,l), l=1,nse)
   print 1003
-  print f1000, onsAvg(:,:)
+  print f1000, (onsAvg(l,l), l=1,nse)
 end if
 if (verbose) print 2000
 return

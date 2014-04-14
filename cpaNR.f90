@@ -50,10 +50,13 @@ do n = 1, numit
     mchk = 1
     if (verbose.and.vlvl.ge.2) print 1005
     do i = 1, nse
-      if (aimag(sig(i)).gt.1.0d-20) then 
+      if (aimag(sig(i)).gt.1.0d-15) then 
         irep = 1
-        sig(i) = cmplx(dble(sig(i)),-aimag(sig(i)),8)
         if (verbose.and.vlvl.ge.2) print 1006, i,abs(aimag(sig(i)))
+        sig(i) = cmplx(dble(sig(i)),-aimag(sig(i)),8)
+      elseif (aimag(sig(i)).gt.0.0d0.and.aimag(sig(i)).lt.1.0d0-15) then
+        if (verbose.and.vlvl.ge.2) print 1006, i,abs(aimag(sig(i)))
+        sig(i) = cmplx(dble(sig(i)),0.0d0,8)
       else
         if (verbose.and.vlvl.ge.2.and.i.eq.1) print 1007
       end if
