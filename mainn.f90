@@ -76,17 +76,25 @@ if(nchk.eq.0) nmode = 1
 if(nchk.eq.1) nmode = 2
 if(nchk.eq.1) epiv = epiv - del
 e = epiv
+sig(:) = sag(:)
 do ixyz = iss1, 2000
   sig(:) = sag(:)
   call cpaNR(weight,totvol,e,eps,mchk,numit)
   if (mchk.eq.1) then
     sag(:) = sig(:)
+    goto 9991
   else
     sag(:) = cmplx(sagr1(:),sagi1(:),8)
+    sig(:) = sag(:)
+    print 1001, e
+    call cpaFP(weight,totvol,e,eps,mchk,400)
+    if (mchk.eq.1) goto 9991
+    sag(:) = cmplx(sagr1(:),sagi1(:),8)
   end if
-  if (mchk.eq.1) goto 9991
+!  if (mchk.eq.1) goto 9991
   write(6,5004)e
   write(*,5004)e
+  print 1002
   goto 870 
   nchk = nchk + 1
   goto 1111
@@ -232,10 +240,13 @@ return
 840  format(2f10.5   ,3x,7f10.5//)
 841  format(//65x,11h (per spin)  )
 1000 format(/,'Begin subroutine mainn')
-2000 format('End mainn',/)
+1001 format(/,"Didn't converge for energy ",F8.5,/,"Trying fix point &
+  iteration instead",/)
+1002 format(/,"Still unable to converge. Something is wrong",/)
 1015 format(5x,i5,8f15.8,f10.6)
 1016 format(10X,8f15.8,f10.6)
 1030 format(//1x,f9.5,8f12.8,10x, f10.5//)
+2000 format('End mainn',/)
 3000 format(1h1,///)
 3010 format(20x,'Energy Complex self-energies (s, px, py, pz)'///)
 3030 format(F9.5,3X,4(2G12.5,2X))

@@ -1,4 +1,4 @@
-subroutine crete(G,dels,delp)
+subroutine fixpt(G,dels,delp)
 !--------------------------------------------------------------------------
 ! Sets up the matrices to be inverted for the elements that have a self-
 ! energy
@@ -22,8 +22,7 @@ use onsites
 use sigma
 implicit none
 integer(kind=4) :: l
-complex(kind=8) :: ge(nse), term(nse), F(nse), dF(nse), alpha(nse), &
-  beta(nse)
+complex(kind=8) :: ge(nse), term(nse), alpha(nse), beta(nse)
 complex(kind=8), intent(in) :: G(sec,sec)
 complex(kind=8), intent(out) :: dels(2), delp(6)
 if (verbose) print 1000
@@ -40,10 +39,8 @@ ge(7) = G(30,30)
 ge(8) = G(31,31)
 do l = 1, nse
   alpha(l) = 1.0d0 - onsB(l,l)*ge(l) - onsA(l,l)*ge(l)
-  beta(l) = ge(l)*onsA(l,l)*onsB(l,l) - onsAvg(l,l)
-  F(l) = ge(l)*sig(l)**2.0d0 + alpha(l)*sig(l) + beta(l)
-  dF(l) = alpha(l) + 2.0d0*ge(l)*sig(l)
-  term(l) = sig(l) - F(l)/dF(l)
+  beta(l) = onsAvg(l,l) - onsA(l,l)*onsB(l,l)*ge(l) - ge(l)*sig(l)**2.0d0
+  term(l) = beta(l)/alpha(l)
 end do
 dels(1) = sig(1) - term(1)
 dels(2) = sig(5) - term(5)
@@ -57,10 +54,9 @@ verbose = .true.; vlvl = 3
 if(verbose.and.vlvl.ge.1) then
   if(vlvl.ge.2) then
     print 1004
-    print 1003, F(:)
-    print 1003, dF(:)
+    print 1003, beta(:)
+    print 1003, alpha(:)
     print 1003, term(:)
-    print 1003, -alpha(:)/(2.0d0*ge(:))
   end if
   print 1002, dels, delp
 end if
@@ -71,10 +67,10 @@ end do
 if(verbose.and.vlvl.ge.1) print 1001, sig
 if(verbose) print 2000
 return
-1000 format(/,'Begin subroutine crete')
+1000 format(/,'Begin subroutine fixpt')
 1001 format('Sigma: ',/,4(2(F10.6,1X)))
 1002 format('Delta sig:',/,4(2(E12.5,2X)))
 1003 format(/,8(2F10.6,1x),/)
-1004 format(//,'F, dF, term')
-2000 format('End crete',/)
-end subroutine crete
+1004 format(//,'Numerator, Denominator, Self-energies')
+2000 format('End fixpt',/)
+end subroutine fixpt
