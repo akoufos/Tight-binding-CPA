@@ -37,6 +37,7 @@ subroutine mainn()
   ! parameters (should be average between two substitution atoms)
 ! sig** - Real and imaginary parts, respectively, of s & p self-energies 
 ! sig - Complex self-energies
+! method - String used to decide which zero finding procedure to use
 !--------------------------------------------------------------------------
 use global
 use hamiltonians
@@ -44,19 +45,21 @@ use sigma
 implicit none
 common /d2/ emin, emax, eps, del, epiv
 integer(kind=4) :: i, l, ll
-integer(kind=4) :: iss, iss1, itop, ixyz, l9, m, mchk, mc, mcm, mcount, &
+integer(kind=4) :: iss, iss1, itop, ixyz, l9, m, mc, mcm, mcount, &
   n, nchk, ndim, nmode, num99
 integer(kind=4), parameter :: numit = 100
+logical :: mchk(nse)
 real(kind=8) :: del, dnorfl, e, efl, emax, emin, epiv, &
   eps, interp, nuelec, s, sagi1(nse), sagr1(nse), totvol, dos(sec+1)
-real(kind=8) :: res(2000,9*ntype+2*nse+2), anumel(2000), dumm(2000), &
-  edum(2000), dums1(2000), dump1(2000), dums2(2000), dump2(2000), & 
-  dumxz(2000), dumxy(2000), dum3r(2000), dumx2(2000), densfl(10), &
+real(kind=8) :: res(8000,9*ntype+2*nse+2), anumel(8000), dumm(8000), &
+  edum(8000), dums1(8000), dump1(8000), dums2(8000), dump2(8000), & 
+  dumxz(8000), dumxy(8000), dum3r(8000), dumx2(8000), densfl(10), &
   weight(jsz), qq(jsz,3)
 complex(kind=8) :: sag(nse)
-character(len=100) :: file1, file2
+character(len=100) :: file1, file2, method
 if (verbose) print 1000
 open(6,file='cpaper.out',blank='zero')
+open(9,file='green.dat',blank='zero')
 nchk = 0
 totvol = 0.0d0
 write(file1,'(A)') 'cpamat1.dat'
@@ -77,23 +80,32 @@ if(nchk.eq.1) nmode = 2
 if(nchk.eq.1) epiv = epiv - del
 e = epiv
 sig(:) = sag(:)
-do ixyz = iss1, 2000
+do ixyz = iss1, 8000
+!  sag(:) = cmplx(sagr1(:),sagi1(:),8)
   sig(:) = sag(:)
-  call cpaNR(weight,totvol,e,eps,mchk,numit)
-  if (mchk.eq.1) then
+  write(method,'(A)')'Newton'
+  call calcSig(weight,totvol,e,eps,mchk,numit,method)
+  if (all(mchk)) then
     sag(:) = sig(:)
-    goto 9991
-  else
-    sag(:) = cmplx(sagr1(:),sagi1(:),8)
-    sig(:) = sag(:)
-    print 1001, e
-    call cpaFP(weight,totvol,e,eps,mchk,400)
-    if (mchk.eq.1) goto 9991
-    sag(:) = cmplx(sagr1(:),sagi1(:),8)
+  else ! Didn't converge so estimate with initial self-energies
+    if (.not.mchk(1)) sig(1) = cmplx(sagr1(1),sagi1(1),8)
+    if (.not.mchk(2)) sig(2) = cmplx(sagr1(2),sagi1(2),8)
+    if (.not.mchk(3)) sig(3) = cmplx(sagr1(3),sagi1(3),8)
+    if (.not.mchk(4)) sig(4) = cmplx(sagr1(4),sagi1(4),8)
+    if (.not.mchk(5)) sig(5) = cmplx(sagr1(5),sagi1(5),8)
+    if (.not.mchk(6)) sig(6) = cmplx(sagr1(6),sagi1(6),8)
+    if (.not.mchk(7)) sig(7) = cmplx(sagr1(7),sagi1(7),8)
+    if (.not.mchk(8)) sig(8) = cmplx(sagr1(8),sagi1(8),8)
+!    write(method,'(A)')'False Position'
+!    print 1001, e, trim(method)
+!    call calcSig(weight,totvol,e,eps,mchk,200,method)
+!    if (mchk.eq.1) goto 9991
+!    sag(:) = cmplx(sagr1(:),sagi1(:),8)
   end if
 !  if (mchk.eq.1) goto 9991
   write(6,5004)e
   write(*,5004)e
+  goto 9991
   print 1002
   goto 870 
   nchk = nchk + 1
@@ -233,6 +245,7 @@ densfl(8) = interp(s,anumel,dump2(1),mcm,2)/2.0d0
 write(6,839)
 write(6,840)efl,nuelec,dnorfl,(densfl(i),i=1,8)
 close(6)
+close(9)
 if (verbose) print 2000
 return
 839  format(/,'Fermi energy   Electrons   Total DOS   Fe-s   Fe-p   Fe-&
@@ -240,8 +253,8 @@ return
 840  format(2f10.5   ,3x,7f10.5//)
 841  format(//65x,11h (per spin)  )
 1000 format(/,'Begin subroutine mainn')
-1001 format(/,"Didn't converge for energy ",F8.5,/,"Trying fix point &
-  iteration instead",/)
+1001 format(/,"Didn't converge for energy ",F8.5,/,"Trying ",A, &
+  " method instead",/)
 1002 format(/,"Still unable to converge. Something is wrong",/)
 1015 format(5x,i5,8f15.8,f10.6)
 1016 format(10X,8f15.8,f10.6)

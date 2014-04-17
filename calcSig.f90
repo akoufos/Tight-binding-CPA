@@ -1,4 +1,4 @@
-subroutine cpaFP(wt,tot,e,eps,mchk,numit)
+subroutine calcSig(wt,tot,e,eps,mchk,numit,method)
 !--------------------------------------------------------------------------
 ! Solves for the self-energies, and thus the Green's function, using the
 ! Newton-Raphson method.
@@ -13,6 +13,7 @@ subroutine cpaFP(wt,tot,e,eps,mchk,numit)
 ! delp(6) - Change in the self-energies of the disordered p states
 ! mchk - Flag to specify whether routine converged or not
 ! numit - Maximum number of iterations for the procedure
+! method - String used to decide which zero finding procedure to use
 !--------------------------------------------------------------------------
 use global
 use converge
@@ -23,7 +24,9 @@ integer(kind=4) :: i, n, irep
 integer(kind=4), intent(in) :: numit
 integer(kind=4), intent(out) :: mchk
 real(kind=8), intent(in) :: wt(jsz), tot, e, eps
-complex(kind=8) :: dels(2), delp(6), H(jsz,sec,sec), G(sec,sec)
+complex(kind=8) :: dels(2), delp(6), H(jsz,sec,sec), G(sec,sec), &
+  sigs(2,nse)
+character(len=100), intent(in) :: method
 do n = 1, numit
   if (verbose) print 1000
   dels(:) = (0.0d0,0.0d0); delp(:) = (0.0d0,0.0d0)
@@ -34,10 +37,30 @@ do n = 1, numit
     write(*,1002)(sig(i),i=5,8)
   end if
   mchk = 0; irep = 0
-  H(:,:,:) = ham(:,:,:)
+  sigs(:,:) = (0.0d0,0.0d0)
+  H(:,:,:) = -ham(:,:,:)
   call setHam(H,e,eps)
   call greens(H,G,wt,tot)
-  call fixpt(G,dels,delp)
+!  if (n.eq.1) then
+!    write(9,1004) e, G(19,19), G(20,20), G(21,21), G(22,22), G(28,28), &
+!      G(29,29), G(30,30), G(31,31), (sig(i), i=1,4)
+!  end if
+  select case (method)
+    case ('Newton')
+      sigs(1,:) = sig(:)
+      call newton(G,sigs(1,:),dels,delp)
+    case ('Fixed')
+      sigs(1,:) = sig(:)
+      call fixpt(G,dels,delp)
+    case ('False Position')
+!      call falsi(G,dels,delp)
+    case ('Bisect')
+!      call bisect(G,dels,delp)
+    case default
+      sigs(1,:) = sig(:)
+      call newton(G,sigs(1,:),dels,delp)
+  end select
+  sig(:) = sigs(1,:)
   if(verbose.and.vlvl.ge.1) print 1003, dels, delp
   if (abs(dble(dels(1))).le.cr.and.abs(aimag(dels(1))).le.ci.and. &
       abs(dble(dels(2))).le.cr.and.abs(aimag(dels(2))).le.ci.and. &
@@ -63,17 +86,23 @@ do n = 1, numit
     end do
   end if
   if (irep.eq.1) cycle
-  if (mchk.eq.1) exit
+  if (mchk.eq.1.or.n.eq.numit) then
+    write(9,1004) e, G(19,19), G(20,20), G(21,21), G(22,22), G(28,28), &
+      G(29,29), G(30,30), G(31,31), (sig(i), i=1,4)
+    if (verbose) print 2000
+    exit
+  end if
 end do
 if (verbose) print 2000
 return
-1000 format(/,'Begin subroutine cpaFP')
+1000 format(/,'Begin subroutine calcSig')
 1001 format(2X,I5,4(F14.9,E14.6))
 1002 format(7X,4(F14.9,E14.6))
 1003 format(4(2(F12.8,1X)))
+1004 format(F8.5,1X,12(2(F12.8,1X)))
 1005 format("Didn't you just converge?")
 1006 format("Yes, but |imaginary[sig(",I2,")]| is greater than zero. ", &
   E15.8)
 1007 format("Yes, you are correct")
-2000 format('End cpaFP',/)
-end subroutine cpaFP
+2000 format('End calcSig',/)
+end subroutine calcSig

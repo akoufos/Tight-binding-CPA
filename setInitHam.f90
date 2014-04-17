@@ -18,8 +18,8 @@ complex(kind=8) :: H1(jsz,sec,sec), H2(jsz,sec,sec)
 character(len=100) :: f1000
 if (verbose) print 1000
 kpts = 1
-H1(:,:,:) = cmplx(-hma(:,:,:),-vsa(:,:,:),8)
-H2(:,:,:) = cmplx(-hmb(:,:,:),-vsb(:,:,:),8)
+H1(:,:,:) = cmplx(hma(:,:,:),vsa(:,:,:),8)
+H2(:,:,:) = cmplx(hmb(:,:,:),vsb(:,:,:),8)
 ham(:,:,:) = (con*H1(:,:,:) + (1.0d0-con)*H2(:,:,:))
 write(f1000,'(A,I1,A)') "(",sec,"(2(F10.6,1x)))"
 if (verbose.and.vlvl.ge.2) then
