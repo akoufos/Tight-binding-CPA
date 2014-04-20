@@ -1,4 +1,4 @@
-subroutine newton(G,sig,dels,delp)
+subroutine newton(G,sig,del)
 !--------------------------------------------------------------------------
 ! Sets up the matrices to be inverted for the elements that have a self-
 ! energy
@@ -24,11 +24,11 @@ integer(kind=4) :: l
 complex(kind=8) :: ge(nse), term(nse), F(nse), dF(nse), alpha(nse), &
   beta(nse)
 complex(kind=8), intent(in) :: G(sec,sec)
-complex(kind=8), intent(out) :: dels(2), delp(6)
+complex(kind=8), intent(out) :: del(nse)
 complex(kind=8), intent(inout) :: sig(nse)
 if (verbose) print 1000
-dels(:) = (0.0d0,0.0d0)
-delp(:) = (0.0d0,0.0d0)
+del(:) = (0.0d0,0.0d0)
+!delp(:) = (0.0d0,0.0d0)
 if(verbose.and.vlvl.ge.1) print 1001, sig
 ge(1) = G(19,19)
 ge(2) = G(20,20)
@@ -44,16 +44,17 @@ do l = 1, nse
   F(l) = ge(l)*sig(l)**2.0d0 + alpha(l)*sig(l) + beta(l)
   dF(l) = alpha(l) + 2.0d0*ge(l)*sig(l)
   term(l) = sig(l) - F(l)/dF(l)
+  del(l) = sig(l) - term(l)
 end do
-dels(1) = sig(1) - term(1)
-dels(2) = sig(5) - term(5)
-delp(1) = sig(2) - term(2)
-delp(2) = sig(3) - term(3)
-delp(3) = sig(4) - term(4)
-delp(4) = sig(6) - term(6)
-delp(5) = sig(7) - term(7)
-delp(6) = sig(8) - term(8)
-verbose = .true.; vlvl = 3
+!dels(1) = sig(1) - term(1)
+!dels(2) = sig(5) - term(5)
+!delp(1) = sig(2) - term(2)
+!delp(2) = sig(3) - term(3)
+!delp(3) = sig(4) - term(4)
+!delp(4) = sig(6) - term(6)
+!delp(5) = sig(7) - term(7)
+!delp(6) = sig(8) - term(8)
+!verbose = .true.; vlvl = 3
 if(verbose.and.vlvl.ge.1) then
   if(vlvl.ge.2) then
     print 1004
@@ -62,9 +63,9 @@ if(verbose.and.vlvl.ge.1) then
     print 1003, term(:)
     print 1003, -alpha(:)/(2.0d0*ge(:))
   end if
-  print 1002, dels, delp
+  print 1002, del
 end if
-verbose = .false.; vlvl = 3
+!verbose = .false.; vlvl = 3
 do l = 1, nse
   sig(l) = term(l)
 end do

@@ -20,7 +20,7 @@ complex(kind=8) :: H(jsz,sec,sec)
 character(len=100) :: f1000
 if (verbose) print 1000
 dos(:) = 0.0d0
-H(:,:,:) = ham(:,:,:)
+H(:,:,:) = -ham(:,:,:)
 call setHam(H,e,eps)
 write(f1000,'(A,I1,A)') "(",sec,"(2(F10.6,1x)))"
 if (verbose.and.vlvl.ge.3) then

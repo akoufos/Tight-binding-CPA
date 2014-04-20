@@ -55,7 +55,7 @@ real(kind=8) :: res(8000,9*ntype+2*nse+2), anumel(8000), dumm(8000), &
   edum(8000), dums1(8000), dump1(8000), dums2(8000), dump2(8000), & 
   dumxz(8000), dumxy(8000), dum3r(8000), dumx2(8000), densfl(10), &
   weight(jsz), qq(jsz,3)
-complex(kind=8) :: sag(nse)
+complex(kind=8) :: sag(nse), sagcon(nse)
 character(len=100) :: file1, file2, method
 if (verbose) print 1000
 open(6,file='cpaper.out',blank='zero')
@@ -72,7 +72,7 @@ call kpts(jsz,qq,weight,totvol)
 call readSec(hma,vsa,file1)
 call readSec(hmb,vsb,file2)
 call setInitHam
-iss1 = 1
+iss1 = 1; n = 0
  1111 if(nchk.eq.2) goto 1234
 sag(:) = cmplx(sagr1(:),sagi1(:),8)
 if(nchk.eq.0) nmode = 1
@@ -83,30 +83,29 @@ sig(:) = sag(:)
 do ixyz = iss1, 8000
 !  sag(:) = cmplx(sagr1(:),sagi1(:),8)
   sig(:) = sag(:)
-  write(method,'(A)')'Newton'
-  call calcSig(weight,totvol,e,eps,mchk,numit,method)
+  write(method,'(A)') 'Newton'
+  call calcSig(weight,totvol,e,eps,mchk,numit,method,sagr1,sagi1)
   if (all(mchk)) then
     sag(:) = sig(:)
-  else ! Didn't converge so estimate with initial self-energies
-    if (.not.mchk(1)) sig(1) = cmplx(sagr1(1),sagi1(1),8)
-    if (.not.mchk(2)) sig(2) = cmplx(sagr1(2),sagi1(2),8)
-    if (.not.mchk(3)) sig(3) = cmplx(sagr1(3),sagi1(3),8)
-    if (.not.mchk(4)) sig(4) = cmplx(sagr1(4),sagi1(4),8)
-    if (.not.mchk(5)) sig(5) = cmplx(sagr1(5),sagi1(5),8)
-    if (.not.mchk(6)) sig(6) = cmplx(sagr1(6),sagi1(6),8)
-    if (.not.mchk(7)) sig(7) = cmplx(sagr1(7),sagi1(7),8)
-    if (.not.mchk(8)) sig(8) = cmplx(sagr1(8),sagi1(8),8)
+    sagcon(:) = sagcon(:) + sig(:)
+    n = n + 1
+  else ! Didn't converge so estimate with some other self-energies
+    do l = 1, nse
+      ! Estimate with average of good self-energies
+      if (mchk(l).eq..false.) sig(l) = sagcon(l)/dble(n)
+!      if (mchk(l).eq..false.) sig(l) = cmplx(sagr1(l),sagi1(l),8)
+    end do
+    sag(:) = sig(:)
 !    write(method,'(A)')'False Position'
 !    print 1001, e, trim(method)
 !    call calcSig(weight,totvol,e,eps,mchk,200,method)
 !    if (mchk.eq.1) goto 9991
 !    sag(:) = cmplx(sagr1(:),sagi1(:),8)
+    print 1002
+    write(6,5004)e
+    write(*,5004)e
   end if
-!  if (mchk.eq.1) goto 9991
-  write(6,5004)e
-  write(*,5004)e
   goto 9991
-  print 1002
   goto 870 
   nchk = nchk + 1
   goto 1111

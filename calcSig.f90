@@ -1,4 +1,4 @@
-subroutine calcSig(wt,tot,e,eps,mchk,numit,method)
+subroutine calcSig(wt,tot,e,eps,mchk,numit,method,sagr1,sagi1)
 !--------------------------------------------------------------------------
 ! Solves for the self-energies, and thus the Green's function, using the
 ! Newton-Raphson method.
@@ -20,23 +20,25 @@ use converge
 use hamiltonians, only : ham
 use sigma
 implicit none
-integer(kind=4) :: i, n, irep
+integer(kind=4) :: i, n, irep, reset(nse)
 integer(kind=4), intent(in) :: numit
-integer(kind=4), intent(out) :: mchk
-real(kind=8), intent(in) :: wt(jsz), tot, e, eps
-complex(kind=8) :: dels(2), delp(6), H(jsz,sec,sec), G(sec,sec), &
+logical, intent(out) :: mchk(nse)
+real(kind=8), intent(in) :: wt(jsz), tot, e, eps, sagr1(nse), sagi1(nse)
+complex(kind=8) :: del(nse), H(jsz,sec,sec), G(sec,sec), &
   sigs(2,nse)
 character(len=100), intent(in) :: method
+reset = 0
 do n = 1, numit
   if (verbose) print 1000
-  dels(:) = (0.0d0,0.0d0); delp(:) = (0.0d0,0.0d0)
+  del(:) = (0.0d0,0.0d0)
   write(6,1001)n,(sig(i),i=1,4)
   write(6,1002)(sig(i),i=5,8)
   if (verbose.and.vlvl.ge.1) then
     write(*,1001)n,(sig(i),i=1,4)
     write(*,1002)(sig(i),i=5,8)
   end if
-  mchk = 0; irep = 0
+  irep = 0
+  mchk(:) = .false.
   sigs(:,:) = (0.0d0,0.0d0)
   H(:,:,:) = -ham(:,:,:)
   call setHam(H,e,eps)
@@ -45,32 +47,29 @@ do n = 1, numit
 !    write(9,1004) e, G(19,19), G(20,20), G(21,21), G(22,22), G(28,28), &
 !      G(29,29), G(30,30), G(31,31), (sig(i), i=1,4)
 !  end if
+  if (verbose.and.vlvl.ge.1) print 1008, trim(method)
   select case (method)
     case ('Newton')
       sigs(1,:) = sig(:)
-      call newton(G,sigs(1,:),dels,delp)
+      call newton(G,sigs(1,:),del)
     case ('Fixed')
       sigs(1,:) = sig(:)
-      call fixpt(G,dels,delp)
+      call fixpt(G,sigs,del)
     case ('False Position')
-!      call falsi(G,dels,delp)
+!      call falsi(G,del)
     case ('Bisect')
-!      call bisect(G,dels,delp)
+!      call bisect(G,del)
     case default
       sigs(1,:) = sig(:)
-      call newton(G,sigs(1,:),dels,delp)
+      call newton(G,sigs(1,:),del)
   end select
   sig(:) = sigs(1,:)
-  if(verbose.and.vlvl.ge.1) print 1003, dels, delp
-  if (abs(dble(dels(1))).le.cr.and.abs(aimag(dels(1))).le.ci.and. &
-      abs(dble(dels(2))).le.cr.and.abs(aimag(dels(2))).le.ci.and. &
-      abs(dble(delp(1))).le.cr.and.abs(aimag(delp(1))).le.ci.and. &
-      abs(dble(delp(2))).le.cr.and.abs(aimag(delp(2))).le.ci.and. &
-      abs(dble(delp(3))).le.cr.and.abs(aimag(delp(3))).le.ci.and. &
-      abs(dble(delp(4))).le.cr.and.abs(aimag(delp(4))).le.ci.and. &
-      abs(dble(delp(5))).le.cr.and.abs(aimag(delp(5))).le.ci.and. &
-      abs(dble(delp(6))).le.cr.and.abs(aimag(delp(6))).le.ci) then
-    mchk = 1
+  if(verbose.and.vlvl.ge.1) print 1003, del
+  do i = 1, nse
+    if (abs(dble(del(i))).le.cr.and.abs(aimag(del(i))).le.ci) &
+      mchk(i) = .true.
+  end do
+  if (all(mchk)) then
     if (verbose.and.vlvl.ge.2) print 1005
     do i = 1, nse
       if (aimag(sig(i)).gt.1.0d-15) then 
@@ -84,9 +83,19 @@ do n = 1, numit
         if (verbose.and.vlvl.ge.2.and.i.eq.1) print 1007
       end if
     end do
+  else
+    do i = 1, nse
+      if (dble(sig(i)).lt.-4.0d0*abs(sagr1(i)).or. &
+        dble(sig(i)).gt.4.0d0*abs(sagr1(i))) then
+        sig(i) = cmplx(sagr1(i),sagi1(i),8)
+        reset(i) = reset(i) + 1
+        print *, 'RESET: ',reset
+      end if
+      if (reset(i).ge.2) exit
+    end do
   end if
   if (irep.eq.1) cycle
-  if (mchk.eq.1.or.n.eq.numit) then
+  if (all(mchk).or.n.eq.numit) then
     write(9,1004) e, G(19,19), G(20,20), G(21,21), G(22,22), G(28,28), &
       G(29,29), G(30,30), G(31,31), (sig(i), i=1,4)
     if (verbose) print 2000
@@ -104,5 +113,6 @@ return
 1006 format("Yes, but |imaginary[sig(",I2,")]| is greater than zero. ", &
   E15.8)
 1007 format("Yes, you are correct")
+1008 format(/,"Running ",A," method for finding the self-energies.",/)
 2000 format('End calcSig',/)
 end subroutine calcSig
