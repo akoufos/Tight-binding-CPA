@@ -1,4 +1,4 @@
-subroutine crete(G,dels,delp)
+subroutine falsi(G,sig,dels,delp)
 !--------------------------------------------------------------------------
 ! Sets up the matrices to be inverted for the elements that have a self-
 ! energy
@@ -19,17 +19,18 @@ subroutine crete(G,dels,delp)
 use global
 use concentration
 use onsites
-use sigma
 implicit none
 integer(kind=4) :: l
 complex(kind=8) :: ge(nse), term(nse), F(nse), dF(nse), alpha(nse), &
   beta(nse)
 complex(kind=8), intent(in) :: G(sec,sec)
 complex(kind=8), intent(out) :: dels(2), delp(6)
+complex(kind=8),intent(inout) :: sig(2,nse)
 if (verbose) print 1000
 dels(:) = (0.0d0,0.0d0)
 delp(:) = (0.0d0,0.0d0)
-if(verbose.and.vlvl.ge.1) print 1001, sig
+if(verbose.and.vlvl.ge.1) print 1001, sig(1,:)
+if(verbose.and.vlvl.ge.1) print 1001, sig(2,:)
 ge(1) = G(19,19)
 ge(2) = G(20,20)
 ge(3) = G(21,21)
@@ -41,18 +42,18 @@ ge(8) = G(31,31)
 do l = 1, nse
   alpha(l) = 1.0d0 - onsB(l,l)*ge(l) - onsA(l,l)*ge(l)
   beta(l) = ge(l)*onsA(l,l)*onsB(l,l) - onsAvg(l,l)
-  F(l) = ge(l)*sig(l)**2.0d0 + alpha(l)*sig(l) + beta(l)
-  dF(l) = alpha(l) + 2.0d0*ge(l)*sig(l)
-  term(l) = sig(l) - F(l)/dF(l)
+  F(l) = ge(l)*sig(1,l)**2.0d0 + alpha(l)*sig(1,l) + beta(l)
+  dF(l) = alpha(l) + 2.0d0*ge(l)*sig(1,l)
+  term(l) = sig(1,l) - F(l)/dF(l)
 end do
-dels(1) = sig(1) - term(1)
-dels(2) = sig(5) - term(5)
-delp(1) = sig(2) - term(2)
-delp(2) = sig(3) - term(3)
-delp(3) = sig(4) - term(4)
-delp(4) = sig(6) - term(6)
-delp(5) = sig(7) - term(7)
-delp(6) = sig(8) - term(8)
+dels(1) = sig(1,1) - term(1)
+dels(2) = sig(1,5) - term(5)
+delp(1) = sig(1,2) - term(2)
+delp(2) = sig(1,3) - term(3)
+delp(3) = sig(1,4) - term(4)
+delp(4) = sig(1,6) - term(6)
+delp(5) = sig(1,7) - term(7)
+delp(6) = sig(1,8) - term(8)
 verbose = .true.; vlvl = 3
 if(verbose.and.vlvl.ge.1) then
   if(vlvl.ge.2) then
@@ -66,15 +67,15 @@ if(verbose.and.vlvl.ge.1) then
 end if
 verbose = .false.; vlvl = 3
 do l = 1, nse
-  sig(l) = term(l)
+  sig(1,l) = term(l)
 end do
-if(verbose.and.vlvl.ge.1) print 1001, sig
+if(verbose.and.vlvl.ge.1) print 1001, sig(1,:)
 if(verbose) print 2000
 return
-1000 format(/,'Begin subroutine crete')
+1000 format(/,'Begin subroutine falsi')
 1001 format('Sigma: ',/,4(2(F10.6,1X)))
 1002 format('Delta sig:',/,4(2(E12.5,2X)))
 1003 format(/,8(2F10.6,1x),/)
 1004 format(//,'F, dF, term')
-2000 format('End crete',/)
-end subroutine crete
+2000 format('End falsi',/)
+end subroutine falsi
