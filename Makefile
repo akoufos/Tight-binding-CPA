@@ -4,10 +4,11 @@
 #--------------------------------------------------------------------------
 MAKE = make
 G90 = gfortran
-G90_OPTS = -ffree-form -fopenmp -O3 -ftree-vectorize
+G90_OPTS = -ffree-form -O3 -ftree-vectorize
 F90 = ifort
 F90_OPTS = -O3
 OMP = -openmp
+GOMP = -fopenmp
 MKL = -I$(MKLROOT)/include/intel64/lp64 -mkl=parallel
 FFLAGS = $(OMP) $(MKL) $(F90_OPTS)
 
@@ -26,6 +27,7 @@ SRC = $(SRC_modules) $(SRC_cpa) $(SRC_omp)
 
 OBJ_omp = $(SRC_omp:.f90=.o)
 $(OBJ_omp): F90_OPTS+=$(OMP)
+#$(OBJ_omp): G90_OPTS+=$(GOMP)
 OBJ = $(SRC:.f90=.o)
 EXE = cpaFeSe
 
@@ -44,7 +46,7 @@ EXE = cpaFeSe
 cpaTB:	$(OBJ)
 #	$(F90) $(F90_OPTS) -o $(EXE) $(OBJ)
 	$(F90) $(F90_OPTS) $(OMP) -o $(EXE) $(OBJ)
-#	$(G90) $(G90_OPTS) -o $(EXE) $(OBJ)
+#	$(G90) $(G90_OPTS) $(GOMP) -o $(EXE) $(OBJ)
 
 all:	cpaTB
 

@@ -91,7 +91,7 @@ do n = 1, numit
         reset(i) = reset(i) + 1
         print *, 'RESET: ',reset
       end if
-      if (reset(i).ge.2) exit
+      if (reset(i).ge.2) return
     end do
   end if
   if (irep.eq.1) cycle
