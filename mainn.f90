@@ -92,7 +92,10 @@ do ixyz = iss1, 8000
   else ! Didn't converge so estimate with some other self-energies
     do l = 1, nse
       ! Estimate with average of good self-energies
-      if (mchk(l).eq..false.) sig(l) = sagcon(l)/dble(n)
+      if (mchk(l).eqv..false.) then
+        sig(l) = sagcon(l)/dble(n)
+        print *, 'Using average sig(l): ',l, sig(l)
+      end if
 !      if (mchk(l).eq..false.) sig(l) = cmplx(sagr1(l),sagi1(l),8)
     end do
     sag(:) = sig(:)
@@ -255,17 +258,17 @@ return
 1001 format(/,"Didn't converge for energy ",F8.5,/,"Trying ",A, &
   " method instead",/)
 1002 format(/,"Still unable to converge. Something is wrong",/)
-1015 format(5x,i5,8f15.8,f10.6)
-1016 format(10X,8f15.8,f10.6)
-1030 format(//1x,f9.5,8f12.8,10x, f10.5//)
+1015 format(5X,I5,8F15.8,F10.6)
+1016 format(10X,8F15.8,F10.6)
+1030 format(//1X,F9.5,8F12.8,10X,F10.5//)
 2000 format('End mainn',/)
-3000 format(1h1,///)
-3010 format(20x,'Energy Complex self-energies (s, px, py, pz)'///)
-3030 format(F9.5,3X,4(2G12.5,2X))
+3000 format(1H1,///)
+3010 format(20X,'Energy Complex self-energies (s, px, py, pz)'///)
+3030 format(F9.5,3X,4(2(G12.5,1X),2X))
 3040 format(12X,4(2G12.5,2X))
 3050 format(10x,'Energy, Fe-s, Fe-p(x,y,z), Fe-d(xz,yz), Fe-d(xz), Fe-&
   d(3r^2-z^2), Fe-d(x^2-y^2), Se-s, Se-p(x,y,z), Total DOS, electrons, &
   iteration',/)
-3070 format(2x,12f10.4,1x,i5)
+3070 format(2x,11f10.4,1x,i5)
 5004 format('   sigma didn t converge for e=',f10.4)
 end subroutine mainn
