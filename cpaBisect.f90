@@ -25,12 +25,12 @@ real(kind=8), intent(in) :: wt(jsz), tot, e, eps
 complex(kind=8) :: dels(2), delp(6), H(jsz,sec,sec), G(sec,sec), &
   sig(2,nse)
 complex(kind=8), intent(inout) :: sigma(nse)
-write(6,1008)
+write(7,1008)
 do n = 1, numit
   if (verbose) print 1000
   dels(:) = (0.0d0,0.0d0); delp(:) = (0.0d0,0.0d0)
-  write(6,1001)n,(sig(i),i=1,4)
-  write(6,1002)(sig(i),i=5,8)
+  write(7,1001)n,(sig(i),i=1,4)
+  write(7,1002)(sig(i),i=5,8)
   if (verbose.and.vlvl.ge.1) then
     write(*,1001)n,(sig(i),i=1,4)
     write(*,1002)(sig(i),i=5,8)

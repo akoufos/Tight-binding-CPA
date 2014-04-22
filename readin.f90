@@ -25,25 +25,25 @@ character(len=1) :: a(50)
 if (verbose) print 1000
 open(5,file='cpaper.dat',blank='zero')
 read(5,1001) (a(i),i=1,50)
-write(6,1001) (a(i),i=1,50)
+write(7,1001) (a(i),i=1,50)
 read (5,*) nd,ne,cr,ci
-write(6,1002) nd,ne,cr,ci
+write(7,1002) nd,ne,cr,ci
 do i = 1, sec
   read(5,*)ons(1,i), ons(2,i)
 end do
-write(6,1008)
-write(6,1009)ons(1,:)
-write(6,1010)
-write(6,1009)ons(2,:)
+write(7,1008)
+write(7,1009)ons(1,:)
+write(7,1010)
+write(7,1009)ons(2,:)
 read(5,*) es,ep
-write(6,1004) es,ep
+write(7,1004) es,ep
 read(5,*) con, emin, emax, del, epiv
 read(5,*) (sagr1(i), sagi1(i), i=1,nse)
-write(6,1005) con, emin, emax, del, epiv, (sagr1(i), sagi1(i), i=1,nse)
+write(7,1005) con, emin, emax, del, epiv, (sagr1(i), sagi1(i), i=1,nse)
 read(5,*) eps
 close(5)
-write(6,1006) eps, jsz
-write(6,1007) cr, ci
+write(7,1006) eps, jsz
+write(7,1007) cr, ci
 if (verbose.and.vlvl.ge.2) then 
   print 1001, (a(i),i=1,50)
   print 1002, nd,ne,cr,ci

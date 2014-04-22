@@ -58,10 +58,9 @@ real(kind=8) :: res(8000,9*ntype+2*nse+2), anumel(8000), dumm(8000), &
 complex(kind=8) :: sag(nse), sagcon(nse)
 character(len=100) :: file1, file2, method
 if (verbose) print 1000
-open(6,file='cpaper.out',blank='zero')
-open(9,file='green.dat',blank='zero')
 nchk = 0
 totvol = 0.0d0
+open(7,file='cpaper.out',blank='zero')
 write(file1,'(A)') 'cpamat1.dat'
 write(file2,'(A)') 'cpamat2.dat'
 verbose = .true.; vlvl = 3
@@ -72,6 +71,7 @@ call kpts(jsz,qq,weight,totvol)
 call readSec(hma,vsa,file1)
 call readSec(hmb,vsb,file2)
 call setInitHam
+open(9,file='green.dat',blank='zero')
 iss1 = 1; n = 0
  1111 if(nchk.eq.2) goto 1234
 sag(:) = cmplx(sagr1(:),sagi1(:),8)
@@ -105,7 +105,7 @@ do ixyz = iss1, 8000
 !    if (mchk.eq.1) goto 9991
 !    sag(:) = cmplx(sagr1(:),sagi1(:),8)
     print 1002
-    write(6,5004)e
+    write(7,5004)e
     write(*,5004)e
   end if
   goto 9991
@@ -113,8 +113,8 @@ do ixyz = iss1, 8000
   nchk = nchk + 1
   goto 1111
   9991 continue
-  write(6,1015)n,(sig(i),i=1,4),e
-  write(6,1016)  (sig(i),i=5,8),e
+  write(7,1015)n,(sig(i),i=1,4),e
+  write(7,1016)  (sig(i),i=5,8),e
   verbose = .true.
   if (verbose) then
     write(*,1015)n,(sig(i),i=1,4),e
@@ -149,7 +149,7 @@ do ixyz = iss1, 8000
   res(ixyz,24) = dos(19) + dos(28)
   res(ixyz,25) = sum(dos(20:22)) + sum(dos(29:31))
   res(ixyz,26) = dos(sec+1)
-  write(6,1030)e,(sig(i),i=1,4),dos(sec+1)
+  write(7,1030)e,(sig(i),i=1,4),dos(sec+1)
   if(nmode.eq.2) goto 51
   e = e + del
   if(e.le.emax) cycle ! next iteration of ixyz loop
@@ -163,8 +163,9 @@ do ixyz = iss1, 8000
 end do ! End of ixyz loop
  1234 continue
 itop = ixyz
-write(6,3000)
-write(6,3010)
+open(8,file='sigma.dat')
+write(7,3000)
+write(7,3010)
 l = itop + 1
 l9 = 0
 do ll = iss1, itop
@@ -180,8 +181,10 @@ do ll = iss1, itop
   dums2(l9) = res(l,24)*2.0d0
   dump2(l9) = res(l,25)*2.0d0
   dumm(l9) = res(l,26)*2.0d0
-  write(6,3030)(res(l,m),m=1,9)
-  write(6,3040)(res(l,m),m=10,17)
+  write(7,3030)(res(l,m),m=1,9)
+  write(7,3040)(res(l,m),m=10,17)
+  write(8,3030)(res(l,m),m=1,9)
+  write(8,3040)(res(l,m),m=10,17)
 end do
 do l = 1, iss
   l9 = l9 + 1
@@ -195,16 +198,19 @@ do l = 1, iss
   dums2(l9) = res(l,24)*2.0d0
   dump2(l9) = res(l,25)*2.0d0
   dumm(l9) = res(l,26)*2.0d0
-  write(6,3030)(res(l,m),m=1,9)
-  write(6,3040)(res(l,m),m=10,17)
+  write(7,3030)(res(l,m),m=1,9)
+  write(7,3040)(res(l,m),m=10,17)
+  write(8,3030)(res(l,m),m=1,9)
+  write(8,3040)(res(l,m),m=10,17)
 end do
+close(8)
 num99 = itop - 1
 call simp(edum,dumm,anumel,num99,verbose,vlvl)
 anumel(1) = 0.0d0
 anumel(itop) = anumel(num99) + dumm(iss)*del
 open(8,file='dosdat.cpa.plot')
-write(6,3000)
-write(6,3050)
+write(7,3000)
+write(7,3050)
 write(8,3050)
 l = itop + 1
 l9 = 0
@@ -212,13 +218,13 @@ do ll = iss1, itop
   l = l - 1
   l9 = l9 + 1
   res(l,27) = anumel(l9)
-  write(6,3070)res(l,1),(res(l,m),m=18,27),ll
+  write(7,3070)res(l,1),(res(l,m),m=18,27),ll
   write(8,3070)res(l,1),(res(l,m),m=18,27),ll
 end do
 do l = 1, iss
   l9 = l9 + 1
   res(l,27) = anumel(l9)
-  write(6,3070)res(l,1),(res(l,m),m=18,27),l
+  write(7,3070)res(l,1),(res(l,m),m=18,27),l
   write(8,3070)res(l,1),(res(l,m),m=18,27),l
 end do
 close(8)
@@ -235,7 +241,7 @@ mcm = mc - 1
 s = nuelec
 efl = interp(s,anumel,edum(1),mcm,2)
 dnorfl = interp(s,anumel,dumm(1),mcm,2)/2.0d0
-write(6,841)
+write(7,841)
 densfl(1) = interp(s,anumel,dums1(1),mcm,2)/2.0d0
 densfl(2) = interp(s,anumel,dump1(1),mcm,2)/2.0d0
 densfl(3) = interp(s,anumel,dumxz(1),mcm,2)/2.0d0
@@ -244,9 +250,9 @@ densfl(5) = interp(s,anumel,dum3r(1),mcm,2)/2.0d0
 densfl(6) = interp(s,anumel,dumx2(1),mcm,2)/2.0d0
 densfl(7) = interp(s,anumel,dums2(1),mcm,2)/2.0d0
 densfl(8) = interp(s,anumel,dump2(1),mcm,2)/2.0d0
-write(6,839)
-write(6,840)efl,nuelec,dnorfl,(densfl(i),i=1,8)
-close(6)
+write(7,839)
+write(7,840)efl,nuelec,dnorfl,(densfl(i),i=1,8)
+close(7)
 close(9)
 if (verbose) print 2000
 return
@@ -265,7 +271,7 @@ return
 3000 format(1H1,///)
 3010 format(20X,'Energy Complex self-energies (s, px, py, pz)'///)
 3030 format(F9.5,3X,4(2(G12.5,1X),2X))
-3040 format(12X,4(2G12.5,2X))
+3040 format(12X,4(2(G12.5,1X),2X))
 3050 format(10x,'Energy, Fe-s, Fe-p(x,y,z), Fe-d(xz,yz), Fe-d(xz), Fe-&
   d(3r^2-z^2), Fe-d(x^2-y^2), Se-s, Se-p(x,y,z), Total DOS, electrons, &
   iteration',/)

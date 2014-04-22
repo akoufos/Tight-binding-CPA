@@ -16,10 +16,10 @@ integer(kind=4), intent(in) :: kp
 real(kind=8), intent(out) :: q(kp,3), swt, wt(kp)
 if (verbose) print 1000
 swt = 0.0d0; q(:,:) = 0.0d0; wt(:) = 0.0d0
-open(7,file='cpaweights.dat')
-read(7,*)
+open(10,file='cpaweights.dat')
+read(10,*)
 do i = 1, kp
-  read(7,1001)(q(i,j),j=1,3),wt(i)
+  read(10,1001)(q(i,j),j=1,3),wt(i)
   swt = swt + wt(i)
 end do
 if (verbose.and.vlvl.ge.1) then
@@ -27,8 +27,8 @@ if (verbose.and.vlvl.ge.1) then
     print 1001, (q(i,j),j=1,3),wt(i)
   end do
 end if
-close(7)
-write(6,1002) swt
+close(10)
+write(7,1002) swt
 if (verbose.and.vlvl.ge.1) print 1002, swt
 if (verbose) print 2000
 return
