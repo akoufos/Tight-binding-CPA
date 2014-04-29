@@ -49,12 +49,14 @@ integer(kind=4) :: iss, iss1, itop, ixyz, l9, m, mc, mcm, mcount, &
   n, nchk, ndim, nmode, num99
 integer(kind=4), parameter :: numit = 100
 logical :: mchk(nse)
-real(kind=8) :: del, dnorfl, e, efl, emax, emin, epiv, &
-  eps, interp, nuelec, s, sagi1(nse), sagr1(nse), totvol, dos(sec+1)
-real(kind=8) :: res(8000,9*ntype+2*nse+2), anumel(8000), dumm(8000), &
+real(kind=8) :: del, dnorfl, e, efl, emax, emin, epiv, eps, interp, &
+  nuelec, s, sagi1(nse), sagr1(nse), totvol, dos(sec+1), &
+  dos2(ntype,sec)
+real(kind=8) :: res(8000,50), anumel(8000), dumm(8000), &
   edum(8000), dums1(8000), dump1(8000), dums2(8000), dump2(8000), & 
-  dumxz(8000), dumxy(8000), dum3r(8000), dumx2(8000), densfl(10), &
-  weight(jsz), qq(jsz,3)
+  dumxz(8000), dumxy(8000), dum3r(8000), dumx2(8000), dumsA(8000), &
+  dumpA(8000), dumsB(8000), dumpB(8000), densfl(10), weight(jsz), &
+  qq(jsz,3)
 complex(kind=8) :: sag(nse), sagcon(nse)
 character(len=100) :: file1, file2, method
 if (verbose) print 1000
@@ -91,14 +93,16 @@ do ixyz = iss1, 8000
     n = n + 1
   else ! Didn't converge so estimate with some other self-energies
     do l = 1, nse
-      ! Estimate with average of good self-energies
       if (mchk(l).eqv..false.) then
-        sig(l) = sagcon(l)/dble(n)
-        print *, 'Using average sig(l): ',l, sig(l)
+      ! Estimate with average of good self-energies
+!        sig(l) = sagcon(l)/dble(n)
+      ! Estimate next self-energy as the average of the good one
+        sag(l) = sagcon(l)/dble(n)
+        print *, 'Using average sig(l): ',l, sagcon(l)/dble(n)
       end if
 !      if (mchk(l).eq..false.) sig(l) = cmplx(sagr1(l),sagi1(l),8)
     end do
-    sag(:) = sig(:)
+!    sag(:) = sig(:)
 !    write(method,'(A)')'False Position'
 !    print 1001, e, trim(method)
 !    call calcSig(weight,totvol,e,eps,mchk,200,method)
@@ -121,7 +125,7 @@ do ixyz = iss1, 8000
     write(*,1016)  (sig(i),i=5,8),e
   end if
   verbose = .false.
-  call cpaDOS(dos,weight,totvol,e,eps)
+  call cpaDOS(dos,dos2,weight,totvol,e,eps)
 870 continue
   res(ixyz,1) = e
   res(ixyz,2) = dble(sig(1))
@@ -140,15 +144,23 @@ do ixyz = iss1, 8000
   res(ixyz,15) = aimag(sig(7))
   res(ixyz,16) = dble(sig(8))
   res(ixyz,17) = aimag(sig(8))
-  res(ixyz,18) = dos(1) + dos(10)
-  res(ixyz,19) = sum(dos(2:4)) + sum(dos(11:13))
-  res(ixyz,20) = sum(dos(5:6)) + sum(dos(14:15))
-  res(ixyz,21) = dos(7) + dos(16)
-  res(ixyz,22) = dos(8) + dos(17)
-  res(ixyz,23) = dos(9) + dos(18)
-  res(ixyz,24) = dos(19) + dos(28)
-  res(ixyz,25) = sum(dos(20:22)) + sum(dos(29:31))
-  res(ixyz,26) = dos(sec+1)
+  res(ixyz,18) = dos(1) + dos(10) !Fe-s
+  res(ixyz,19) = sum(dos(2:3)) + sum(dos(11:12)) !Fe-p(x,y)
+  res(ixyz,20) = dos(4) + dos(13) !Fe-p(z)
+  res(ixyz,21) = sum(dos(5:6)) + sum(dos(14:15)) !Fe-d(xz,yz)
+  res(ixyz,22) = dos(7) + dos(16) !Fe-d(xy)
+  res(ixyz,23) = dos(8) + dos(17) !Fe-d(3r^2-z^2)
+  res(ixyz,24) = dos(9) + dos(18) !Fe-d(x^2+y^2)
+  res(ixyz,25) = dos(19) + dos(28) !Se/Te-s
+  res(ixyz,26) = sum(dos(20:21)) + sum(dos(29:30)) !Se/Te-p(x,y)
+  res(ixyz,27) = dos(22) + dos(31) !Se/Te-p(z)
+  res(ixyz,28) = dos2(1,19) + dos2(1,28) !Se-s
+  res(ixyz,29) = sum(dos2(1,20:21)) + sum(dos2(1,29:30)) !Se-p(x,y)
+  res(ixyz,30) = dos2(1,22) + dos2(1,31) !Se-p(z)
+  res(ixyz,31) = dos2(2,19) + dos2(2,28) !Te-s
+  res(ixyz,32) = sum(dos2(2,20:21)) + sum(dos2(2,29:30)) !Te-p(x,y)
+  res(ixyz,33) = dos2(2,22) + dos2(2,31) !Te-p(z)
+  res(ixyz,34) = dos(sec+1) !Total DOS
   write(7,1030)e,(sig(i),i=1,4),dos(sec+1)
   if(nmode.eq.2) goto 51
   e = e + del
@@ -173,14 +185,18 @@ do ll = iss1, itop
   l9 = l9 + 1
   edum(l9) = res(l,1)
   dums1(l9) = res(l,18)*2.0d0
-  dump1(l9) = res(l,19)*2.0d0
-  dumxz(l9) = res(l,20)*2.0d0
-  dumxy(l9) = res(l,21)*2.0d0
-  dum3r(l9) = res(l,22)*2.0d0
-  dumx2(l9) = res(l,23)*2.0d0
-  dums2(l9) = res(l,24)*2.0d0
-  dump2(l9) = res(l,25)*2.0d0
-  dumm(l9) = res(l,26)*2.0d0
+  dump1(l9) = (res(l,19) + res(l,20))*2.0d0
+  dumxz(l9) = res(l,21)*2.0d0
+  dumxy(l9) = res(l,22)*2.0d0
+  dum3r(l9) = res(l,23)*2.0d0
+  dumx2(l9) = res(l,24)*2.0d0
+  dums2(l9) = res(l,25)*2.0d0
+  dump2(l9) = (res(l,26) + res(l,27))*2.0d0
+  dumsA(l9) = res(l,28)*2.0d0
+  dumpA(l9) = (res(l,29) + res(l,30))*2.0d0
+  dumsB(l9) = res(l,31)*2.0d0
+  dumpB(l9) = (res(l,32) + res(l,33))*2.0d0
+  dumm(l9) = res(l,34)*2.0d0
   write(7,3030)(res(l,m),m=1,9)
   write(7,3040)(res(l,m),m=10,17)
   write(8,3030)(res(l,m),m=1,9)
@@ -190,14 +206,18 @@ do l = 1, iss
   l9 = l9 + 1
   edum(l9) = res(l,1)
   dums1(l9) = res(l,18)*2.0d0
-  dump1(l9) = res(l,19)*2.0d0
-  dumxz(l9) = res(l,20)*2.0d0
-  dumxy(l9) = res(l,21)*2.0d0
-  dum3r(l9) = res(l,22)*2.0d0
-  dumx2(l9) = res(l,23)*2.0d0
-  dums2(l9) = res(l,24)*2.0d0
-  dump2(l9) = res(l,25)*2.0d0
-  dumm(l9) = res(l,26)*2.0d0
+  dump1(l9) = (res(l,19) + res(l,20))*2.0d0
+  dumxz(l9) = res(l,21)*2.0d0
+  dumxy(l9) = res(l,22)*2.0d0
+  dum3r(l9) = res(l,23)*2.0d0
+  dumx2(l9) = res(l,24)*2.0d0
+  dums2(l9) = res(l,25)*2.0d0
+  dump2(l9) = (res(l,26) + res(l,27))*2.0d0
+  dumsA(l9) = res(l,28)*2.0d0
+  dumpA(l9) = (res(l,29) + res(l,30))*2.0d0
+  dumsB(l9) = res(l,31)*2.0d0
+  dumpB(l9) = (res(l,32) + res(l,33))*2.0d0
+  dumm(l9) = res(l,34)*2.0d0
   write(7,3030)(res(l,m),m=1,9)
   write(7,3040)(res(l,m),m=10,17)
   write(8,3030)(res(l,m),m=1,9)
@@ -211,21 +231,25 @@ anumel(itop) = anumel(num99) + dumm(iss)*del
 open(8,file='dosdat.cpa.plot')
 write(7,3000)
 write(7,3050)
-write(8,3050)
+write(8,3060)
 l = itop + 1
 l9 = 0
 do ll = iss1, itop
   l = l - 1
   l9 = l9 + 1
-  res(l,27) = anumel(l9)
-  write(7,3070)res(l,1),(res(l,m),m=18,27),ll
-  write(8,3070)res(l,1),(res(l,m),m=18,27),ll
+  res(l,35) = anumel(l9)
+  write(7,3070)res(l,1),res(l,18),res(l,19)+res(l,20),res(l,21),&
+    res(l,22),res(l,23),res(l,24),res(l,25),res(l,26)+res(l,27),&
+    res(l,34),res(l,35),ll
+  write(8,3080)res(l,1),(res(l,m),m=18,24),(res(l,m),m=28,35),ll
 end do
 do l = 1, iss
   l9 = l9 + 1
-  res(l,27) = anumel(l9)
-  write(7,3070)res(l,1),(res(l,m),m=18,27),l
-  write(8,3070)res(l,1),(res(l,m),m=18,27),l
+  res(l,35) = anumel(l9)
+  write(7,3070)res(l,1),res(l,18),res(l,19)+res(l,20),res(l,21),&
+    res(l,22),res(l,23),res(l,24),res(l,25),res(l,26)+res(l,27),&
+    res(l,34),res(l,35),l
+  write(8,3080)res(l,1),(res(l,m),m=18,24),(res(l,m),m=28,35),l
 end do
 close(8)
 mcount = 0
@@ -250,6 +274,8 @@ densfl(5) = interp(s,anumel,dum3r(1),mcm,2)/2.0d0
 densfl(6) = interp(s,anumel,dumx2(1),mcm,2)/2.0d0
 densfl(7) = interp(s,anumel,dums2(1),mcm,2)/2.0d0
 densfl(8) = interp(s,anumel,dump2(1),mcm,2)/2.0d0
+!densfl(9) = interp(s,anumel,dumsA(1),mcm,2)/2.0d0
+!densfl(10) = interp(s,anumel,dumpA(1),mcm,2)/2.0d0
 write(7,839)
 write(7,840)efl,nuelec,dnorfl,(densfl(i),i=1,8)
 close(7)
@@ -257,7 +283,7 @@ close(9)
 if (verbose) print 2000
 return
 839  format(/,'Fermi energy   Electrons   Total DOS   Fe-s   Fe-p   Fe-&
-  xy   Fe-xz   Fe-3r^2-z^2   Fe-x^2-y^2   Se-s   Se-p',//)
+  xy   Fe-xz   Fe-3r^2-z^2   Fe-x^2-y^2   Se/Te-s   Se/Te-p',//)
 840  format(2f10.5   ,3x,7f10.5//)
 841  format(//65x,11h (per spin)  )
 1000 format(/,'Begin subroutine mainn')
@@ -273,8 +299,12 @@ return
 3030 format(F9.5,3X,4(2(G12.5,1X),2X))
 3040 format(12X,4(2(G12.5,1X),2X))
 3050 format(10x,'Energy, Fe-s, Fe-p(x,y,z), Fe-d(xz,yz), Fe-d(xz), Fe-&
-  d(3r^2-z^2), Fe-d(x^2-y^2), Se-s, Se-p(x,y,z), Total DOS, electrons, &
-  iteration',/)
+  d(3r^2-z^2), Fe-d(x^2-y^2), Se/Te-s, Se/Te-p(x,y,z), &
+  Total DOS, electrons, iteration',/)
+3060 format(10x,'Energy, Fe-s, Fe-p(x,y), Fe-p(z), Fe-d(xz,yz), &
+  Fe-d(xz), Fe-d(3r^2-z^2), Fe-d(x^2-y^2), Se-s, Se-p(x,y), Se-p(z), &
+  Te-s, Te-p(x,y), Te-p(z), Total DOS, electrons, iteration',/)
 3070 format(2x,11f10.4,1x,i5)
+3080 format(2x,16f10.4,1x,i5)
 5004 format('   sigma didn t converge for e=',f10.4)
 end subroutine mainn

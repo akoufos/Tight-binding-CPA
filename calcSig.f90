@@ -87,11 +87,11 @@ do n = 1, numit
     do i = 1, nse
       if (dble(sig(i)).lt.-4.0d0*abs(sagr1(i)).or. &
         dble(sig(i)).gt.4.0d0*abs(sagr1(i))) then
-        sig(i) = cmplx(sagr1(i),sagi1(i),8)
         reset(i) = reset(i) + 1
         print *, 'RESET: ',reset
+        if (reset(i).ge.2) return
+        sig(i) = cmplx(sagr1(i),sagi1(i),8)
       end if
-      if (reset(i).ge.2) return
     end do
   end if
   if (irep.eq.1) cycle
