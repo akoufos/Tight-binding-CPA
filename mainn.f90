@@ -91,6 +91,7 @@ do ixyz = iss1, 8000
     sag(:) = sig(:)
     sagcon(:) = sagcon(:) + sig(:)
     n = n + 1
+!    goto 9991
   else ! Didn't converge so estimate with some other self-energies
     do l = 1, nse
       if (mchk(l).eqv..false.) then
@@ -111,12 +112,11 @@ do ixyz = iss1, 8000
     print 1002
     write(7,5004)e
     write(*,5004)e
+    goto 870 
   end if
-  goto 9991
-  goto 870 
-  nchk = nchk + 1
-  goto 1111
-  9991 continue
+!  nchk = nchk + 1
+!  goto 1111
+!  9991 continue
   write(7,1015)n,(sig(i),i=1,4),e
   write(7,1016)  (sig(i),i=5,8),e
   verbose = .true.
