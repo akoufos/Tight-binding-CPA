@@ -1,4 +1,4 @@
-subroutine readin(nd, ne, sagr1, sagi1)
+subroutine readin(nd, ne, sagr1, sagi1, mode)
 !--------------------------------------------------------------------------
 ! Reads inputs from cpaper.dat and writes some information to output file.
 !--------------------------------------------------------------------------
@@ -18,15 +18,36 @@ use onsites
 implicit none
 common /d2/ emin, emax, eps, del, epiv
 integer(kind=4) :: i
-integer(kind=4), intent(out) :: nd
+integer(kind=4), intent(out) :: nd, mode
 real(kind=8) :: del, epiv, eps, es, ep, emin, emax
 real(kind=8), intent(out) :: ne, sagi1(nse), sagr1(nse)
-character(len=1) :: a(50)
+character(len=500) :: modestr
 if (verbose) print 1000
 open(5,file='cpaper.dat',blank='zero')
-read(5,1001) (a(i),i=1,50)
-write(7,1001) (a(i),i=1,50)
+read(5,1001) title
+write(7,1001) title 
+read(5,1013) mode
 read (5,*) nd,ne,cr,ci
+select case (mode)
+  case (1)
+    write(modestr,'(A)')'Program is running in mode 1. This will run the &
+      CPA program in its entirity and calculate the superconductivity &
+      properties based on the Gaspari-Gyorffy and McMillan theories &
+      using an approximation of the Hopfield parameter using the &
+      calculated density of states.'
+  case (2)
+    write(modestr,'(A)')'Program is running in mode 2. This will only &
+      run the cpaGG subroutine to calculate the superconductivity &
+      properties based on the Gaspari-Gyorffy and McMillan theories &
+      using an approximation of the Hopfield parameter using the &
+      calculated density of states.'
+  case default
+    write(modestr,'(A)')'No mode was selected. Please include a valid &
+      mode in your input file and run the code again.'
+    print 1012, mode, modestr
+    stop
+end select
+write(7,1012) mode, modestr
 write(7,1002) nd,ne,cr,ci
 do i = 1, sec
   read(5,*)ons(1,i), ons(2,i)
@@ -45,7 +66,8 @@ close(5)
 write(7,1006) eps, jsz
 write(7,1007) cr, ci
 if (verbose.and.vlvl.ge.2) then 
-  print 1001, (a(i),i=1,50)
+  print 1001, title
+  print 1012, mode, modestr
   print 1002, nd,ne,cr,ci
   print 1008
   print 1009, ons(1,:)
@@ -63,7 +85,7 @@ end if
 if (verbose) print 2000
 return
 1000 format(/,'Begin subroutine readin')
-1001 format(50A1)
+1001 format(A75)
 1002 format(I5,5X,3F10.7)
 1003 format(2F9.5)
 1004 format(2F15.10)
@@ -75,5 +97,7 @@ return
 1010 format(//,'Onsite parameters of Tellurium',/)
 1011 format(//,'Concentration is not an element of [0:1]',/,'Check &
   cpaper.dat and rerun',//)
+1012 format(//,'Mode: ',I1,//,A,//)
+1013 format(5X,I5)
 2000 format('End readin',/)
 end subroutine readin

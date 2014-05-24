@@ -9,6 +9,7 @@ module global
   ! be given alphabetical order; i.e. UPd2Al3 should be (3,2,1))
 ! nse - Number of self energies
 ! sec - Number of secular equations
+! title - Title from cpaper.in to be used in all output files
 ! verbose - Logical for debugging flags (.true. = debug info on)
 ! vlvl - Level of debugging verboseness
 !--------------------------------------------------------------------------
@@ -29,6 +30,7 @@ integer(kind=4), parameter :: sec = 9*2*2 !sum(natom) ! 9 (s(1) + p(3) + d(5))
 logical :: verbose
 real(kind=8), parameter :: pi = 4.0d0*datan(1.0d0), pp = 1.0d0/pi
 real(kind=8), parameter :: small = 1.0d-20
+character(len=75) :: title
 save
 end module global
 

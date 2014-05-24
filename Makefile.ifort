@@ -12,9 +12,9 @@ FFLAGS = $(F90_OPTS) $(MKL) $(OMP)
 SRC_modules = global.f90
 
 SRC_cpa = bisect.f90 calcSig.f90 ccrlu.f90 clubk.f90 cpaDOS.f90 \
-	cpagen.f90 falsi.f90 fixpt.f90 kpts.f90 greens.f90 mainn.f90 \
-	newton.f90 readin.f90 readSec.f90 setInitHam.f90 setHam.f90 \
-	setOnsites.f90 simp.f90
+	cpagen.f90 cpaGG.f90 falsi.f90 fixpt.f90 kpts.f90 greens.f90 \
+	mainn.f90 newton.f90 readin.f90 readSec.f90 setInitHam.f90 \
+	setHam.f90 setOnsites.f90 simp.f90
 #greens_omp.f90
 #	kpts.f90 mainn.f90 readin.f90 readSec.f90 setHam.f90 \
 
