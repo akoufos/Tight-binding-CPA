@@ -22,7 +22,7 @@ module global
 !--------------------------------------------------------------------------
 implicit none
 integer(kind=4) :: vlvl
-integer(kind=4), parameter :: jsz = 904 ! From TB band calculation
+integer(kind=4), parameter :: jsz = 196 !904 ! From TB band calculation
 integer(kind=4), parameter :: ntype = 2 ! Fe & Se
 integer(kind=4), parameter :: natom(ntype) = (/ 2, 2 /) ! Fe = 2 , Se/Te = 2
 integer(kind=4), parameter :: nse = 4*natom(2) ! s(1) + p(3) for each Se/Te
@@ -134,3 +134,37 @@ implicit none
 complex(kind=8) :: sig(nse)
 save
 end module sigma
+
+!--------------------------------------------------------------------------
+module unitconvert
+!--------------------------------------------------------------------------
+! Module for all unit conversions
+!--------------------------------------------------------------------------
+! Variables:
+! ang2m - Angstroms to si units, meters
+! bohr2ang - Atomic radius, bohrs, to angstroms
+! bohr2m - Atomic radius, bohrs, to si units, meters
+! eV2J - Electron volts to si units, Joules (kgm^2/s^2 or Nm)
+! K2eV - Kelvin to electron volts
+! u2kg - Atomic mass to si units, kilograms
+! u2eVc2 - Atomic mass to electron volts per speed of light squared
+!--------------------------------------------------------------------------
+use global
+implicit none
+real(kind=8), parameter :: ang2m = 1.0d-10
+real(kind=8), parameter :: bohr2ang = 0.52917721092d0
+real(kind=8), parameter :: bohr2m = 0.52917721092d-11
+real(kind=8), parameter :: eV_AA2kg_ss = 16.0217656d0
+real(kind=8), parameter :: eV2Hz = 2.417989348d14
+real(kind=8), parameter :: eV2J = 1.602176565d-18
+real(kind=8), parameter :: K2eV = 8.621738d-5
+real(kind=8), parameter :: K2meV = 8.621738d-2
+real(kind=8), parameter :: kg_ss2eV_AA = 6.2415094d-2
+real(kind=8), parameter :: meV2Hz = 2.417989348d11
+real(kind=8), parameter :: Ry2ev = 13.60569253d0
+real(kind=8), parameter :: u2kg = 1.660538921d-27
+real(kind=8), parameter :: u2eV_c2 = 931.494061d6
+real(kind=8), parameter :: uKK2eV_AA = 1.776386273d-6
+real(kind=8), parameter :: uKK2eV_AA2 = 4.504401531323d-8
+save
+end module unitconvert

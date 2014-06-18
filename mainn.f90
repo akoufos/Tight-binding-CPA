@@ -52,11 +52,11 @@ logical :: mchk(nse)
 real(kind=8) :: del, dnorfl, e, efl, emax, emin, epiv, eps, interp, &
   nuelec, s, sagi1(nse), sagr1(nse), totvol, dos(sec+1), &
   dos2(ntype,sec)
-real(kind=8) :: res(8000,50), anumel(8000), dumm(8000), &
-  edum(8000), dums1(8000), dump1(8000), dums2(8000), dump2(8000), & 
-  dumxz(8000), dumxy(8000), dum3r(8000), dumx2(8000), dumsA(8000), &
-  dumpA(8000), dumsB(8000), dumpB(8000), densfl(12), weight(jsz), &
-  qq(jsz,3), spec(8000,jsz)
+real(kind=8) :: res(20000,50), anumel(20000), dumm(20000), &
+  edum(20000), dums1(20000), dump1(20000), dums2(20000), dump2(20000), & 
+  dumxz(20000), dumxy(20000), dum3r(20000), dumx2(20000), dumsA(20000), &
+  dumpA(20000), dumsB(20000), dumpB(20000), densfl(12), weight(jsz), &
+  qq(jsz,3), spec(20000,jsz)
 complex(kind=8) :: sag(nse), sagcon(nse)
 character(len=100) :: file1, file2, method
 if (verbose) print 1000
@@ -83,7 +83,7 @@ if(nchk.eq.1) nmode = 2
 if(nchk.eq.1) epiv = epiv - del
 e = epiv
 sig(:) = sag(:)
-do ixyz = iss1, 8000
+do ixyz = iss1, 20000
 !  sag(:) = cmplx(sagr1(:),sagi1(:),8)
   sig(:) = sag(:)
   write(method,'(A)') 'Newton'
@@ -114,12 +114,12 @@ do ixyz = iss1, 8000
 !  9991 continue
   write(7,1015)n,(sig(i),i=1,4),e
   write(7,1016)  (sig(i),i=5,8),e
-  verbose = .true.
+! verbose = .true.
   if (verbose) then
     write(*,1015)n,(sig(i),i=1,4),e
     write(*,1016)  (sig(i),i=5,8),e
   end if
-  verbose = .false.
+! verbose = .false.
   call cpaDOS(dos,dos2,spec(n,:),weight,totvol,e,eps)
   res(n,1) = e
   res(n,2) = dble(sig(1))
