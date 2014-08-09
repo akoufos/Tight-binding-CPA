@@ -1,4 +1,4 @@
-subroutine cpaGG(mode, fermi, nelec, nef, N)
+subroutine cpaGG(fermi, nelec, nef, N)
 !--------------------------------------------------------------------------
 ! This subroutine will read the CPA DOS at the Fermi level to approximate
 ! the eta, Hopfield, parameter for use with the Gaspari-Gyorffy theory.
@@ -17,7 +17,7 @@ subroutine cpaGG(mode, fermi, nelec, nef, N)
 ! lambda(ntype) - Electron-phonon coupling constant for each atom type
 ! M(3) - Atomic masses, in atomic units
 ! mode - Subroutine run mode to calculate superconductivity properties
-!   1 - Calculate during CPA program
+!   1/3 - Calculate during CPA program
 !   2 - Calculate at a later date of CPA completion
 ! mt1/2 - Muffin-tin ratio used to correct for lack of muffin-tins in the
 !   TB-CPA formulism used (Version 3+: Not used for GG calculations.)
@@ -62,7 +62,6 @@ use unitconvert
 use concentration
 implicit none
 integer(kind=4) :: i
-integer(kind=4), intent(in) :: mode
 real(kind=8) :: eta(3), lambda(3), Tc, M(3), w2(ntype), effw2, &
   effM, effM2, effl, ratio, sfratio, w, lsf, must, C(2*ntype), effTheta, &
   Theta(ntype), Theta2, mt, dos(12), eta1(2), eta2(2), eta3(2), C1, C2, C3
@@ -73,15 +72,15 @@ character(len=2) :: atom(ntype+1)
 if (verbose) print 1000
 open(11,file='CPA-GG.out')
 select case (mode)
-  case (1)
-    print *, 'Continuing superconductivity calculations with results'
+  case (1,3)
+    write(6,*)'Continuing superconductivity calculations with results'
   case (2)
     open(10,file='dosapw.itp')
     read(10,*)
     read(10,1001)fermi,nelec,NEF,(N(i),i=1,12)
     close(10)
   case default
-    print *, 'Problem with mode. Nothing was done'
+    write(6,*)'Problem with mode. Nothing was done'
     return ! Return to mainn subroutine
 end select
 write(11,1100)title

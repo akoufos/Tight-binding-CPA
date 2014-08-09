@@ -44,7 +44,7 @@ use hamiltonians
 use sigma
 implicit none
 common /d2/ emin, emax, eps, del, epiv
-integer(kind=4) :: i, l, ll, mode
+integer(kind=4) :: i, l, ll
 integer(kind=4) :: iss, iss1, itop, ixyz, l9, m, mc, mcm, mcount, &
   n, nchk, ndim, nmode, num99
 integer(kind=4), parameter :: numit = 100
@@ -66,7 +66,7 @@ open(7,file='cpaper.out',blank='zero')
 write(file1,'(A)') 'cpamat1.dat'
 write(file2,'(A)') 'cpamat2.dat'
 verbose = .true.; vlvl = 3
-call readin(ndim,nuelec,sagr1,sagi1,mode)
+call readin(ndim,nuelec,sagr1,sagi1)
 ! If mode 2, program already run; Calculate superconductivity only
 if (mode.eq.2) goto 9999
 call setOnsites
@@ -85,6 +85,7 @@ e = epiv
 sig(:) = sag(:)
 do ixyz = iss1, 20000
 !  sag(:) = cmplx(sagr1(:),sagi1(:),8)
+  if (mode.eq.3) goto 8888 
   sig(:) = sag(:)
   write(method,'(A)') 'Newton'
   call calcSig(weight,totvol,e,eps,mchk,numit,method,sagr1,sagi1)
@@ -120,7 +121,10 @@ do ixyz = iss1, 20000
     write(*,1016)  (sig(i),i=5,8),e
   end if
 ! verbose = .false.
+8888 continue
   call cpaDOS(dos,dos2,spec(n,:),weight,totvol,e,eps)
+! For mode 3 only, since n isn't increased without this
+  if (mode.eq.3) n = n + 1
   res(n,1) = e
   res(n,2) = dble(sig(1))
   res(n,3) = aimag(sig(1))
@@ -286,7 +290,7 @@ close(7)
 close(9)
 close(10)
 9999 continue
-call cpaGG(mode,efl,nuelec,dnorfl,densfl)
+call cpaGG(efl,nuelec,dnorfl,densfl)
 if (verbose) print 2000
 return
 839  format(/,'Fermi energy   Electrons   Total DOS   Fe-s   Fe-p   Fe-&

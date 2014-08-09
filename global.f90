@@ -4,6 +4,11 @@ module global
 !--------------------------------------------------------------------------
 ! Variables:
 ! jsz - Number of kpoints
+! mode - Used to decide how the program is run
+!  1 - Perform full CPA prgoram, including GG calculations
+!  2 - Perform only GG calculations. Must have run mode 1 or 3 previously
+!  3 - Perform VCA with DOS and GG calculations. Essentially skips 
+!      setting and calculating self-energies.
 ! ntype - Number of different atom types
 ! natom(ntype) - Number of different atoms (# of atoms in should 
   ! be given alphabetical order; i.e. UPd2Al3 should be (3,2,1))
@@ -22,6 +27,7 @@ module global
 !--------------------------------------------------------------------------
 implicit none
 integer(kind=4) :: vlvl
+integer(kind=4) :: mode
 integer(kind=4), parameter :: jsz = 196 !904 ! From TB band calculation
 integer(kind=4), parameter :: ntype = 2 ! Fe & Se
 integer(kind=4), parameter :: natom(ntype) = (/ 2, 2 /) ! Fe = 2 , Se/Te = 2

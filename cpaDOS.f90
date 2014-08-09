@@ -38,7 +38,7 @@ do i = 1, jsz
   do l = 1, sec
     dos(l) = dos(l) - pp*w(i)/tot*gi(l,l)
     spec(i) = spec(i) - pp*gi(l,l)
-    if (l.ge.19.and.l.le.22.or.l.ge.28.and.l.le.31) then
+    if (((l.ge.19.and.l.le.22).or.(l.ge.28.and.l.le.31)).and.mode.eq.1) then
       if (l.ge.19.and.l.le.22) l2 = l - 18
       if (l.ge.28.and.l.le.31) l2 = l - 23
       dos2(1,l) = dos2(1,l) - pp*w(i)/tot*(gr(l,l)*aimag(sig(l2))+ &

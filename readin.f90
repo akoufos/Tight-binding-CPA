@@ -1,4 +1,4 @@
-subroutine readin(nd, ne, sagr1, sagi1, mode)
+subroutine readin(nd, ne, sagr1, sagi1)
 !--------------------------------------------------------------------------
 ! Reads inputs from cpaper.dat and writes some information to output file.
 !--------------------------------------------------------------------------
@@ -18,7 +18,7 @@ use onsites
 implicit none
 common /d2/ emin, emax, eps, del, epiv
 integer(kind=4) :: i
-integer(kind=4), intent(out) :: nd, mode
+integer(kind=4), intent(out) :: nd
 real(kind=8) :: del, epiv, eps, es, ep, emin, emax
 real(kind=8), intent(out) :: ne, sagi1(nse), sagr1(nse)
 character(len=500) :: modestr
@@ -41,6 +41,10 @@ select case (mode)
       properties based on the Gaspari-Gyorffy and McMillan theories &
       using an approximation of the Hopfield parameter using the &
       calculated density of states.'
+  case (3)
+    write(modestr,'(A)')'Program is running in mode 3. This will run a &
+      virtual crystal approximation (VCA) of the system with DOS and &
+      Gaspari-Gyorffy calculations.'
   case default
     write(modestr,'(A)')'No mode was selected. Please include a valid &
       mode in your input file and run the code again.'

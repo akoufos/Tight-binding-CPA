@@ -21,10 +21,12 @@ character(len=100) :: f1000
 if (verbose) print 1000
 do l = 1, sec
   H(:,l,l) = H(:,l,l) + cmplx(e,eps,8)
-  if (l.ge.19.and.l.le.22) then
-    H(:,l,l) = H(:,l,l) - sig(l-18) + ons_bar(l)
-  else if (l.ge.28.and.l.le.31) then
-    H(:,l,l) = H(:,l,l) - sig(l-23) + ons_bar(l)
+  if (mode.eq.1) then
+    if (l.ge.19.and.l.le.22) then
+      H(:,l,l) = H(:,l,l) - sig(l-18) + ons_bar(l)
+    else if (l.ge.28.and.l.le.31) then
+      H(:,l,l) = H(:,l,l) - sig(l-23) + ons_bar(l)
+    end if
   end if
 end do
 write(f1000,'(A,I1,A)') "(",sec,"(2(F10.6,1x)))"
