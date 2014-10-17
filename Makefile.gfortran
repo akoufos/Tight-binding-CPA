@@ -24,7 +24,7 @@ SRC = $(SRC_modules) $(SRC_cpa) $(SRC_omp)
 OBJ_omp = $(SRC_omp:.f90=.o)
 $(OBJ_omp): F90_OPTS+=$(OMP)
 OBJ = $(SRC:.f90=.o)
-EXE = cpaFeSe
+EXE = bin/cpaFeSe
 
 #--------------------------------------------------------------------------
 # Suffix rules
