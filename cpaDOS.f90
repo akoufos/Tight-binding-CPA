@@ -45,6 +45,9 @@ do i = 1, jsz
         gi(l,l)*dble(sig(l2))-gi(l,l)*ons(2,l))/(ons(1,l)-ons(2,l))
       dos2(2,l) = dos2(2,l) - pp*w(i)/tot*(gr(l,l)*aimag(sig(l2))+ &
         gi(l,l)*dble(sig(l2))-gi(l,l)*ons(1,l))/(ons(2,l)-ons(1,l))
+    else if (((l.ge.19.and.l.le.22).or.(l.ge.28.and.l.le.31)) &
+            .and.mode.eq.3) then
+      dos2(1,l)  = dos2(1,l) -pp*w(i)/tot*gi(l,l)
     end if
   end do
 end do
