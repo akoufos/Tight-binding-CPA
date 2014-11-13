@@ -1,22 +1,24 @@
 module global
 !--------------------------------------------------------------------------
-! Currently this global file is setup for calculations of P4/nmm Fe2Se/Te2
+!> Currently this global file is setup for calculations of P4/nmm Fe2Se/Te2
 !--------------------------------------------------------------------------
 ! Variables:
-! jsz - Number of kpoints
-! mode - Used to decide how the program is run
-!  1 - Perform full CPA prgoram, including GG calculations
-!  2 - Perform only GG calculations. Must have run mode 1 or 3 previously
-!  3 - Perform VCA with DOS and GG calculations. Essentially skips 
-!      setting and calculating self-energies.
-! ntype - Number of different atom types
-! natom(ntype) - Number of different atoms (# of atoms in should 
-  ! be given alphabetical order; i.e. UPd2Al3 should be (3,2,1))
-! nse - Number of self energies
-! sec - Number of secular equations
-! title - Title from cpaper.in to be used in all output files
-! verbose - Logical for debugging flags (.true. = debug info on)
-! vlvl - Level of debugging verboseness
+!> @param jsz - Number of kpoints
+!> @param mode - Used to decide how the program is run
+!!  1 - Perform full CPA prgoram, including GG calculations
+!!  2 - Perform only GG calculations. Must have run mode 1 or 3 previously
+!!  3 - Perform VCA with DOS and GG calculations. Essentially skips 
+!!      setting and calculating self-energies.
+!> @param ntype - Number of different atom types
+!> @param natom(ntype) - Number of different atoms (# of atoms in should 
+!!   be given alphabetical order; i.e. UPd2Al3 should be (3,2,1))
+!> @param nse - Number of self energies
+!> @param pi Mathematical value of pi
+!> @param sec - Number of secular equations
+!> @param small Real value considered to be "small"
+!> @param title - Title from cpaper.in to be used in all output files
+!> @param verbose - Logical for debugging flags (.true. = debug info on)
+!> @param vlvl - Level of debugging verboseness
 !--------------------------------------------------------------------------
 ! Notes for future release:
 !
@@ -43,13 +45,13 @@ end module global
 !--------------------------------------------------------------------------
 module converge
 !--------------------------------------------------------------------------
-! Module for the convergence criterion related variables
+!> Module for the convergence criterion related variables
 !--------------------------------------------------------------------------
 ! Variables:
-! cr - Convergence criterion for the real part of the Newton-Raphson 
-  ! procedure
-! ci - Convergence criterion for the imaginary part of the Newton-Raphson 
-  ! procedure
+!> @param cr - Convergence criterion for the real part of the 
+!!   Newton-Raphson procedure
+!> @param ci - Convergence criterion for the imaginary part of the 
+!!   Newton-Raphson procedure
 !--------------------------------------------------------------------------
 implicit none
 real(kind=8) :: cr 
@@ -60,10 +62,11 @@ end module converge
 !--------------------------------------------------------------------------
 module concentration
 !--------------------------------------------------------------------------
-! Module for the concentration related variables of the CPA program
+!> Module for the concentration related variables of the CPA program
 !--------------------------------------------------------------------------
 ! Variables:
-! con - The concentration of the first atom type (e.g. FeSe_[con]Te-[1-con]
+!> @param con - The concentration of the first atom type (e.g. 
+!!   \f$FeSe_{con}Te_{1-con}\f$)
 !--------------------------------------------------------------------------
 implicit none
 real(kind=8) :: con
@@ -73,11 +76,11 @@ end module
 !--------------------------------------------------------------------------
 module onsites
 !--------------------------------------------------------------------------
-! Module for the onsites parameters and related variables
+!> Module for the onsites parameters and related variables
 !--------------------------------------------------------------------------
 ! Variables:
-! ons(natom(2),sec) - The onsite parameters of the systems
-! ons_bar(sec) - Average onsite parameters between the two systems
+!> @param ons(natom(2),sec) - The onsite parameters of the systems
+!> @param ons_bar(sec) - Average onsite parameters between the two systems
 !--------------------------------------------------------------------------
 use global
 implicit none
@@ -92,16 +95,18 @@ end module onsites
 !--------------------------------------------------------------------------
 module hamiltonians
 !--------------------------------------------------------------------------
-! Module for hamiltonians of the two systems and related variables
+!> Module for hamiltonians of the two systems and related variables
 !--------------------------------------------------------------------------
 ! Variables:
-! hma(jsz,sec,sec) - Real part of initial Hamiltonian of system A (e.g.
-  ! FeSe)
-! vsa(jsz,sec,sec) - Imaginary part of initial Hamiltonian of system A
-! hmb(jsz,sec,sec) - Real part of initial Hamiltonian of system B (e.g.
-  ! FeTe)
-! vsb(jsz,sec,sec) - Imaginary part of initial Hamiltonian of system B
-! ham(jsz,sec,sec) - Average Hamiltonian between the two systems
+!> @param hma(jsz,sec,sec) - Real part of initial Hamiltonian of system A 
+!!   (e.g. FeSe)
+!> @param vsa(jsz,sec,sec) - Imaginary part of initial Hamiltonian of 
+!!   system A
+!> @param hmb(jsz,sec,sec) - Real part of initial Hamiltonian of system B
+!!   (e.g. FeTe)
+!> @param vsb(jsz,sec,sec) - Imaginary part of initial Hamiltonian of 
+!!   system B
+!> @param ham(jsz,sec,sec) - Average Hamiltonian between the two systems
 !--------------------------------------------------------------------------
 use global
 implicit none
@@ -116,10 +121,10 @@ end module hamiltonians
 !--------------------------------------------------------------------------
 module green
 !--------------------------------------------------------------------------
-! Module for greens function matrix and related variables
+!> Module for greens function matrix and related variables
 !--------------------------------------------------------------------------
 ! Variables:
-! grn(sec,sec) - Green's function
+!> @param grn(sec,sec) - Green's function
 !--------------------------------------------------------------------------
 use global
 implicit none
@@ -130,10 +135,10 @@ end module green
 !--------------------------------------------------------------------------
 module sigma
 !--------------------------------------------------------------------------
-! Module for the self-energies and related variables
+!> Module for the self-energies and related variables
 !--------------------------------------------------------------------------
 ! Variables:
-! sig(nse) - Self energies of the system
+!> @param sig(nse) - Self energies of the system
 !--------------------------------------------------------------------------
 use global
 implicit none
@@ -144,16 +149,16 @@ end module sigma
 !--------------------------------------------------------------------------
 module unitconvert
 !--------------------------------------------------------------------------
-! Module for all unit conversions
+!> Module for all unit conversions
 !--------------------------------------------------------------------------
 ! Variables:
-! ang2m - Angstroms to si units, meters
-! bohr2ang - Atomic radius, bohrs, to angstroms
-! bohr2m - Atomic radius, bohrs, to si units, meters
-! eV2J - Electron volts to si units, Joules (kgm^2/s^2 or Nm)
-! K2eV - Kelvin to electron volts
-! u2kg - Atomic mass to si units, kilograms
-! u2eVc2 - Atomic mass to electron volts per speed of light squared
+!> @param ang2m - Angstroms to si units, meters
+!> @param bohr2ang - Atomic radius, bohrs, to angstroms
+!> @param bohr2m - Atomic radius, bohrs, to si units, meters
+!> @param eV2J - Electron volts to si units, Joules (kgm^2/s^2 or Nm)
+!> @param K2eV - Kelvin to electron volts
+!> @param u2kg - Atomic mass to si units, kilograms
+!> @param u2eVc2 - Atomic mass to electron volts per speed of light squared
 !--------------------------------------------------------------------------
 use global
 implicit none
