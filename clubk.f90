@@ -1,19 +1,20 @@
 subroutine clubk(A, n, piv, b, verbose, vlvl)
 !--------------------------------------------------------------------------
-! Solves A*x = b with partial pivoting from Crout's LU [(P*L)*U = P*A]
+!> Solves A*x = b with partial pivoting from Crout's LU 
+!!   [\f$(P*L)*U = P*A\f$]
 !--------------------------------------------------------------------------
 ! Variables:
-! n - Rank of matrix A
-! piv(n) - Pivot vector from subroutine ccrlu
-! A(n,n) - Complex matrix that is decomposed by subroutine ccrlu
-! L(n,n) - Lower decomposition of matrix a
-! U(n,n) - Upper decomposition of matrix a
-! P(n,n) - Pivot matrix
-! y(n) - (U*x = y)
-! x(n) - Working vector (b will equal x at the end)
-! b(n) - Input and solution of A*x = b [(P*L)*y = b]
-! verbose - Logical for debugging flags (.true. = debug info on)
-! vlvl - Level of debugging verboseness
+!> @param n - Rank of matrix A
+!> @param piv(n) - Pivot vector from subroutine ccrlu
+!> @param A(n,n) - Complex matrix that is decomposed by subroutine ccrlu
+!> @param L(n,n) - Lower decomposition of matrix a
+!> @param U(n,n) - Upper decomposition of matrix a
+!> @param P(n,n) - Pivot matrix
+!> @param y(n) - (U*x = y)
+!> @param x(n) - Working vector (b will equal x at the end)
+!> @param b(n) - Input and solution of A*x = b [\f$ (P*L)*y = b \f$]
+!> @param verbose - Logical for debugging flags (.true. = debug info on)
+!> @param vlvl - Level of debugging verboseness
 !--------------------------------------------------------------------------
 implicit none
 integer(kind=4) :: i, j, P(n,n)

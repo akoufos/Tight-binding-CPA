@@ -1,5 +1,9 @@
 !--------------------------------------------------------------------------
-! Function for doing interpolation of the Fermi level
+!> Discription of function.
+!> @brief
+! Function for doing interpolation of the Fermi level.
+!
+!> @param[in] j1
 !--------------------------------------------------------------------------
 real(kind=8) function interp(xx,x,f,j1,n)
 implicit none
@@ -24,20 +28,20 @@ end function interp
 
 subroutine mainn()
 !--------------------------------------------------------------------------
-! Subroutine to run the main parts of the CPA program. Specifically this
-! subroutine does the Newton-Raphson procedure, applies concentrations 
-! and most of the initialization.
+!> Subroutine to run the main parts of the CPA program. Specifically this
+!! subroutine does the Newton-Raphson procedure, applies concentrations 
+!! and most of the initialization.
 !--------------------------------------------------------------------------
-! Variables:
-! del - Temperature broadening ?
-! epiv - Pivot energy (helps with N-R iterations [usually around E_F])
-! eps - Imaginary part of energy shift ?
-! emax/emin - Maximum and minimum of energy window, respectively
-! sag**1 - Real and imaginary parts, respectively, of s & p initial onsite
-  ! parameters (should be average between two substitution atoms)
-! sig** - Real and imaginary parts, respectively, of s & p self-energies 
-! sig - Complex self-energies
-! method - String used to decide which zero finding procedure to use
+!> Variables:
+!! del - Temperature broadening ?
+!! epiv - Pivot energy (helps with N-R iterations [usually around E_F])
+!! eps - Imaginary part of energy shift ?
+!! emax/emin - Maximum and minimum of energy window, respectively
+!! sag**1 - Real and imaginary parts, respectively, of s & p initial onsite
+!!   parameters (should be average between two substitution atoms)
+!! sig** - Real and imaginary parts, respectively, of s & p self-energies 
+!! sig - Complex self-energies
+!! method - String used to decide which zero finding procedure to use
 !--------------------------------------------------------------------------
 use global
 use hamiltonians

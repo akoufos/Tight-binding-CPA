@@ -1,0 +1,82 @@
+\hypertarget{classglobal}{\section{global Module Reference}
+\label{classglobal}\index{global@{global}}
+}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+integer(kind=4) \hyperlink{classglobal_a57714656ed3fc78e7923fea192edaf85}{vlvl}
+\begin{DoxyCompactList}\small\item\em Currently this global file is setup for calculations of P4/nmm Fe2\-Se/\-Te2. \end{DoxyCompactList}\item 
+\hypertarget{classglobal_ac1f2f70a16733fd087f0c5eac3f7d7e4}{integer(kind=4) {\bfseries mode}}\label{classglobal_ac1f2f70a16733fd087f0c5eac3f7d7e4}
+
+\item 
+\hypertarget{classglobal_a8d2907fd80db91286fad32d07a1ad54a}{integer(kind=4), parameter {\bfseries jsz} = 196}\label{classglobal_a8d2907fd80db91286fad32d07a1ad54a}
+
+\item 
+\hypertarget{classglobal_aeb4ccd4081ab15144f11d282dd45d3fc}{integer(kind=4), parameter {\bfseries ntype} = 2}\label{classglobal_aeb4ccd4081ab15144f11d282dd45d3fc}
+
+\item 
+\hypertarget{classglobal_acade694fa80d067ffa262067a7593881}{integer(kind=4), dimension(ntype), \\*
+parameter {\bfseries natom} = (/ 2, 2 /)}\label{classglobal_acade694fa80d067ffa262067a7593881}
+
+\item 
+\hypertarget{classglobal_a9bb221d7ab287e3ae69cc5cd00b41f40}{integer(kind=4), parameter {\bfseries nse} = 4$\ast$natom(2)}\label{classglobal_a9bb221d7ab287e3ae69cc5cd00b41f40}
+
+\item 
+\hypertarget{classglobal_a7632e2bba92b775355277d7647224ad3}{integer(kind=4), parameter {\bfseries sec} = 9$\ast$2$\ast$2}\label{classglobal_a7632e2bba92b775355277d7647224ad3}
+
+\item 
+\hypertarget{classglobal_a3eaa05af547ca0e62eaf5223edc725ec}{logical {\bfseries verbose}}\label{classglobal_a3eaa05af547ca0e62eaf5223edc725ec}
+
+\item 
+\hypertarget{classglobal_a1cf4e2ab9e6041ada210715e6312df8f}{real(kind=8), parameter {\bfseries pi} = 4.\-0d0$\ast$datan(1.\-0d0)}\label{classglobal_a1cf4e2ab9e6041ada210715e6312df8f}
+
+\item 
+\hypertarget{classglobal_aab709ca486b1b1fb10a8785408339f04}{real(kind=8), parameter {\bfseries pp} = 1.\-0d0/pi}\label{classglobal_aab709ca486b1b1fb10a8785408339f04}
+
+\item 
+\hypertarget{classglobal_a5e360fcdfdc5e93949d9bf2b007ced72}{real(kind=8), parameter {\bfseries small} = 1.\-0d-\/20}\label{classglobal_a5e360fcdfdc5e93949d9bf2b007ced72}
+
+\item 
+\hypertarget{classglobal_a2bfb5f2ffc0da59b895b420c64ed0875}{character(len=75) {\bfseries title}}\label{classglobal_a2bfb5f2ffc0da59b895b420c64ed0875}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Data Documentation}
+\hypertarget{classglobal_a57714656ed3fc78e7923fea192edaf85}{\index{global@{global}!vlvl@{vlvl}}
+\index{vlvl@{vlvl}!global@{global}}
+\subsubsection[{vlvl}]{\setlength{\rightskip}{0pt plus 5cm}integer(kind=4) global\-::vlvl}}\label{classglobal_a57714656ed3fc78e7923fea192edaf85}
+
+
+Currently this global file is setup for calculations of P4/nmm Fe2\-Se/\-Te2. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em jsz} & -\/ Number of kpoints \\
+\hline
+{\em mode} & -\/ Used to decide how the program is run 1 -\/ Perform full C\-P\-A prgoram, including G\-G calculations 2 -\/ Perform only G\-G calculations. Must have run mode 1 or 3 previously 3 -\/ Perform V\-C\-A with D\-O\-S and G\-G calculations. Essentially skips setting and calculating self-\/energies. \\
+\hline
+{\em ntype} & -\/ Number of different atom types \\
+\hline
+{\em natom(ntype)} & -\/ Number of different atoms (\# of atoms in should be given alphabetical order; i.\-e. U\-Pd2\-Al3 should be (3,2,1)) \\
+\hline
+{\em nse} & -\/ Number of self energies \\
+\hline
+{\em pi} & Mathematical value of pi \\
+\hline
+{\em sec} & -\/ Number of secular equations \\
+\hline
+{\em small} & Real value considered to be \char`\"{}small\char`\"{} \\
+\hline
+{\em title} & -\/ Title from cpaper.\-in to be used in all output files \\
+\hline
+{\em verbose} & -\/ Logical for debugging flags (.true. = debug info on) \\
+\hline
+{\em vlvl} & -\/ Level of debugging verboseness \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this module was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+global.\-f90\end{DoxyCompactItemize}

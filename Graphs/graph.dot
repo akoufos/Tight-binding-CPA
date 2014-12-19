@@ -1,0 +1,45 @@
+digraph G { 
+
+	nodesep=.05; 
+
+	rankdir=LR; 
+
+	node [shape=record,width=.1,heigth=.1];
+node0 [label = "calcSig"];
+node1 [label = "setHam"];
+node2 [label = "greens"];
+node3 [label = "newton"];
+node4 [label = "cmplxInv"];
+node5 [label = "ccrlu"];
+node6 [label = "clubk"];
+node7 [label = "cpaDOS"];
+node8 [label = "cpagen"];
+node9 [label = "mainn"];
+node10 [label = "readin"];
+node11 [label = "setOnsites"];
+node12 [label = "kpts"];
+node13 [label = "readSec"];
+node14 [label = "setInitHam"];
+node15 [label = "simp"];
+node16 [label = "cpaGG"];
+node0 -> node1;
+node0 -> node2;
+node0 -> node3;
+node0 -> node3;
+node4 -> node5;
+node4 -> node6;
+node7 -> node1;
+node7 -> node4;
+node8 -> node9;
+node2 -> node4;
+node9 -> node10;
+node9 -> node11;
+node9 -> node12;
+node9 -> node13;
+node9 -> node13;
+node9 -> node14;
+node9 -> node0;
+node9 -> node7;
+node9 -> node15;
+node9 -> node16;
+}

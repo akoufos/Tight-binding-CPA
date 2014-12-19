@@ -54,7 +54,7 @@ do n = 1, numit
       call newton(G,sigs(1,:),del)
     case ('Fixed')
       sigs(1,:) = sig(:)
-      call fixpt(G,sigs,del)
+!      call fixpt(G,sigs,del)
     case ('False Position')
 !      call falsi(G,del)
     case ('Bisect')
